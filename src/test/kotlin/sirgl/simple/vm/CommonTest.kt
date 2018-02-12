@@ -37,7 +37,7 @@ abstract class FileBasedTestCaseBase<T> {
     }
 
     fun check(actual: T, expectedText: String) {
-        Assert.assertEquals("Different content in file.", actual, expectedText)
+        Assert.assertEquals("Different content in file.", expectedText, actual)
     }
 
     fun findResultPath(path: Path): Path {

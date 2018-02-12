@@ -1,13 +1,13 @@
-Fun@(0: 2, "fun")
-Class@(4: 8, "class")
-Native@(10: 15, "native")
-Operator@(17: 18, ">=")
-IntLiteral@(20: 22, "123")
-Operator@(23: 23, ">")
-IntLiteral@(24: 25, "90")
-StringLiteral@(27: 31, ""foo"")
-Operator@(33: 33, "+")
-StringLiteral@(35: 39, ""bar"")
-Identifier@(41: 51, "identifier")
-Operator@(52: 52, "+")
-Identifier@(54: 57, "id2")
+Fun@[0: 3) #0, text = "fun"
+Class@[4: 9) #1, text = "class"
+Native@[10: 16) #2, text = "native"
+Operator@[17: 19) #3, text = ">="
+IntLiteral@[20: 23) #4, text = "123"
+Operator@[23: 24) #4, text = ">"
+IntLiteral@[24: 26) #4, text = "90"
+StringLiteral@[27: 32) #5, text = ""foo""
+Operator@[33: 34) #5, text = "+"
+StringLiteral@[35: 40) #5, text = ""bar""
+Identifier@[41: 51) #6, text = "identifier"
+Operator@[52: 53) #6, text = "+"
+Identifier@[54: 57) #6, text = "id2"

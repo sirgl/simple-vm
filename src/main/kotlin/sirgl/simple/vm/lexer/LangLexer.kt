@@ -61,154 +61,176 @@ interface LangLexer {
     fun tokenize(text: String): List<Lexeme>
 }
 
-// TODO
-// Very bad code :(
-// Here should be added lexer state and functions for convenience
-class LangLexerHandwrittenImpl : LangLexer {
-    override fun tokenize(text: String): List<Lexeme> {
-        var position = 0
-        val length = text.length
-        val lexemes = mutableListOf<Lexeme>()
-        var recovery = false
-        var recoveryPosition = -1
-        loop@
-        while (length > position) {
-            if (text[position].isWhitespace()) {
-                position++
-                continue
-            }
+class HandwrittenLangLexer : LangLexer {
+    override fun tokenize(text: String) = LexerState(text).tokenize()
+}
 
-            //keyword
-            for ((keyword, kind) in keywordToKind) {
-                if (testString(position, text, keyword)) {
-                    val nextPosition = keyword.length + position
-                    val lexeme = Lexeme(position, nextPosition - 1, kind, text.substring(position, nextPosition))
-                    lexemes.add(lexeme)
-                    position += keyword.length
-                    continue@loop
-                }
-            }
+/**
+ * One-off object. After tokenize() must not be used
+ */
+@Suppress("LoopToCallChain")
+private class LexerState(
+        private val text: String,
+        private val skipWhitespace: Boolean = true,
+        private var position: Int = 0,
+        private var line: Int = 0
+) {
+    private val lexemes = mutableListOf<Lexeme>()
+    private var isRecovery = false
+    private var recoveryPosition = -1
 
-            //operator
-            for (operator in operators) {
-                if (testString(position, text, operator)) {
-                    val nextPosition = operator.length + position
-                    val lexeme = Lexeme(position, nextPosition - 1, LexemeKind.Operator, text.substring(position, nextPosition))
-                    lexemes.add(lexeme)
-                    position += operator.length
-                    continue@loop
-                }
-            }
+    //TODO here actually can be useful lookahead position and list of functions, linked with it for convinience, e.g. expect
 
-            // int literal
-            var digitPosition = position
-            var char = text[digitPosition]
-            if (char.isDigit() && recovery) {
-                recovery = false
-                lexemes.add(Lexeme(recoveryPosition, position - 1, LexemeKind.Error, text.substring(recoveryPosition, position)))
-            }
-            while (char.isDigit()) {
-                digitPosition++
-                if (digitPosition == text.length) break
-                char = text[digitPosition]
-            }
-            if (digitPosition != position) {
-                val lexeme = Lexeme(position, digitPosition - 1, LexemeKind.IntLiteral, text.substring(position, digitPosition))
-                position = digitPosition
-                lexemes.add(lexeme)
-                continue@loop
-            }
-
-            // string literal
-            if (char == '\"') {
-                if(recovery) {
-                    recovery = false
-                    lexemes.add(Lexeme(recoveryPosition, position - 1, LexemeKind.Error, text.substring(recoveryPosition, position)))
-                }
-                var strPosition = position + 1
-                if (position + 1 >= text.length) {
-                    lexemes.add(Lexeme(position, position, LexemeKind.Error, "\""))
-                    break
-                }
-                while (strPosition < text.length) {
-                    char = text[strPosition]
-                    if (char == '\"') {
-                        break
-                    }
-                    if (char == '\\') {
-                        strPosition++
-                        if (strPosition >= text.length) {
-                            recovery = true
-                            recoveryPosition = strPosition
-                            position = strPosition + 1
-                            continue@loop
-                        }
-                        val escaped = text[strPosition]
-                        if (escaped == '\"' || escaped == 't') {
-                            strPosition++
-                            continue
-                        } else {
-                            recovery = true
-                            recoveryPosition = strPosition
-                            position = strPosition + 1
-                            continue@loop
-                        }
-                    } else {
-                        strPosition++
-                    }
-                }
-                if(strPosition >= text.length) {
-                    recovery = true
-                    recoveryPosition = position
-                    break@loop
-                }
-                val literalText = text.substring(position, strPosition + 1)
-                val lexeme = Lexeme(position, strPosition, LexemeKind.StringLiteral, literalText)
-                lexemes.add(lexeme)
-                position = strPosition + 1
-                if (position >= text.length) break
-                continue@loop
-            }
-
-            if (char.isLetter()) {
-                if(recovery) {
-                    recovery = false
-                    lexemes.add(Lexeme(recoveryPosition, position - 1, LexemeKind.Error, text.substring(recoveryPosition, position)))
-                }
-                var idPosition = position + 1
-                if (position + 1 >= text.length) {
-                    lexemes.add(Lexeme(position, position, LexemeKind.Error, char.toString()))
-                    break
-                }
-                while (idPosition < text.length) {
-                    char = text[idPosition]
-                    if (!char.isLetterOrDigit()) {
-                        break
-                    }
-                    idPosition++
-                }
-                val lexeme = Lexeme(position, idPosition, LexemeKind.Identifier, text.substring(position, idPosition))
-                lexemes.add(lexeme)
-                position = idPosition + 1
-                if (position >= text.length) break
-                continue@loop
-            }
-            if(!recovery) {
-                recovery = true
-                recoveryPosition = position
-                position++
-            }
+    fun tokenize(): List<Lexeme> {
+        if (text.isEmpty()) return emptyList()
+        while (!isEnd()) {
+            scanLexeme()
         }
-        if(recovery) {
-            val lexeme = Lexeme(recoveryPosition, text.length - 1, LexemeKind.Error, text.substring(position, text.length))
-            lexemes.add(lexeme)
-        }
+        addErrorWhenRecovery()
         return lexemes
     }
 
-    private fun testString(startPosition: Int, text: String, str: String): Boolean {
-        if (startPosition + str.length > text.length) return false
-        val result = text.substring(startPosition, startPosition + str.length)
-        return result == str
+    private fun scanLexeme() {
+        if (tryWhitespace()) return
+        for ((keyword, kind) in keywordToKind) {
+            if (tryWord(keyword, kind)) return
+        }
+        for (operator in operators) {
+            if (tryWord(operator, LexemeKind.Operator)) return
+        }
+        if (tryIntLiteral()) return
+        if (tryStringLiteral()) return
+        if (tryCharLiteral()) return
+        if(tryIdentifier()) return
+        if (!isRecovery) {
+            isRecovery = true
+            recoveryPosition = position
+        }
+        position++
+    }
+
+    private fun tryIntLiteral(): Boolean {
+        var current = position
+        while (!isEnd(current) && text[current].isDigit()) {
+            current++
+        }
+        if (current != position) {
+            addLexeme(current, LexemeKind.IntLiteral)
+            return true
+        }
+        return false
+    }
+
+    private fun tryStringLiteral(): Boolean {
+        var current = position
+        if (text[current] != '\"') {
+            return false
+        }
+        current++
+        while (!isEnd(current)) {
+            val ch = text[current]
+            if (ch == '\\') {
+                current++
+                if (isEnd(current) || !"\\\n\r\t\"".contains(text[current])) {
+                    activateRecovery(current)
+                    return true
+                }
+            }
+            if (ch == '\"') break
+            current++
+        }
+        if (isEnd(current) || text[current] != '\"') {
+            activateRecovery(current)
+            return true
+        }
+        addLexeme(current + 1, LexemeKind.StringLiteral)
+        return true
+    }
+
+    private fun activateRecovery(lastExcl: Int) {
+        recoveryPosition = position
+        isRecovery = true
+        position = lastExcl
+    }
+
+    private fun tryIdentifier(): Boolean {
+        var current = position
+        if (!text[current].isLetter()) return false
+        current++
+        while (!isEnd(current) && text[current].isLetterOrDigit()) {
+            current++
+        }
+        addLexeme(current, LexemeKind.Identifier)
+        return true
+    }
+
+    private fun tryCharLiteral(): Boolean {
+        var current = position
+        if (text[current] != '\'') return false
+        current++
+        if (isEnd(current)) return false
+        if (text[current] == '\\') {
+            current++
+            if (isEnd(current) || "\r\n\\\t\'".contains(text[current])) {
+                return false
+            }
+        }
+        current++
+        if (isEnd(current) || text[current] != '\'') return false
+        addLexeme(current, LexemeKind.CharLiteral)
+        return true
+    }
+
+    private fun tryWhitespace(): Boolean {
+        var current = text[position]
+        var whitespaceEnd = position
+        while (!isEnd() && current.isWhitespace()) {
+            if (current == '\n') {
+                line++
+            }
+            whitespaceEnd++
+            current = text[whitespaceEnd]
+        }
+        if (whitespaceEnd != position) {
+            if (!skipWhitespace) {
+                addLexeme(whitespaceEnd, LexemeKind.WhiteSpace)
+            } else {
+                position = whitespaceEnd
+            }
+            return true
+        }
+        return false
+    }
+
+    private fun tryWord(word: String, kind: LexemeKind): Boolean {
+        val wordLength = word.length
+        val endPosition = position + wordLength
+        if (endPosition > text.length) return false
+        val probablyWord = text.substring(position, endPosition)
+        if (probablyWord != word) return false
+        addLexeme(endPosition, kind)
+        return true
+    }
+
+    private fun isEnd(pos: Int) = pos >= text.length
+
+    private fun isEnd() = isEnd(position)
+
+    /**
+     * Add lexeme and skip position to endPosition
+     * @param endPosition exclusive
+     */
+    private fun addLexeme(endPosition: Int, kind: LexemeKind) {
+        addErrorWhenRecovery()
+        val lexemeText = text.substring(position, endPosition)
+        lexemes.add(Lexeme(position, endPosition, kind, lexemeText, line))
+        position = endPosition
+    }
+
+    private fun addErrorWhenRecovery() {
+        if (isRecovery) {
+            lexemes.add(Lexeme(recoveryPosition, position, LexemeKind.Error, text.substring(recoveryPosition, position), line))
+            isRecovery = false
+        }
     }
 }

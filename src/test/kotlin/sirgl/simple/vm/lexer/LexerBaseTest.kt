@@ -5,9 +5,9 @@ import sirgl.simple.vm.FileTestCase
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class LexerBaseTest : FileTestCase<String>() {
+open class LexerBaseTest : FileTestCase<String>() {
     override val relativePath: Path = Paths.get("lexer")
-    private val lexer = LangLexerHandwrittenImpl()
+    private val lexer = HandwrittenLangLexer()
 
     override fun applyAction(text: String): String {
         return lexer.tokenize(text).joinToString("\n")

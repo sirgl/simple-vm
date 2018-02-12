@@ -27,5 +27,9 @@ enum class LexemeKind {
 
     IntLiteral,
 
-    StringLiteral
+    StringLiteral,
+
+    CharLiteral,
+
+    WhiteSpace
 }

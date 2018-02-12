@@ -1,5 +1,5 @@
 package sirgl.simple.vm.lexer
 
-class LangLexerTest {
+class LangLexerTest : LexerBaseTest() {
 
 }

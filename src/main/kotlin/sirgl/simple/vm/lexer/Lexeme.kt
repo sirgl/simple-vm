@@ -4,9 +4,10 @@ class Lexeme(
         val startOffset: Int,
         val endOffset: Int,
         val kind: LexemeKind,
-        val text: String
+        val text: String,
+        val line: Int = -1
 ) {
     override fun toString(): String {
-        return "$kind@($startOffset: $endOffset, \"$text\")"
+        return "$kind@[$startOffset: $endOffset) #$line, text = \"$text\""
     }
 }
