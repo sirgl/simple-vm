@@ -16,7 +16,8 @@ val keywords = mutableListOf(
         "i32",
         "i8",
         "true",
-        "false"
+        "false",
+        "import"
 )
 
 val keywordToKind = mutableMapOf(
@@ -34,7 +35,9 @@ val keywordToKind = mutableMapOf(
         "i32" to LexemeKind.I32,
         "i8" to LexemeKind.I8,
         "true" to LexemeKind.True,
-        "false" to LexemeKind.False
+        "false" to LexemeKind.False,
+        "import" to LexemeKind.Return,
+        "package" to LexemeKind.Package
 )
 
 val operators = mutableListOf(
@@ -48,6 +51,15 @@ val operators = mutableListOf(
         ">=",
         ">",
         "=="
+)
+
+val punctuationToKind = mutableMapOf(
+        ";" to LexemeKind.Semicolon,
+        "." to LexemeKind.Dot,
+        "[" to LexemeKind.LBracket,
+        "]" to LexemeKind.RBracket,
+        "{" to LexemeKind.LBrace,
+        "}" to LexemeKind.RBrace
 )
 
 
@@ -79,21 +91,30 @@ private class LexerState(
     private var isRecovery = false
     private var recoveryPosition = -1
 
-    //TODO here actually can be useful lookahead position and list of functions, linked with it for convinience, e.g. expect
-
     fun tokenize(): List<Lexeme> {
-        if (text.isEmpty()) return emptyList()
+        if (text.isEmpty()) {
+            addEndLexeme()
+            return lexemes
+        }
         while (!isEnd()) {
             scanLexeme()
         }
         addErrorWhenRecovery()
+        addEndLexeme()
         return lexemes
+    }
+
+    private fun addEndLexeme() {
+        addLexeme(position, LexemeKind.EOL)
     }
 
     private fun scanLexeme() {
         if (tryWhitespace()) return
         for ((keyword, kind) in keywordToKind) {
             if (tryWord(keyword, kind)) return
+        }
+        for ((punct, kind) in punctuationToKind) {
+            if (tryWord(punct, kind)) return
         }
         for (operator in operators) {
             if (tryWord(operator, LexemeKind.Operator)) return

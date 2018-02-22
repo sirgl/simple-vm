@@ -1,6 +1,7 @@
 package sirgl.simple.vm.lexer
 
 enum class LexemeKind {
+    // Keywords
     Fun,
     While,
     Class,
@@ -16,20 +17,37 @@ enum class LexemeKind {
     I8,
     True,
     False,
+    Import,
+    Package,
 
+    // Punctuation
+    Semicolon,
+    LBrace, // {
+    RBrace, // {
+    LBracket, // [
+    RBracket, // ]
+    Dot, // .
+
+    // Identifier
     Identifier,
 
+    // Operators
     Operator,
 
+    // Comments
     Comment,
 
+    // Error
     Error,
 
+    // Literals
     IntLiteral,
-
     StringLiteral,
-
     CharLiteral,
 
-    WhiteSpace
+    // Spaces
+    WhiteSpace,
+
+    // EOL
+    EOL
 }

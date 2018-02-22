@@ -3,6 +3,7 @@ package sirgl.simple.vm.ast.visitor
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangBinaryOperator
 import sirgl.simple.vm.ast.LangExpr
+import sirgl.simple.vm.ast.LangPackageDecl
 import sirgl.simple.vm.ast.expr.*
 
 open class LangVisitor {
@@ -15,7 +16,11 @@ open class LangVisitor {
     }
 
 
+    // Top level
 
+    fun visitPackageDecl(packageDecl: LangPackageDecl) {
+        visitAstNode(packageDecl)
+    }
 
 
     // Expressions
