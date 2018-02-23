@@ -5,4 +5,5 @@ import sirgl.simple.vm.type.LangType
 interface LangExpr : AstNode {
     val promoteToType: LangType?
     val type: LangType
+    override val parent: AstNode
 }

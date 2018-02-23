@@ -1,5 +1,6 @@
 package sirgl.simple.vm.ast.impl
 
+import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangClass
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.LangPackageDecl
@@ -11,6 +12,8 @@ class LangFileImpl(
         packageDeclaration?.startOffset ?: classDecl.startOffset,
         classDecl.endOffset
 ), LangFile {
+    override val parent: AstNode? = null
+
     override fun accept(visitor: LangVisitor) {
         visitor.visitFile(this)
     }

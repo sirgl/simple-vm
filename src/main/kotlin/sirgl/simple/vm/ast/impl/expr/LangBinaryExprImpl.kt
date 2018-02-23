@@ -1,5 +1,6 @@
 package sirgl.simple.vm.ast.impl.expr
 
+import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangBinaryOperator
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.expr.LangBinaryExpr
@@ -13,6 +14,8 @@ class LangBinaryExprImpl(
         startOffset: Int,
         endOffset: Int
 ) : LangBinaryExpr, LangExprImpl(startOffset, endOffset) {
+    override lateinit var parent: AstNode
+
     override fun toString() = "BinaryExpr$rangeText(left: $left, right: $right, binOp: $opTypeBinary)"
 
     override fun accept(visitor: LangVisitor) = visitor.visitBinaryExpr(this)

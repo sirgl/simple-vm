@@ -1,3 +1,3 @@
 package sirgl.simple.vm.common
 
-val defaultSourceFileExtension = "lang"
+const val defaultSourceFileExtension = "lang"

@@ -1,5 +1,6 @@
 package sirgl.simple.vm.ast.impl.expr
 
+import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.expr.LangNullExpr
 import sirgl.simple.vm.ast.ext.rangeText
 import sirgl.simple.vm.ast.visitor.LangVisitor
@@ -10,6 +11,8 @@ class LangNullExprImpl(
         startOffset: Int,
         endOffset: Int
 ) : LangNullExpr, LangLeafExprImpl(startOffset, endOffset) {
+    override lateinit var parent: AstNode
+
     override fun toString() = "NullExpr$rangeText"
     override var type: LangType = NullType
 

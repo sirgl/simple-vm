@@ -2,6 +2,8 @@ package sirgl.simple.vm.ast
 
 interface LangBinaryOperator : AstNode {
     val typeBinary: BinaryOperatorType
+
+    override val parent: AstNode
 }
 
 enum class BinaryOperatorType(val text: String) {
