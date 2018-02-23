@@ -8,4 +8,5 @@ interface AstNode {
     val startOffset: Int
     val endOffset: Int
     fun accept(visitor: LangVisitor)
+    val debugName: String
 }

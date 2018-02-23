@@ -15,4 +15,6 @@ class LangBinaryOperatorImpl(operatorText: String, startOffset: Int, endOffset: 
     override fun accept(visitor: LangVisitor) = visitor.visitBinaryOperator(this)
 
     override val typeBinary: BinaryOperatorType = getOperatorTypeByText(operatorText)
+
+    override val debugName = "BinaryOperator"
 }

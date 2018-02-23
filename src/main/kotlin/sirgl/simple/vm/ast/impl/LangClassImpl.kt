@@ -1,6 +1,5 @@
 package sirgl.simple.vm.ast.impl
 
-import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangClass
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.LangMember
@@ -22,4 +21,6 @@ class LangClassImpl(
     override fun accept(visitor: LangVisitor) {
         visitor.visitClass(this)
     }
+
+    override val debugName = "Class"
 }

@@ -16,4 +16,6 @@ class LangBoolLiteralExprImpl(
     override fun toString() = "BoolLiteral$rangeText(value: $value)"
 
     override fun accept(visitor: LangVisitor) = visitor.visitBoolLiteralExpr(this)
+
+    override val debugName = "BoolLiteral"
 }

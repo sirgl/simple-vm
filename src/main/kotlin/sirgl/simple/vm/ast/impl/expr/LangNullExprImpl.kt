@@ -17,4 +17,6 @@ class LangNullExprImpl(
     override var type: LangType = NullType
 
     override fun accept(visitor: LangVisitor) = visitor.visitNullExpr(this)
+
+    override val debugName = "NullExpr"
 }

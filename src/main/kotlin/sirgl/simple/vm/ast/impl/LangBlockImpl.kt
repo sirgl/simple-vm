@@ -18,4 +18,6 @@ class LangBlockImpl(
     override fun accept(visitor: LangVisitor) {
         visitor.visitBlock(this)
     }
+
+    override val debugName = "Block"
 }

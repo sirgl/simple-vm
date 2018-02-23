@@ -17,4 +17,6 @@ class LangPackageDeclImpl(
     override fun accept(visitor: LangVisitor) {
         visitor.visitPackageDecl(this)
     }
+
+    override val debugName = "Package"
 }

@@ -20,4 +20,6 @@ class LangMethodImpl(
         visitor.visitMethod(this)
     }
 
+    override val debugName = "Method"
+
 }

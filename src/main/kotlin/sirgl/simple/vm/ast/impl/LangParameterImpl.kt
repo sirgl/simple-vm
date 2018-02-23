@@ -17,4 +17,6 @@ class LangParameterImpl(
     override fun accept(visitor: LangVisitor) {
         visitor.visitParameter(this)
     }
+
+    override val debugName = "Parameter"
 }

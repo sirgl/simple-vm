@@ -2,6 +2,7 @@ package sirgl.simple.vm.parser
 
 import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.impl.*
+import sirgl.simple.vm.ast.impl.stmt.LangReturnStmtImpl
 import sirgl.simple.vm.ast.impl.stmt.LangStmtImpl
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
@@ -10,20 +11,40 @@ import sirgl.simple.vm.scope.ScopeImpl
 import sirgl.simple.vm.type.*
 
 interface LangParser {
-    fun parse(lexemes: List<Lexeme>): LangFile
+    fun parse(lexemes: List<Lexeme>): ParseResult<LangFileImpl>
 
     fun parseExpr(lexemes: List<Lexeme>): LangExpr
 }
 
+class ParseResult<out T: AstNode>(
+        val ast: T?,
+        val fail: Fail? = null
+)
+
+class Fail(
+        val lexeme: Lexeme,
+        val message: String?,
+        val parseException: ParseException? = null
+) {
+    override fun toString(): String {
+        val stackTrace = buildString {
+            for (el in parseException!!.stackTrace) {
+                append("\t").append(el).append("\n")
+            }
+        }
+        return "Parser error #${lexeme.line}@[${lexeme.startOffset}, ${lexeme.endOffset}) : $message, " +
+                "but lexeme was ${lexeme.kind} with text \"${lexeme.text}\""  + "\n" + stackTrace
+    }
+}
+
 class HandwrittenLangParser : LangParser {
-    override fun parseExpr(lexemes: List<Lexeme>): LangExpr {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun parseExpr(lexemes: List<Lexeme>) = ParserState(lexemes).expr()
 
-    override fun parse(lexemes: List<Lexeme>): LangFile {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun parse(lexemes: List<Lexeme>) = try {
+        ParseResult(ParserState(lexemes).file())
+    } catch (e: ParseException) {
+        ParseResult(null, Fail(e.lexeme, e.message, e))
     }
-
 }
 
 
@@ -37,12 +58,12 @@ private class ParserState(val lexemes: List<Lexeme>) {
     private val current: Lexeme
         get() = lexemes[position]
 
-    fun parse(): LangFile = parseFile()
+    fun parse(): LangFile = file()
 
     // Utils
 
-    private fun matchThenAdvance(vararg types: LexemeKind) : Boolean {
-        val matches = match()
+    private fun matchThenAdvance(vararg types: LexemeKind): Boolean {
+        val matches = match(*types)
         if (matches) {
             advance()
         }
@@ -61,7 +82,7 @@ private class ParserState(val lexemes: List<Lexeme>) {
     }
 
     private fun expectThenAdvance(vararg types: LexemeKind): Lexeme {
-        if(!match()) {
+        if (!match(*types)) {
             val message = when {
                 types.isEmpty() -> throw IllegalStateException()
                 types.size == 1 -> "Expected ${types.first()}"
@@ -76,7 +97,7 @@ private class ParserState(val lexemes: List<Lexeme>) {
 
     // Rules
 
-    fun parseFile(): LangFileImpl {
+    fun file(): LangFileImpl {
         val packageDecl = if (match(Package)) parsePackageDecl() else null
         val cls = parseClass()
         val file = LangFileImpl(packageDecl, cls)
@@ -117,7 +138,7 @@ private class ParserState(val lexemes: List<Lexeme>) {
         return cls
     }
 
-    fun method() : LangMethodImpl {
+    fun method(): LangMethodImpl {
         val nativeLexeme = if (match(Native)) {
             advance()
         } else {
@@ -143,7 +164,7 @@ private class ParserState(val lexemes: List<Lexeme>) {
         return method
     }
 
-    fun parameters() : List<LangParameterImpl> {
+    fun parameters(): List<LangParameterImpl> {
         expectThenAdvance(LParen)
         val parameters = mutableListOf<LangParameterImpl>()
         while (!match(RParen)) {
@@ -154,14 +175,14 @@ private class ParserState(val lexemes: List<Lexeme>) {
         return parameters
     }
 
-    fun parameter() : LangParameterImpl {
+    fun parameter(): LangParameterImpl {
         val identifier = expectThenAdvance(Identifier)
         expectThenAdvance(Colon)
         val type = type()
         return LangParameterImpl(identifier.text, type, identifier, lexemes[position - 1])
     }
 
-    fun type() : LangType {
+    fun type(): LangType {
         val simpleType = when (current.kind) {
             Identifier -> ClassType(current.text)
             I32 -> I32Type
@@ -170,6 +191,7 @@ private class ParserState(val lexemes: List<Lexeme>) {
             Void -> VoidType
             else -> fail("Type expected")
         }
+        advance()
         var currentType = simpleType
         while (match(LBracket)) {
             advance()
@@ -193,6 +215,16 @@ private class ParserState(val lexemes: List<Lexeme>) {
     }
 
     fun stmt(): LangStmtImpl {
+        when (current.kind) {
+            Return -> returnStmt()
+            else -> TODO()
+        }
+        TODO()
+    }
+
+    fun returnStmt(): LangReturnStmtImpl {
+        val returnStmt = expectThenAdvance(Return)
+        if (matchThenAdvance(Semicolon)) return LangReturnStmtImpl(returnStmt, returnStmt)
         TODO()
     }
 
@@ -206,10 +238,10 @@ private class ParserState(val lexemes: List<Lexeme>) {
         return LangPackageDeclImpl(packageName, packageLexeme, semicolonLexeme)
     }
 
-    fun separatedList(entryKind: LexemeKind, separatorKind: LexemeKind) : List<Lexeme> {
+    fun separatedList(entryKind: LexemeKind, separatorKind: LexemeKind): List<Lexeme> {
         val lexemes = mutableListOf<Lexeme>()
         lexemes.add(expectThenAdvance(entryKind))
-        while (!match(separatorKind)) {
+        while (match(separatorKind)) {
             advance()
             lexemes.add(expectThenAdvance(entryKind))
         }

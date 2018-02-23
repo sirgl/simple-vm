@@ -7,4 +7,6 @@ abstract class AstNodeImpl(override val startOffset: Int, override val endOffset
     constructor(startLexeme: Lexeme, endLexeme: Lexeme) : this(startLexeme.startOffset, endLexeme.endOffset)
 
     override lateinit var children: List<AstNode>
+
+    override fun toString() = "$debugName@[$startOffset, $endOffset)"
 }

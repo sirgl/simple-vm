@@ -14,4 +14,6 @@ class LangThisExprImpl(
     override fun toString() = "ThisExpr$rangeText"
 
     override fun accept(visitor: LangVisitor) = visitor.visitThisExpr(this)
+
+    override val debugName = "ThisExpr"
 }

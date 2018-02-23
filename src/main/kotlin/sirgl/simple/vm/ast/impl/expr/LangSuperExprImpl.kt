@@ -15,4 +15,6 @@ class LangSuperExprImpl(
     override fun toString() = "SuperExpr$rangeText"
 
     override fun accept(visitor: LangVisitor) = visitor.visitSuperExpr(this)
+
+    override val debugName = "SuperExpr"
 }

@@ -19,4 +19,6 @@ class LangBinaryExprImpl(
     override fun toString() = "BinaryExpr$rangeText(left: $left, right: $right, binOp: $opTypeBinary)"
 
     override fun accept(visitor: LangVisitor) = visitor.visitBinaryExpr(this)
+
+    override val debugName = "BinaryExpr"
 }

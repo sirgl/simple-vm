@@ -18,4 +18,5 @@ class LangFieldImpl(
         visitor.visitField(this)
     }
 
+    override val debugName = "Field"
 }

@@ -17,4 +17,6 @@ class LangFileImpl(
     override fun accept(visitor: LangVisitor) {
         visitor.visitFile(this)
     }
+
+    override val debugName = "File"
 }

@@ -15,4 +15,6 @@ class LangIntLiteralExprImpl(
     override fun toString() = "IntLiteral$rangeText(value: $value)"
 
     override fun accept(visitor: LangVisitor) = visitor.visitIntLiteralExpr(this)
+
+    override val debugName = "IntLiteral"
 }
