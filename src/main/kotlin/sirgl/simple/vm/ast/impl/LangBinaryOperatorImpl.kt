@@ -17,4 +17,6 @@ class LangBinaryOperatorImpl(operatorText: String, startOffset: Int, endOffset: 
     override val typeBinary: BinaryOperatorType = getOperatorTypeByText(operatorText)
 
     override val debugName = "BinaryOperator"
+
+    override val children = emptyList<AstNode>()
 }

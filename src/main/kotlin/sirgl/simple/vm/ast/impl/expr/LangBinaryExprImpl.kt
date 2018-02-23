@@ -21,4 +21,7 @@ class LangBinaryExprImpl(
     override fun accept(visitor: LangVisitor) = visitor.visitBinaryExpr(this)
 
     override val debugName = "BinaryExpr"
+
+    override val children = listOf(left, right)
+
 }

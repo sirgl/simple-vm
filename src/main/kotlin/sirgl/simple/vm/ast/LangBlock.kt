@@ -4,5 +4,5 @@ import sirgl.simple.vm.scope.Scope
 
 interface LangBlock : AstNode, Scope {
     override val parent: AstNode
-    val statements: Array<LangStmt>
+    val stmts: List<LangStmt>
 }

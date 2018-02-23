@@ -22,4 +22,5 @@ class LangMethodImpl(
 
     override val debugName = "Method"
 
+    override val children = listOf(*parameters, block)
 }

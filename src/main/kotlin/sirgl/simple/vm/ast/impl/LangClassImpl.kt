@@ -1,5 +1,6 @@
 package sirgl.simple.vm.ast.impl
 
+import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangClass
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.LangMember
@@ -23,4 +24,7 @@ class LangClassImpl(
     }
 
     override val debugName = "Class"
+
+    override val children: List<AstNode> = members
+
 }

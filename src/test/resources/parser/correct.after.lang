@@ -1,1 +1,6 @@
-package p;
+File@[0, 53)
+  Package@[0, 10)
+  Class@[12, 53)
+    Method@[26, 51)
+      Parameter@[34, 41)
+      Block@[43, 51)

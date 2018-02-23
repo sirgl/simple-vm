@@ -15,10 +15,14 @@ fun AstNode.prettyText(): String {
 private fun AstNode.prettyText(level: Int, sb: StringBuilder) {
     addLevelIndent(level, sb)
     sb.append(toString())
+    for (child in children) {
+        sb.append('\n')
+        child.prettyText(level + 1, sb)
+    }
 }
 
 private fun addLevelIndent(level: Int, sb: StringBuilder) {
-    for (i in (0..level)) {
+    for (i in (0 until level)) {
         sb.append("  ")
     }
 }

@@ -9,7 +9,7 @@ class LangIntLiteralExprImpl(
         override val value: Int,
         startOffset: Int,
         endOffset: Int
-) : LangIntLiteralExpr, LangExprImpl(startOffset, endOffset) {
+) : LangIntLiteralExpr, LangLeafExprImpl(startOffset, endOffset) {
     override lateinit var parent: AstNode
 
     override fun toString() = "IntLiteral$rangeText(value: $value)"

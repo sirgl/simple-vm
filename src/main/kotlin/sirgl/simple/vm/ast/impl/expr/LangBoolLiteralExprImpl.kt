@@ -10,7 +10,7 @@ class LangBoolLiteralExprImpl(
         override val value: Boolean,
         startOffset: Int,
         endOffset: Int
-) : LangBoolLiteralExpr, LangExprImpl(startOffset, endOffset) {
+) : LangBoolLiteralExpr, LangLeafExprImpl(startOffset, endOffset) {
     override lateinit var parent: AstNode
 
     override fun toString() = "BoolLiteral$rangeText(value: $value)"

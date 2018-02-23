@@ -1,5 +1,6 @@
 package sirgl.simple.vm.ast.impl
 
+import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangMethod
 import sirgl.simple.vm.ast.LangParameter
 import sirgl.simple.vm.ast.visitor.LangVisitor
@@ -19,4 +20,6 @@ class LangParameterImpl(
     }
 
     override val debugName = "Parameter"
+
+    override val children = emptyList<AstNode>()
 }

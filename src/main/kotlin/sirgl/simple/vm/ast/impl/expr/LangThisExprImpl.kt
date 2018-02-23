@@ -8,7 +8,7 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 class LangThisExprImpl(
         startOffset: Int,
         endOffset: Int
-) : LangThisExpr, LangExprImpl(startOffset, endOffset) {
+) : LangThisExpr, LangLeafExprImpl(startOffset, endOffset) {
     override lateinit var parent: AstNode
 
     override fun toString() = "ThisExpr$rangeText"
@@ -16,4 +16,6 @@ class LangThisExprImpl(
     override fun accept(visitor: LangVisitor) = visitor.visitThisExpr(this)
 
     override val debugName = "ThisExpr"
+
+
 }

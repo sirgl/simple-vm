@@ -122,7 +122,7 @@ private class ParserState(val lexemes: List<Lexeme>) {
             val member: LangMember = when (current.kind) {
                 Fun, Native -> method()
                 Var -> field()
-                RParen -> break@loop
+                RBrace -> break@loop
                 else -> fail("Class member expected")
             }
             members.add(member)
@@ -203,23 +203,25 @@ private class ParserState(val lexemes: List<Lexeme>) {
 
     fun block(): LangBlockImpl {
         val lBrace = expectThenAdvance(LBrace)
+        val stmts = mutableListOf<LangStmtImpl>()
         while (!match(RBrace)) {
-
+            stmts.add(stmt())
         }
         val rBrace = advance()
-        TODO()
+        val block = LangBlockImpl(ScopeImpl(), stmts, lBrace, rBrace)
+        for (stmt in stmts) {
+            stmt.parent = block
+        }
+        return block
     }
 
     fun field(): LangFieldImpl {
         TODO()
     }
 
-    fun stmt(): LangStmtImpl {
-        when (current.kind) {
-            Return -> returnStmt()
-            else -> TODO()
-        }
-        TODO()
+    fun stmt() = when (current.kind) {
+        Return -> returnStmt()
+        else -> TODO()
     }
 
     fun returnStmt(): LangReturnStmtImpl {

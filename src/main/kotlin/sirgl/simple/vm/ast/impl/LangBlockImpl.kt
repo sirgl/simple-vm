@@ -9,7 +9,7 @@ import sirgl.simple.vm.scope.Scope
 
 class LangBlockImpl(
         val scope: Scope,
-        override val statements: Array<LangStmt>,
+        override val stmts: List<LangStmt>,
         val lBrace: Lexeme,
         val rBrace: Lexeme
 ) : AstNodeImpl(lBrace.startOffset, rBrace.endOffset), LangBlock, Scope by scope {
@@ -20,4 +20,6 @@ class LangBlockImpl(
     }
 
     override val debugName = "Block"
+
+    override val children: List<AstNode> = stmts
 }

@@ -10,4 +10,11 @@ class LangReturnStmtImpl(
         override val expression: LangExpr? = null
 ) : LangStmtImpl(startLexeme, endLexeme), LangReturnStmt {
     override val debugName = "ReturnStmt"
+
+    override val children = makeChildren()
+
+    private fun makeChildren() = when (expression) {
+        null -> emptyList()
+        else -> listOf(expression)
+    }
 }

@@ -19,4 +19,10 @@ class LangFileImpl(
     }
 
     override val debugName = "File"
+
+    override val children: List<AstNode> = makeChildren()
+    private fun makeChildren() = when {
+        packageDeclaration != null -> listOf(packageDeclaration, classDecl)
+        else -> listOf(classDecl)
+    }
 }

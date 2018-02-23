@@ -1,5 +1,6 @@
 package sirgl.simple.vm.ast.impl
 
+import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.LangPackageDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
@@ -19,4 +20,6 @@ class LangPackageDeclImpl(
     }
 
     override val debugName = "Package"
+
+    override val children = emptyList<AstNode>()
 }
