@@ -27,6 +27,11 @@ class Fail(
         val parseException: ParseException? = null
 ) {
     override fun toString(): String {
+        return "Parser error #${lexeme.line}@[${lexeme.startOffset}, ${lexeme.endOffset}) : $message, " +
+                "but lexeme was ${lexeme.kind} with text \"${lexeme.text}\""
+    }
+
+    fun toStringWithStackTrace(): String {
         val stackTrace = buildString {
             for (el in parseException!!.stackTrace) {
                 append("\t").append(el).append("\n")
@@ -216,7 +221,20 @@ private class ParserState(val lexemes: List<Lexeme>) {
     }
 
     fun field(): LangFieldImpl {
-        TODO()
+        val varLexeme = expectThenAdvance(Var)
+        val identifier = expectThenAdvance(Identifier)
+        expectThenAdvance(Colon)
+        val type = type()
+        val typeLast = lexemes[position - 1]
+        val initializer = if (current.text == "=") {
+            advance()
+            expr()
+        } else {
+            expectThenAdvance(Semicolon)
+            null
+        }
+        val last = if (initializer == null) typeLast else current
+        return LangFieldImpl(identifier.text, type, varLexeme, last, initializer)
     }
 
     fun stmt() = when (current.kind) {

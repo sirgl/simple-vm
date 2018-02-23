@@ -11,7 +11,7 @@ abstract class ParserBaseTest : FileTestCase<String>() {
     override fun applyAction(text: String): String {
         val parseResult = parser.parse(lexer.tokenize(text))
         return when {
-            parseResult.fail != null -> parseResult.fail.toString()
+            parseResult.fail != null -> parseResult.fail!!.toString()
             else -> parseResult.ast!!.prettyText()
         }
     }

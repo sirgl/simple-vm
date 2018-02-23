@@ -12,7 +12,7 @@ class LangParameterImpl(
         type: LangType,
         startLexeme: Lexeme,
         endLexeme: Lexeme
-) : LangVarDeclImpl(name, type, startLexeme, endLexeme), LangParameter {
+) : LangVarDeclImpl(name, type, startLexeme, endLexeme, null), LangParameter {
     override lateinit var parent: LangMethod
 
     override fun accept(visitor: LangVisitor) {
