@@ -1,3 +1,3 @@
 package sirgl.simple.vm.type
 
-class I8Type : PrimitiveType("i8")
+object I8Type : PrimitiveType("i8")

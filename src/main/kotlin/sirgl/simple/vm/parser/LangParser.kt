@@ -1,12 +1,13 @@
 package sirgl.simple.vm.parser
 
-import sirgl.simple.vm.ast.LangExpr
-import sirgl.simple.vm.ast.LangFile
-import sirgl.simple.vm.ast.LangPackageDecl
-import sirgl.simple.vm.ast.impl.LangPackageDeclImpl
+import sirgl.simple.vm.ast.*
+import sirgl.simple.vm.ast.impl.*
+import sirgl.simple.vm.ast.impl.stmt.LangStmtImpl
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
+import sirgl.simple.vm.scope.ScopeImpl
+import sirgl.simple.vm.type.*
 
 interface LangParser {
     fun parse(lexemes: List<Lexeme>): LangFile
@@ -36,7 +37,7 @@ private class ParserState(val lexemes: List<Lexeme>) {
     private val current: Lexeme
         get() = lexemes[position]
 
-    fun parse(): LangFile = TODO()
+    fun parse(): LangFile = parseFile()
 
     // Utils
 
@@ -71,18 +72,133 @@ private class ParserState(val lexemes: List<Lexeme>) {
         return advance()
     }
 
-    private fun fail(message: String): Unit = throw ParseException(current, message)
+    private fun fail(message: String): Nothing = throw ParseException(current, message)
 
     // Rules
 
-    fun parseFile(): LangFile {
-        val packageDecl = parsePackageDecl()
+    fun parseFile(): LangFileImpl {
+        val packageDecl = if (match(Package)) parsePackageDecl() else null
+        val cls = parseClass()
+        val file = LangFileImpl(packageDecl, cls)
+        packageDecl?.parent = file
+        cls.parent = file
+        return file
+    }
+
+    fun parseClass(): LangClassImpl {
+        val clsNode = expectThenAdvance(Class)
+        val clsNameNode = expectThenAdvance(Identifier)
+        val parentClsName = if (match(Colon)) {
+            advance()
+            expectThenAdvance(Identifier)
+        } else {
+            null
+        }
+        expectThenAdvance(LBrace)
+        val members = mutableListOf<LangMember>()
+        loop@
+        while (true) {
+            val member: LangMember = when (current.kind) {
+                Fun, Native -> method()
+                Var -> field()
+                RParen -> break@loop
+                else -> fail("Class member expected")
+            }
+            members.add(member)
+        }
+        val rBrace = expectThenAdvance(RBrace)
+        val cls = LangClassImpl(ScopeImpl(), clsNameNode.text, members, clsNode, rBrace, parentClsName?.text)
+        for (member in members) {
+            when (member) {
+                is LangMethodImpl -> member.parent = cls
+                is LangFieldImpl -> member.parent = cls
+            }
+        }
+        return cls
+    }
+
+    fun method() : LangMethodImpl {
+        val nativeLexeme = if (match(Native)) {
+            advance()
+        } else {
+            null
+        }
+        val funLexeme = expectThenAdvance(Fun)
+        val methodNameLexeme = expectThenAdvance(Identifier)
+        val parameters = parameters()
+        val block = block()
+        val method = LangMethodImpl(
+                ScopeImpl(),
+                methodNameLexeme.text,
+                parameters.toTypedArray(),
+                block,
+                nativeLexeme ?: funLexeme,
+                block.rBrace,
+                nativeLexeme != null
+        )
+        for (parameter in parameters) {
+            parameter.parent = method
+        }
+        block.parent = method
+        return method
+    }
+
+    fun parameters() : List<LangParameterImpl> {
+        expectThenAdvance(LParen)
+        val parameters = mutableListOf<LangParameterImpl>()
+        while (!match(RParen)) {
+            parameters.add(parameter())
+            matchThenAdvance(Comma)
+        }
+        advance()
+        return parameters
+    }
+
+    fun parameter() : LangParameterImpl {
+        val identifier = expectThenAdvance(Identifier)
+        expectThenAdvance(Colon)
+        val type = type()
+        return LangParameterImpl(identifier.text, type, identifier, lexemes[position - 1])
+    }
+
+    fun type() : LangType {
+        val simpleType = when (current.kind) {
+            Identifier -> ClassType(current.text)
+            I32 -> I32Type
+            I8 -> I8Type
+            Bool -> BoolType
+            Void -> VoidType
+            else -> fail("Type expected")
+        }
+        var currentType = simpleType
+        while (match(LBracket)) {
+            advance()
+            expectThenAdvance(RBracket)
+            currentType = ArrayType(currentType)
+        }
+        return currentType
+    }
+
+    fun block(): LangBlockImpl {
+        val lBrace = expectThenAdvance(LBrace)
+        while (!match(RBrace)) {
+
+        }
+        val rBrace = advance()
         TODO()
     }
 
-    fun parseExpr(): LangExpr = TODO()
+    fun field(): LangFieldImpl {
+        TODO()
+    }
 
-    fun parsePackageDecl(): LangPackageDecl {
+    fun stmt(): LangStmtImpl {
+        TODO()
+    }
+
+    fun expr(): LangExpr = TODO()
+
+    fun parsePackageDecl(): LangPackageDeclImpl {
         val packageLexeme = expectThenAdvance(Package)
 
         val packageName = separatedList(Identifier, Dot).joinToString(".") { it.text }

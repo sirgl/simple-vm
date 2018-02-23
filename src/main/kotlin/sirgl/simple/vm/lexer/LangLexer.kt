@@ -17,7 +17,8 @@ val keywords = mutableListOf(
         "i8",
         "true",
         "false",
-        "import"
+        "import",
+        "void"
 )
 
 val keywordToKind = mutableMapOf(
@@ -37,7 +38,8 @@ val keywordToKind = mutableMapOf(
         "true" to LexemeKind.True,
         "false" to LexemeKind.False,
         "import" to LexemeKind.Return,
-        "package" to LexemeKind.Package
+        "package" to LexemeKind.Package,
+        "void" to LexemeKind.Void
 )
 
 val operators = mutableListOf(
@@ -55,9 +57,13 @@ val operators = mutableListOf(
 
 val punctuationToKind = mutableMapOf(
         ";" to LexemeKind.Semicolon,
+        ":" to LexemeKind.Colon,
         "." to LexemeKind.Dot,
+        "," to LexemeKind.Comma,
         "[" to LexemeKind.LBracket,
         "]" to LexemeKind.RBracket,
+        "(" to LexemeKind.LParen,
+        ")" to LexemeKind.RParen,
         "{" to LexemeKind.LBrace,
         "}" to LexemeKind.RBrace
 )

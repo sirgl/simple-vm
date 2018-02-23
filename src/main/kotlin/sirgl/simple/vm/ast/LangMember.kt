@@ -1,6 +1,8 @@
 package sirgl.simple.vm.ast
 
+import sirgl.simple.vm.ast.ext.getParentOfClass
+
 interface LangMember : AstNode {
-    override val parent: LangClass
     val enclosingClass: LangClass
+        get() = getParentOfClass()
 }

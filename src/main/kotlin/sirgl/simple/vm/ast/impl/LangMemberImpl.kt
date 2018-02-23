@@ -1,0 +1,13 @@
+package sirgl.simple.vm.ast.impl
+
+import sirgl.simple.vm.ast.AstNode
+import sirgl.simple.vm.ast.LangClass
+import sirgl.simple.vm.ast.LangMember
+import sirgl.simple.vm.lexer.Lexeme
+
+abstract class LangMemberImpl(startLexeme: Lexeme, endLexeme: Lexeme) :
+        AstNodeImpl(startLexeme.startOffset, endLexeme.endOffset), LangMember {
+    override lateinit var parent: LangClass
+
+    override lateinit var enclosingClass: LangClass
+}

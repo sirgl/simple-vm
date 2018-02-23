@@ -6,27 +6,34 @@ enum class LexemeKind {
     While,
     Class,
     Var,
-    Bool,
     Native,
     Continue,
     Break,
     Return,
     Try,
     Catch,
-    I32,
-    I8,
     True,
     False,
     Import,
     Package,
 
+    // Types
+    I32,
+    I8,
+    Bool,
+    Void,
+
     // Punctuation
-    Semicolon,
+    Semicolon, // ;
+    LParen, // (
+    RParen, // )
     LBrace, // {
-    RBrace, // {
+    RBrace, // }
     LBracket, // [
     RBracket, // ]
     Dot, // .
+    Colon, // :
+    Comma, // ,
 
     // Identifier
     Identifier,

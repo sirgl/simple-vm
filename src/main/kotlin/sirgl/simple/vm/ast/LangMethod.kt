@@ -6,4 +6,5 @@ interface LangMethod : LangMember, Scope {
     val name: String
     val parameters: Array<LangParameter>
     val block: LangBlock
+    val isNative: Boolean
 }
