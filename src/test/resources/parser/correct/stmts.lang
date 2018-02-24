@@ -5,5 +5,14 @@ class A {
         return;
         continue;
         return !true;
+        if (true) {
+            return 0;
+        } else {
+            return 1;
+        }
+        // Without else:
+        if(a < 12) {
+            continue;
+        }
     }
 }

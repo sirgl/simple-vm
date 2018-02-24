@@ -22,10 +22,21 @@ abstract class FileBasedTestCaseBase<T> {
                 .map { Case(it, applyAction(Files.newBufferedReader(it).readText())) }
                 .map { case ->
                     DynamicTest.dynamicTest(case.path.fileName.toString().substringBeforeLast('.')) {
-                        val expectedText = Files.newBufferedReader(findResultPath(case.path)).readText()
-                        check(case.valueAfter, expectedText)
+                        check(case.path, case.valueAfter)
                     }
                 }
+    }
+
+    private fun check(beforePath: Path, actualValue: T) {
+        val expectedText = Files.newBufferedReader(findResultPath(beforePath)).readText()
+        check(actualValue, expectedText)
+    }
+
+    fun runSingle(name: String) {
+        val beforePath = directory.resolve(name + "." + defaultSourceFileExtension)
+        val text = beforePath.toFile().readText()
+        val actualResult = applyAction(text)
+        check(beforePath, actualResult)
     }
 
     fun filterBeforeName(name: String) : Boolean {
@@ -36,7 +47,7 @@ abstract class FileBasedTestCaseBase<T> {
         return fileNameBefore + ".after"
     }
 
-    fun check(actual: T, expectedText: String) {
+    open fun check(actual: T, expectedText: String) {
         Assert.assertEquals("Different content in file.", expectedText, actual)
     }
 

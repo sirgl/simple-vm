@@ -5,10 +5,7 @@ import sirgl.simple.vm.ast.expr.PrefixOperatorType
 import sirgl.simple.vm.ast.ext.parseLiteral
 import sirgl.simple.vm.ast.impl.*
 import sirgl.simple.vm.ast.impl.expr.*
-import sirgl.simple.vm.ast.impl.stmt.LangContinueStmtImpl
-import sirgl.simple.vm.ast.impl.stmt.LangExprStmtImpl
-import sirgl.simple.vm.ast.impl.stmt.LangReturnStmtImpl
-import sirgl.simple.vm.ast.impl.stmt.LangStmtImpl
+import sirgl.simple.vm.ast.impl.stmt.*
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
@@ -21,7 +18,7 @@ interface LangParser {
     fun parseExpr(lexemes: List<Lexeme>): LangExpr
 }
 
-class ParseResult<out T: AstNode>(
+class ParseResult<out T : AstNode>(
         val ast: T?,
         val fail: Fail? = null
 )
@@ -43,7 +40,7 @@ class Fail(
             }
         }
         return "Parser error #${lexeme.line}@[${lexeme.startOffset}, ${lexeme.endOffset}) : $message, " +
-                "but lexeme was ${lexeme.kind} with text \"${lexeme.text}\""  + "\n" + stackTrace
+                "but lexeme was ${lexeme.kind} with text \"${lexeme.text}\"" + "\n" + stackTrace
     }
 }
 
@@ -93,7 +90,7 @@ private val binOpInfo = arrayOf(
         InfixOperatorInfo(OpOrOr, 8, false)
 )
 
-private val binOps = binOpInfo.associateBy ({ it.opKind }) { BinaryExprParser(it.precedence, it.isLeft) }
+private val binOps = binOpInfo.associateBy({ it.opKind }) { BinaryExprParser(it.precedence, it.isLeft) }
 
 // Precedence for infix operators
 private val precedenceTable = mapOf(
@@ -293,7 +290,7 @@ private class ParserState(
         while (!match(RBrace)) {
             stmts.add(stmt())
         }
-        val rBrace = advance()
+        val rBrace = expectThenAdvance(RBrace)
         val block = LangBlockImpl(ScopeImpl(), stmts, lBrace, rBrace)
         for (stmt in stmts) {
             stmt.parent = block
@@ -320,10 +317,11 @@ private class ParserState(
     fun stmt() = when (current.kind) {
         Return -> returnStmt()
         Continue -> continueStmt()
+        If -> ifStmt()
         else -> exprStmt()
     }
 
-    fun exprStmt() : LangExprStmtImpl {
+    fun exprStmt(): LangExprStmtImpl {
         val expr = expr()
         val semi = expectThenAdvance(Semicolon)
         return LangExprStmtImpl(expr.startOffset, semi.endOffset, expr)
@@ -343,8 +341,27 @@ private class ParserState(
         return LangContinueStmtImpl(returnStmt, returnStmt)
     }
 
+    fun ifStmt(): LangIfStmtImpl {
+        val startLexeme = expectThenAdvance(If)
+        expectThenAdvance(LParen)
+        val condition = expr()
+        expectThenAdvance(RParen)
+        val thenBlock = block()
+        val elseBlock = if (match(Else)) {
+            advance()
+            block()
+        } else {
+            null
+        }
+        val ifStmt = LangIfStmtImpl(startLexeme, previousLexeme, condition, thenBlock, elseBlock)
+        condition.setParent(ifStmt)
+        thenBlock.parent = ifStmt
+        elseBlock?.parent = ifStmt
+        return ifStmt
+    }
+
     // won't parse expr with lower value of the precedence
-    fun expr(precedence: Int = 10): LangExpr  {
+    fun expr(precedence: Int = 10): LangExprImpl {
         val parser = prefixParsers[current.kind] ?: fail("Expected prefix expression here")
         var left = parser.parse(this, current)
 
@@ -381,13 +398,20 @@ private class ParserState(
     }
 }
 
+private fun LangExpr.setParent(node: AstNode) {
+    when (this) {
+        is LangBinaryExprImpl -> parent = node
+        is LangLeafExprImpl -> parent = node
+    }
+}
+
 
 /**
  * Expected, that type of parser can be determined only by type of first lexeme
  * parse invoked only when it is clear that this parser matches
  */
 private interface PrefixParser {
-    fun parse(parser: ParserState, lexeme: Lexeme) : LangExpr
+    fun parse(parser: ParserState, lexeme: Lexeme): LangExprImpl
 }
 
 private class IntLiteralParser : PrefixParser {
@@ -431,14 +455,14 @@ private class BoolParser : PrefixParser {
 
 private interface InfixExprParser {
     val precedence: Int
-    fun parse(parser: ParserState, left: LangExpr, lexeme: Lexeme): LangExpr
+    fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl
 }
 
 private class BinaryExprParser(
         override val precedence: Int,
         val isLeft: Boolean
 ) : InfixExprParser {
-    override fun parse(parser: ParserState, left: LangExpr, lexeme: Lexeme): LangExpr {
+    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
         parser.advance()
         val binOp = LangBinaryOperatorImpl(lexeme.text, lexeme.startOffset, lexeme.endOffset)
         val right = parser.expr(precedence + if (isLeft) 0 else 1)

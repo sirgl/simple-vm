@@ -1,0 +1,14 @@
+File@[0, 143)
+  Package@[0, 10)
+  Class@[12, 143)
+    Method@[26, 141)
+      Parameter@[34, 41)
+      Block@[43, 141)
+        ReturnStmt@[53, 135)
+          BoolLiteral@[57, 61) value: true
+          Block@[63, 96)
+            ReturnStmt@[77, 86)
+              IntLiteral@[84, 85) value: 0
+          Block@[102, 135)
+            ReturnStmt@[116, 125)
+              IntLiteral@[123, 124) value: 1

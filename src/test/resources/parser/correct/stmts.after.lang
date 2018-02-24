@@ -1,11 +1,26 @@
-File@[0, 108)
+File@[0, 277)
   Package@[0, 10)
-  Class@[12, 108)
-    Method@[26, 106)
+  Class@[12, 277)
+    Method@[26, 275)
       Parameter@[34, 41)
-      Block@[43, 106)
+      Block@[43, 275)
         ReturnStmt@[53, 59)
         ContinueStmt@[69, 77)
         ReturnStmt@[87, 100)
           PrefixExpr@[94, 99) op: !
             BoolLiteral@[95, 99) value: true
+        ReturnStmt@[109, 191)
+          BoolLiteral@[113, 117) value: true
+          Block@[119, 152)
+            ReturnStmt@[133, 142)
+              IntLiteral@[140, 141) value: 0
+          Block@[158, 191)
+            ReturnStmt@[172, 181)
+              IntLiteral@[179, 180) value: 1
+        ReturnStmt@[225, 269)
+          BinaryExpr@[228, 234)
+            ReferenceExpr@[228, 229) name: a
+            BinaryOperator@[230, 231) type: <
+            IntLiteral@[232, 234) value: 12
+          Block@[236, 269)
+            ContinueStmt@[250, 258)

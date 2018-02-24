@@ -16,6 +16,8 @@ enum class LexemeKind {
     False,
     Import,
     Package,
+    If,
+    Else,
 
     // Types
     I32,

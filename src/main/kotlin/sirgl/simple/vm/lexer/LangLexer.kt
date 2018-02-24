@@ -20,7 +20,9 @@ val keywords = mutableListOf(
         "true",
         "false",
         "import",
-        "void"
+        "void",
+        "if",
+        "else"
 )
 
 val keywordToKind = mutableMapOf(
@@ -41,7 +43,9 @@ val keywordToKind = mutableMapOf(
         "false" to False,
         "import" to Return,
         "package" to Package,
-        "void" to Void
+        "void" to Void,
+        "if" to If,
+        "else" to Else
 )
 
 val operatorToKind = mutableMapOf(
