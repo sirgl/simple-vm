@@ -119,6 +119,8 @@ private class LexerState(
 
     private fun scanLexeme() {
         if (tryWhitespace()) return
+        if (tryEolComment()) return
+        // Next three loops can be eliminated by DFA
         for ((keyword, kind) in keywordToKind) {
             if (tryWord(keyword, kind)) return
         }
@@ -131,7 +133,7 @@ private class LexerState(
         if (tryIntLiteral()) return
         if (tryStringLiteral()) return
         if (tryCharLiteral()) return
-        if(tryIdentifier()) return
+        if (tryIdentifier()) return
         if (!isRecovery) {
             isRecovery = true
             recoveryPosition = position
@@ -210,6 +212,24 @@ private class LexerState(
         addLexeme(current, CharLiteral)
         return true
     }
+
+    private fun tryEolComment(): Boolean {
+        var current = position
+        if (text[current] != '/') return false
+        current++
+        if (isEnd(current) || text[current] != '/') return false
+        current++
+        while (true) {
+            if (isEnd(current) || text[current] == '\n') {
+                addLexeme(current, EolComment)
+                return true
+            }
+            current++
+        }
+    }
+
+//    private fun tryCStyleComment() : Boolean {
+//}
 
     private fun tryWhitespace(): Boolean {
         var current = text[position]

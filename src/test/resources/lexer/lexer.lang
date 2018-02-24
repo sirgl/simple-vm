@@ -8,3 +8,5 @@ identifier + id2
 .
 []
 {foo }
+12 + 1// foo bar
+44

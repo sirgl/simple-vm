@@ -52,7 +52,8 @@ enum class LexemeKind {
     OpEqEq,
 
     // Comments
-    Comment,
+    EolComment,
+    CStyleComment,
 
     // Error
     Error,
