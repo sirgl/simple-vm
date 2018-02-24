@@ -140,7 +140,7 @@ private class ParserState(
         private val infixParsers: Map<LexemeKind, InfixExprParser>
 ) {
     private var position = 0
-    private val current: Lexeme
+    val current: Lexeme
         get() = lexemes[position]
 
     fun parse(): LangFile = file()
@@ -488,7 +488,14 @@ private class CharLiteralParser : PrefixParser {
 private class ReferenceExprParser : PrefixParser {
     override fun parse(parser: ParserState, lexeme: Lexeme): LangReferenceExprImpl {
         parser.advance()
-        return LangReferenceExprImpl(lexeme, lexeme.text)
+        val qualifiedExpr = if (parser.match(Dot)) {
+            parser.advance()
+            parser.expect(Identifier)
+            parse(parser, parser.current)
+        } else {
+            null
+        }
+        return LangReferenceExprImpl(lexeme, lexeme.text, qualifiedExpr)
     }
 }
 
@@ -536,3 +543,15 @@ private class AssignExprParser : InfixExprParser {
         return LangAssignExprImpl(left.startOffset, right.endOffset, left, right)
     }
 }
+
+//private class DotExprParser : InfixExprParser {
+//    override val precedence = 1
+//
+//    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
+//        parser.advance()
+//        val nameLexeme = parser.expectThenAdvance(Identifier)
+//        val right = parser.expr(precedence)
+//        return LangReferenceExprImpl(nameLexeme, nameLexeme.text, right)
+//    }
+//
+//}

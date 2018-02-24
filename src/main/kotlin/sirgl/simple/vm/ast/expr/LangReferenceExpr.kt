@@ -4,4 +4,5 @@ import sirgl.simple.vm.ast.LangExpr
 
 interface LangReferenceExpr : LangExpr {
     val name: String
+    val qualifier: LangExpr?
 }

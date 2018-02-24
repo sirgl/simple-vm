@@ -1,9 +1,9 @@
-File@[0, 160)
+File@[0, 199)
   Package@[0, 10)
-  Class@[12, 160)
-    Method@[26, 158)
+  Class@[12, 199)
+    Method@[26, 197)
       Parameter@[34, 41)
-      Block@[43, 158)
+      Block@[43, 197)
         ExprStmt@[53, 63)
           BinaryExpr@[53, 62)
             IntLiteral@[53, 54) value: 1
@@ -31,3 +31,9 @@ File@[0, 160)
               BinaryExpr@[134, 141)
                 ReferenceExpr@[134, 135) name: z
                 IntLiteral@[138, 141) value: 100
+        ExprStmt@[161, 178)
+          BinaryExpr@[161, 177)
+            ReferenceExpr@[161, 172) name: foo
+              ReferenceExpr@[165, 172) name: bar
+                ReferenceExpr@[169, 172) name: baz
+            IntLiteral@[175, 177) value: 12
