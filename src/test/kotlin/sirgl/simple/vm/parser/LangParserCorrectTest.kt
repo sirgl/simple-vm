@@ -9,9 +9,9 @@ class LangParserCorrectTest : ParserBaseTest() {
     override val failExpected = false
     override val relativePath: Path = Paths.get("parser/correct")
 
-    @TestFactory
-    fun runTests() = getAllTests()
-
-    @Test
-    fun testExperiment() = runSingle("test")
+    @Test fun testClass() = runSingle("class")
+    @Test fun testExpr() = runSingle("expr")
+    @Test fun testField() = runSingle("field")
+    @Test fun testStmt() = runSingle("stmts")
+    @Test fun testTry() = runSingle("try")
 }

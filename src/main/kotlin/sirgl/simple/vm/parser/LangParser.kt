@@ -1,6 +1,9 @@
 package sirgl.simple.vm.parser
 
-import sirgl.simple.vm.ast.*
+import sirgl.simple.vm.ast.AstNode
+import sirgl.simple.vm.ast.LangExpr
+import sirgl.simple.vm.ast.LangFile
+import sirgl.simple.vm.ast.LangMember
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
 import sirgl.simple.vm.ast.ext.parseLiteral
 import sirgl.simple.vm.ast.impl.*
@@ -161,11 +164,11 @@ private class ParserState(
     }
 
     fun expectThenAdvance(vararg types: LexemeKind): Lexeme {
-        expect(types)
+        expect(*types)
         return advance()
     }
 
-    fun expect(types: Array<out LexemeKind>) {
+    fun expect(vararg types: LexemeKind) {
         if (!match(*types)) {
             val message = when {
                 types.isEmpty() -> throw IllegalStateException()
@@ -318,6 +321,7 @@ private class ParserState(
         Return -> returnStmt()
         Continue -> continueStmt()
         If -> ifStmt()
+        Try -> tryStmt()
         else -> exprStmt()
     }
 
@@ -358,6 +362,39 @@ private class ParserState(
         thenBlock.parent = ifStmt
         elseBlock?.parent = ifStmt
         return ifStmt
+    }
+
+    fun tryStmt(): LangTryStmtImpl {
+        val startLexeme = expectThenAdvance(Try)
+        val block = block()
+        val catches = catches()
+        val tryStmt = LangTryStmtImpl(startLexeme, previousLexeme, block, catches)
+        block.parent = tryStmt
+        for (catch in catches) {
+            catch.parent = tryStmt
+        }
+        return tryStmt
+    }
+
+    fun catches(): List<LangCatchClauseImpl> {
+        val catches = mutableListOf<LangCatchClauseImpl>()
+        catches.add(catch())
+        while (match(Catch)) {
+            catches.add(catch())
+        }
+        return catches
+    }
+
+    fun catch(): LangCatchClauseImpl {
+        val catchLexeme = expectThenAdvance(Catch)
+        expectThenAdvance(LParen)
+        val parameter = parameter()
+        expectThenAdvance(RParen)
+        val block = block()
+        val catchClause = LangCatchClauseImpl(catchLexeme, previousLexeme, parameter, block)
+        block.parent = catchClause
+        parameter.parent = catchClause
+        return catchClause
     }
 
     // won't parse expr with lower value of the precedence

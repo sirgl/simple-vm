@@ -25,7 +25,7 @@ class LangFieldImpl(
 
     override val children = makeChildren()
 
-    private fun makeChildren() : List<AstNode> {
+    private fun makeChildren(): List<AstNode> {
         return listOf(this.initializer ?: return emptyList())
     }
 }

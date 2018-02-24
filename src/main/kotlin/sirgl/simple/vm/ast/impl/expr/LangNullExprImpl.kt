@@ -2,7 +2,6 @@ package sirgl.simple.vm.ast.impl.expr
 
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.expr.LangNullExpr
-import sirgl.simple.vm.ast.ext.rangeText
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.type.LangType
 import sirgl.simple.vm.type.NullType

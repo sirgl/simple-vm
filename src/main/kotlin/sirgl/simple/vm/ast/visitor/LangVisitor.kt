@@ -2,6 +2,7 @@ package sirgl.simple.vm.ast.visitor
 
 import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.expr.*
+import sirgl.simple.vm.ast.stmt.*
 
 abstract class LangVisitor {
     open fun visitAstNode(element: AstNode) {}
@@ -57,10 +58,38 @@ abstract class LangVisitor {
         visitAstNode(block)
     }
 
+    open fun visitCatchClause(catchClause: LangCatchClause) {
+        visitAstNode(catchClause)
+    }
+
     // Statements
 
     open fun visitStmt(stmt: LangStmt) {
         visitAstNode(stmt)
+    }
+
+    open fun visitExprStmt(stmt: LangExprStmt) {
+        visitStmt(stmt)
+    }
+
+    open fun visitIfStmt(stmt: LangIfStmt) {
+        visitStmt(stmt)
+    }
+
+    open fun visitTryStmt(stmt: LangTryStmt) {
+        visitStmt(stmt)
+    }
+
+    open fun visitReturnStmt(stmt: LangReturnStmt) {
+        visitStmt(stmt)
+    }
+
+    open fun visitContinueStmt(stmt: LangContinueStmt) {
+        visitStmt(stmt)
+    }
+
+    open fun visitBreakStmt(stmt: LangBreakStmt) {
+        visitStmt(stmt)
     }
 
 

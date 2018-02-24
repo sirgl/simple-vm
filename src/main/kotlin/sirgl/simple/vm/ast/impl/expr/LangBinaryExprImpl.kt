@@ -4,7 +4,6 @@ import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangBinaryOperator
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.expr.LangBinaryExpr
-import sirgl.simple.vm.ast.ext.rangeText
 import sirgl.simple.vm.ast.visitor.LangVisitor
 
 class LangBinaryExprImpl(

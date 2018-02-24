@@ -17,5 +17,5 @@ private val textToBinOperator = mapOf(
 
 fun getOperatorTypeByText(opText: String): BinaryOperatorType {
     val type = textToBinOperator[opText]
-    return type ?:  throw IllegalStateException("Bad binary operator type: $type")
+    return type ?: throw IllegalStateException("Bad binary operator type: $type")
 }

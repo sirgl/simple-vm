@@ -1,8 +1,8 @@
 package sirgl.simple.vm.ast.impl
 
 import sirgl.simple.vm.ast.AstNode
-import sirgl.simple.vm.ast.LangBinaryOperator
 import sirgl.simple.vm.ast.BinaryOperatorType
+import sirgl.simple.vm.ast.LangBinaryOperator
 import sirgl.simple.vm.ast.ext.getOperatorTypeByText
 import sirgl.simple.vm.ast.visitor.LangVisitor
 

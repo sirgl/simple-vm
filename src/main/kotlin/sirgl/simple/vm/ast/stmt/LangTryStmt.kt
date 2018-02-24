@@ -6,5 +6,5 @@ import sirgl.simple.vm.ast.LangStmt
 
 interface LangTryStmt : LangStmt {
     val tryBlock: LangBlock
-    val catchBlocks: Array<LangCatchClause>
+    val catchBlocks: List<LangCatchClause>
 }

@@ -6,5 +6,5 @@ import sirgl.simple.vm.ast.ext.getParentOfClass
 
 interface LangThisExpr : LangExpr {
     val currentClass: LangClass
-    get() = getParentOfClass()
+        get() = getParentOfClass()
 }
