@@ -1,0 +1,12 @@
+File@[0, 87)
+  Package@[0, 10)
+  Class@[12, 87)
+    Method@[26, 85)
+      Parameter@[34, 41)
+      Block@[43, 85)
+        WhileStmt@[53, 79)
+          BinaryExpr@[60, 66)
+            ReferenceExpr@[60, 61) name: x
+            BinaryOperator@[62, 63) type: <
+            IntLiteral@[64, 66) value: 12
+          Block@[68, 79)

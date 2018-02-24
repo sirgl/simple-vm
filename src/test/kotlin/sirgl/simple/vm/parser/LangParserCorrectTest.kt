@@ -14,4 +14,5 @@ class LangParserCorrectTest : ParserBaseTest() {
     @Test fun testField() = runSingle("field")
     @Test fun testStmt() = runSingle("stmts")
     @Test fun testTry() = runSingle("try")
+    @Test fun testWhile() = runSingle("while")
 }

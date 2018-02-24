@@ -11,6 +11,4 @@ abstract class LangVarDeclImpl(
         startLexeme: Lexeme,
         endLexeme: Lexeme,
         override val initializer: LangExpr?
-) : AstNodeImpl(startLexeme.startOffset, endLexeme.endOffset), LangVarDecl {
-
-}
+) : AstNodeImpl(startLexeme.startOffset, endLexeme.endOffset), LangVarDecl

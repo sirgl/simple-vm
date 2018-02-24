@@ -1,0 +1,8 @@
+package p;
+
+class A {
+    fun foo(p1: I32) {
+        while (x < 12) {
+        }
+    }
+}

@@ -9,6 +9,7 @@ import sirgl.simple.vm.ast.ext.parseLiteral
 import sirgl.simple.vm.ast.impl.*
 import sirgl.simple.vm.ast.impl.expr.*
 import sirgl.simple.vm.ast.impl.stmt.*
+import sirgl.simple.vm.ast.stmt.LangWhileStmt
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
@@ -268,6 +269,18 @@ private class ParserState(
         return LangParameterImpl(identifier.text, type, identifier, lexemes[position - 1])
     }
 
+    fun whileStmt(): LangWhileStmtImpl {
+        val whileLexeme = expectThenAdvance(While)
+        expectThenAdvance(LParen)
+        val expr = expr()
+        expectThenAdvance(RParen)
+        val block = block()
+        val whileStmt = LangWhileStmtImpl(whileLexeme, previousLexeme, expr, block)
+        expr.setParent(whileStmt)
+        block.parent = whileStmt
+        return whileStmt
+    }
+
     fun type(): LangType {
         val simpleType = when (current.kind) {
             Identifier -> ClassType(current.text)
@@ -322,6 +335,7 @@ private class ParserState(
         Continue -> continueStmt()
         If -> ifStmt()
         Try -> tryStmt()
+        While -> whileStmt()
         else -> exprStmt()
     }
 

@@ -92,6 +92,10 @@ abstract class LangVisitor {
         visitStmt(stmt)
     }
 
+    open fun visitWhileStmt(stmt: LangWhileStmt) {
+        visitStmt(stmt)
+    }
+
 
     // Expressions
 
