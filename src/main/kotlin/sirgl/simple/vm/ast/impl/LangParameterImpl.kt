@@ -1,17 +1,20 @@
 package sirgl.simple.vm.ast.impl
 
 import sirgl.simple.vm.ast.AstNode
+import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangParameter
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.LangType
 
 class LangParameterImpl(
-        name: String,
-        type: LangType,
+        override val name: String,
+        override val type: LangType,
         startLexeme: Lexeme,
         endLexeme: Lexeme
-) : LangVarDeclImpl(name, type, startLexeme, endLexeme, null), LangParameter {
+) : AstNodeImpl(startLexeme, endLexeme), LangParameter {
+    override val initializer: LangExpr? = null
+
     override lateinit var parent: AstNode
 
     override fun accept(visitor: LangVisitor) {

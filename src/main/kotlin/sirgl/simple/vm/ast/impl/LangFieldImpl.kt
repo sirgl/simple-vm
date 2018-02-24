@@ -9,12 +9,12 @@ import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.LangType
 
 class LangFieldImpl(
-        name: String,
-        type: LangType,
+        override val name: String,
+        override val type: LangType,
         startLexeme: Lexeme,
         endLexeme: Lexeme,
         override val initializer: LangExpr?
-) : LangVarDeclImpl(name, type, startLexeme, endLexeme, initializer), LangField {
+) : AstNodeImpl(startLexeme, endLexeme), LangField {
     override lateinit var parent: LangClass
 
     override fun accept(visitor: LangVisitor) {

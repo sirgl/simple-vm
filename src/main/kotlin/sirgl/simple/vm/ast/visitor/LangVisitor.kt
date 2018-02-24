@@ -44,7 +44,6 @@ abstract class LangVisitor {
 
     open fun visitField(field: LangField) {
         visitMember(field)
-        visitVarDecl(field) // TODO Note here visitAstNode will be invoked 2 times
     }
 
 
