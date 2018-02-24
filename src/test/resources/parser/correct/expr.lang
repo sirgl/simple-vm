@@ -4,5 +4,6 @@ class A {
     fun foo(p1: I32) {
         1 + 2 + 3; // associativity
         1 * 2 + 3 * 4; // precedence
+        x = y = z = 100; // assign
     }
 }

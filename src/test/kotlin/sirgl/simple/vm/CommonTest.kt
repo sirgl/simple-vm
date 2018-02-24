@@ -39,7 +39,7 @@ abstract class FileBasedTestCaseBase<T> {
         check(beforePath, actualResult)
     }
 
-    fun filterBeforeName(name: String) : Boolean {
+    fun filterBeforeName(name: String): Boolean {
         return !name.contains("after") && name.endsWith(".$defaultSourceFileExtension")
     }
 

@@ -141,5 +141,8 @@ abstract class LangVisitor {
     open fun visitBinaryExpr(expr: LangBinaryExpr) {
         visitExpr(expr)
     }
-    //TODO
+
+    open fun visitAssignExpr(expr: LangAssignExpr) {
+        visitExpr(expr)
+    }
 }

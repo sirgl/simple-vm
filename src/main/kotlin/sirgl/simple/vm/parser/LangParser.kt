@@ -4,12 +4,12 @@ import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.LangMember
+import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
 import sirgl.simple.vm.ast.ext.parseLiteral
 import sirgl.simple.vm.ast.impl.*
 import sirgl.simple.vm.ast.impl.expr.*
 import sirgl.simple.vm.ast.impl.stmt.*
-import sirgl.simple.vm.ast.stmt.LangWhileStmt
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
@@ -91,7 +91,8 @@ private val binOpInfo = arrayOf(
         InfixOperatorInfo(OpEqEq, 6, false),
         InfixOperatorInfo(OpNotEq, 6, false),
         InfixOperatorInfo(OpAndAnd, 7, false),
-        InfixOperatorInfo(OpOrOr, 8, false)
+        InfixOperatorInfo(OpOrOr, 8, false),
+        InfixOperatorInfo(OpEq, 9, true)
 )
 
 private val binOps = binOpInfo.associateBy({ it.opKind }) { BinaryExprParser(it.precedence, it.isLeft) }
@@ -120,9 +121,10 @@ private val precedenceTable = mapOf(
 
 private val infixOperators: Map<LexemeKind, InfixExprParser> = buildInfixOperators()
 
-private fun buildInfixOperators(): MutableMap<LexemeKind, InfixExprParser> {
+private fun buildInfixOperators(): Map<LexemeKind, InfixExprParser> {
     val infixOperators = mutableMapOf<LexemeKind, InfixExprParser>()
     infixOperators.putAll(binOps)
+    infixOperators[OpEq] = AssignExprParser()
     return infixOperators
 }
 
@@ -504,6 +506,9 @@ private class BoolParser : PrefixParser {
     }
 }
 
+/**
+ * When parse invoked current lexeme is parameter lexeme right after left expr
+ */
 private interface InfixExprParser {
     val precedence: Int
     fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl
@@ -518,5 +523,16 @@ private class BinaryExprParser(
         val binOp = LangBinaryOperatorImpl(lexeme.text, lexeme.startOffset, lexeme.endOffset)
         val right = parser.expr(precedence + if (isLeft) 0 else 1)
         return LangBinaryExprImpl(left, right, binOp, left.startOffset, right.endOffset)
+    }
+}
+
+private class AssignExprParser : InfixExprParser {
+    override val precedence = 9
+
+    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
+        if (left !is LangReferenceExpr) parser.fail("Left part of assignment expression must be reference")
+        parser.advance()
+        val right = parser.expr(precedence + 1)
+        return LangAssignExprImpl(left.startOffset, right.endOffset, left, right)
     }
 }

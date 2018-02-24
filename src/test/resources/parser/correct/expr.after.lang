@@ -1,9 +1,9 @@
-File@[0, 125)
+File@[0, 160)
   Package@[0, 10)
-  Class@[12, 125)
-    Method@[26, 123)
+  Class@[12, 160)
+    Method@[26, 158)
       Parameter@[34, 41)
-      Block@[43, 123)
+      Block@[43, 158)
         ExprStmt@[53, 63)
           BinaryExpr@[53, 62)
             IntLiteral@[53, 54) value: 1
@@ -23,3 +23,11 @@ File@[0, 125)
               IntLiteral@[97, 98) value: 3
               BinaryOperator@[99, 100) type: *
               IntLiteral@[101, 102) value: 4
+        ExprStmt@[126, 142)
+          BinaryExpr@[126, 141)
+            ReferenceExpr@[126, 127) name: x
+            BinaryExpr@[130, 141)
+              ReferenceExpr@[130, 131) name: y
+              BinaryExpr@[134, 141)
+                ReferenceExpr@[134, 135) name: z
+                IntLiteral@[138, 141) value: 100
