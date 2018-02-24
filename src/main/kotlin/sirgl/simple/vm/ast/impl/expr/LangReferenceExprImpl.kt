@@ -14,4 +14,7 @@ class LangReferenceExprImpl(
     override fun accept(visitor: LangVisitor) = visitor.visitReferenceExpr(this)
 
     override val debugName = "ReferenceExpr"
+
+    override fun toString() = super.toString() + " name: $name"
+
 }

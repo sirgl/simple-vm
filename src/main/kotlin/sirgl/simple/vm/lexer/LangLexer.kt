@@ -56,7 +56,11 @@ val operatorToKind = mutableMapOf(
         ">=" to OpGtEq,
         ">" to OpGt,
         "=" to OpEq,
-        "==" to OpEqEq
+        "==" to OpEqEq,
+        "!=" to OpNotEq,
+        "&&" to OpAndAnd,
+        "||" to OpOrOr,
+        "as" to OpAs
 )
 
 val punctuationToKind = mutableMapOf(
@@ -94,6 +98,7 @@ class HandwrittenLangLexer : LangLexer {
 private class LexerState(
         private val text: String,
         private val skipWhitespace: Boolean = true,
+        private val skipComments: Boolean = true,
         private var position: Int = 0,
         private var line: Int = 0
 ) {
@@ -222,7 +227,7 @@ private class LexerState(
         current++
         while (true) {
             if (isEnd(current) || text[current] == '\n') {
-                addLexeme(current, EolComment)
+                addLexemeConditional(current, skipWhitespace, EolComment)
                 return true
             }
             current++
@@ -243,15 +248,19 @@ private class LexerState(
             current = text[whitespaceEnd]
         }
         if (whitespaceEnd != position) {
-            if (!skipWhitespace) {
-                addLexeme(whitespaceEnd, WhiteSpace)
-            } else {
-                addErrorWhenRecovery()
-                position = whitespaceEnd
-            }
+            addLexemeConditional(whitespaceEnd, skipWhitespace, WhiteSpace)
             return true
         }
         return false
+    }
+
+    private fun addLexemeConditional(endPosition: Int, condition: Boolean, kind: LexemeKind) {
+        if (condition) {
+            addErrorWhenRecovery()
+            position = endPosition
+        } else {
+            addLexeme(endPosition, kind)
+        }
     }
 
     private fun tryWord(word: String, kind: LexemeKind): Boolean {

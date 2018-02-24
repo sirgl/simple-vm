@@ -20,6 +20,6 @@ class LangBinaryExprImpl(
 
     override val debugName = "BinaryExpr"
 
-    override val children = listOf(left, right)
+    override val children = listOf(left, operator, right)
 
 }

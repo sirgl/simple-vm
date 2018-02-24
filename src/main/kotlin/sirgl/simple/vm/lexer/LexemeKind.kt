@@ -35,7 +35,7 @@ enum class LexemeKind {
     Colon, // :
     Comma, // ,
 
-    // Identifier
+    // Identifiers
     Identifier,
 
     // Operators
@@ -51,12 +51,16 @@ enum class LexemeKind {
     OpGt,
     OpEq,
     OpEqEq,
+    OpNotEq,
+    OpAndAnd,
+    OpOrOr,
+    OpAs,
 
     // Comments
     EolComment,
     CStyleComment,
 
-    // Error
+    // Errors
     Error,
 
     // Literals

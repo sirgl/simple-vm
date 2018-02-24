@@ -1,10 +1,25 @@
-File@[0, 69)
+File@[0, 125)
   Package@[0, 10)
-  Class@[12, 69)
-    Method@[26, 67)
+  Class@[12, 125)
+    Method@[26, 123)
       Parameter@[34, 41)
-      Block@[43, 67)
-        ExprStmt@[53, 61)
-          BinaryExpr@[53, 60)
-            IntLiteral@[53, 55)
-            IntLiteral@[58, 60)
+      Block@[43, 123)
+        ExprStmt@[53, 63)
+          BinaryExpr@[53, 62)
+            IntLiteral@[53, 54) value: 1
+            BinaryOperator@[55, 56) type: +
+            BinaryExpr@[57, 62)
+              IntLiteral@[57, 58) value: 2
+              BinaryOperator@[59, 60) type: +
+              IntLiteral@[61, 62) value: 3
+        ExprStmt@[89, 103)
+          BinaryExpr@[89, 102)
+            BinaryExpr@[89, 94)
+              IntLiteral@[89, 90) value: 1
+              BinaryOperator@[91, 92) type: *
+              IntLiteral@[93, 94) value: 2
+            BinaryOperator@[95, 96) type: +
+            BinaryExpr@[97, 102)
+              IntLiteral@[97, 98) value: 3
+              BinaryOperator@[99, 100) type: *
+              IntLiteral@[101, 102) value: 4

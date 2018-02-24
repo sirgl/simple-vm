@@ -7,5 +7,5 @@ File@[0, 108)
         ReturnStmt@[53, 59)
         ContinueStmt@[69, 77)
         ReturnStmt@[87, 100)
-          PrefixExpr@[94, 99)
-            BoolLiteral@[95, 99)
+          PrefixExpr@[94, 99) op: !
+            BoolLiteral@[95, 99) value: true

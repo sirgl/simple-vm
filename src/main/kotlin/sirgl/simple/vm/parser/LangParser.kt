@@ -9,7 +9,6 @@ import sirgl.simple.vm.ast.impl.stmt.LangContinueStmtImpl
 import sirgl.simple.vm.ast.impl.stmt.LangExprStmtImpl
 import sirgl.simple.vm.ast.impl.stmt.LangReturnStmtImpl
 import sirgl.simple.vm.ast.impl.stmt.LangStmtImpl
-import sirgl.simple.vm.ast.stmt.LangExprStmt
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
@@ -72,9 +71,59 @@ private val prefixParsers = mapOf(
         False to boolLiteralParser
 )
 
-private val infixOperators: Map<LexemeKind, InfixExprParser> = mapOf(
-        OpPlus to BinaryExprParser()
+private class InfixOperatorInfo(
+        val opKind: LexemeKind,
+        val precedence: Int, // the more value, the lower precedence
+        val isLeft: Boolean
 )
+
+private val binOpInfo = arrayOf(
+        InfixOperatorInfo(OpAsterisk, 3, false),
+        InfixOperatorInfo(OpDiv, 3, false),
+        InfixOperatorInfo(OpPercent, 3, false),
+        InfixOperatorInfo(OpPlus, 4, false),
+        InfixOperatorInfo(OpMinus, 4, false),
+        InfixOperatorInfo(OpLt, 5, false),
+        InfixOperatorInfo(OpLtEq, 5, false),
+        InfixOperatorInfo(OpGt, 5, false),
+        InfixOperatorInfo(OpGtEq, 5, false),
+        InfixOperatorInfo(OpEqEq, 6, false),
+        InfixOperatorInfo(OpNotEq, 6, false),
+        InfixOperatorInfo(OpAndAnd, 7, false),
+        InfixOperatorInfo(OpOrOr, 8, false)
+)
+
+private val binOps = binOpInfo.associateBy ({ it.opKind }) { BinaryExprParser(it.precedence, it.isLeft) }
+
+// Precedence for infix operators
+private val precedenceTable = mapOf(
+        LParen to 1,
+        LBracket to 1,
+        Dot to 1,
+        OpAs to 2,
+        OpAsterisk to 3,
+        OpDiv to 3,
+        OpPercent to 3,
+        OpPlus to 4,
+        OpMinus to 4,
+        OpLt to 5,
+        OpLtEq to 5,
+        OpGtEq to 5,
+        OpGt to 5,
+        OpEqEq to 6,
+        OpNotEq to 6,
+        OpAndAnd to 7,
+        OpOrOr to 8,
+        OpEq to 9
+)
+
+private val infixOperators: Map<LexemeKind, InfixExprParser> = buildInfixOperators()
+
+private fun buildInfixOperators(): MutableMap<LexemeKind, InfixExprParser> {
+    val infixOperators = mutableMapOf<LexemeKind, InfixExprParser>()
+    infixOperators.putAll(binOps)
+    return infixOperators
+}
 
 
 class ParseException(val lexeme: Lexeme, message: String) : Exception(message)
@@ -294,11 +343,20 @@ private class ParserState(
         return LangContinueStmtImpl(returnStmt, returnStmt)
     }
 
-    fun expr(): LangExpr  {
+    // won't parse expr with lower value of the precedence
+    fun expr(precedence: Int = 10): LangExpr  {
         val parser = prefixParsers[current.kind] ?: fail("Expected prefix expression here")
-        val left = parser.parse(this, current)
-        val infix = infixParsers[current.kind]?.parse(this, left, current)
-        return infix ?: left
+        var left = parser.parse(this, current)
+
+        while (precedence > getPrecedence()) {
+            left = infixParsers[current.kind]?.parse(this, left, current) ?: fail("Expected binary operator")
+        }
+        return left
+    }
+
+    fun getPrecedence(): Int {
+        val precedence = infixParsers[current.kind]?.precedence
+        return precedence ?: 100 // Max precedence
     }
 
     val previousLexeme: Lexeme
@@ -372,15 +430,18 @@ private class BoolParser : PrefixParser {
 }
 
 private interface InfixExprParser {
-//    val stickiness: Int
+    val precedence: Int
     fun parse(parser: ParserState, left: LangExpr, lexeme: Lexeme): LangExpr
 }
 
-private class BinaryExprParser : InfixExprParser {
+private class BinaryExprParser(
+        override val precedence: Int,
+        val isLeft: Boolean
+) : InfixExprParser {
     override fun parse(parser: ParserState, left: LangExpr, lexeme: Lexeme): LangExpr {
         parser.advance()
         val binOp = LangBinaryOperatorImpl(lexeme.text, lexeme.startOffset, lexeme.endOffset)
-        val right = parser.expr()
+        val right = parser.expr(precedence + if (isLeft) 0 else 1)
         return LangBinaryExprImpl(left, right, binOp, left.startOffset, right.endOffset)
     }
 }

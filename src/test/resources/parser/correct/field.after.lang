@@ -3,6 +3,6 @@ File@[0, 95)
   Class@[16, 95)
     Field@[30, 43)
     Field@[49, 73)
-      IntLiteral@[62, 64)
+      IntLiteral@[62, 64) value: 12
     Field@[70, 95)
-      StringLiteral@[86, 92)
+      StringLiteral@[86, 92) value: Good

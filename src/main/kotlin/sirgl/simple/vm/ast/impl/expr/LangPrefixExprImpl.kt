@@ -23,4 +23,6 @@ class LangPrefixExprImpl(
     override val debugName = "PrefixExpr"
 
     override val children = listOf<AstNode>(expr)
+
+    override fun toString() = super.toString() + " op: ${prefixOperatorType.representation}"
 }

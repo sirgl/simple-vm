@@ -14,4 +14,6 @@ class LangStringLiteralExprImpl(
     override fun accept(visitor: LangVisitor) = visitor.visitStringLiteralExpr(this)
 
     override val debugName = "StringLiteral"
+
+    override fun toString() = super.toString() + " value: $value"
 }
