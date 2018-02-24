@@ -1,10 +1,10 @@
 package sirgl.simple.vm.ast.stmt
 
 import sirgl.simple.vm.ast.LangExpr
-import sirgl.simple.vm.ast.LangNameElement
 import sirgl.simple.vm.ast.LangStmt
+import sirgl.simple.vm.ast.expr.LangReferenceExpr
 
 interface LangAssignStmt : LangStmt {
-    val nameElement: LangNameElement
+    val referenceExpr: LangReferenceExpr
     val expression: LangExpr
 }

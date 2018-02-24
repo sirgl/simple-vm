@@ -1,5 +1,7 @@
 package sirgl.simple.vm.lexer
 
+import sirgl.simple.vm.lexer.LexemeKind.*
+
 
 val keywords = mutableListOf(
         "fun",
@@ -22,50 +24,51 @@ val keywords = mutableListOf(
 )
 
 val keywordToKind = mutableMapOf(
-        "fun" to LexemeKind.Fun,
-        "while" to LexemeKind.While,
-        "class" to LexemeKind.Class,
-        "var" to LexemeKind.Var,
-        "bool" to LexemeKind.Bool,
-        "native" to LexemeKind.Native,
-        "continue" to LexemeKind.Continue,
-        "break" to LexemeKind.Break,
-        "return" to LexemeKind.Return,
-        "try" to LexemeKind.Try,
-        "catch" to LexemeKind.Catch,
-        "i32" to LexemeKind.I32,
-        "i8" to LexemeKind.I8,
-        "true" to LexemeKind.True,
-        "false" to LexemeKind.False,
-        "import" to LexemeKind.Return,
-        "package" to LexemeKind.Package,
-        "void" to LexemeKind.Void
+        "fun" to Fun,
+        "while" to While,
+        "class" to Class,
+        "var" to Var,
+        "bool" to Bool,
+        "native" to Native,
+        "continue" to Continue,
+        "break" to Break,
+        "return" to Return,
+        "try" to Try,
+        "catch" to Catch,
+        "i32" to I32,
+        "i8" to I8,
+        "true" to True,
+        "false" to False,
+        "import" to Return,
+        "package" to Package,
+        "void" to Void
 )
 
-val operators = mutableListOf(
-        "+",
-        "-",
-        "*",
-        "/",
-        "%",
-        "<=",
-        "<",
-        ">=",
-        ">",
-        "=="
+val operatorToKind = mutableMapOf(
+        "+" to OpPlus,
+        "-" to OpMinus,
+        "*" to OpAsterisk,
+        "/" to OpDiv,
+        "%" to OpPercent,
+        "<=" to OpLtEq,
+        "<" to OpLt,
+        ">=" to OpGtEq,
+        ">" to OpGt,
+        "=" to OpEq,
+        "==" to OpEqEq
 )
 
 val punctuationToKind = mutableMapOf(
-        ";" to LexemeKind.Semicolon,
-        ":" to LexemeKind.Colon,
-        "." to LexemeKind.Dot,
-        "," to LexemeKind.Comma,
-        "[" to LexemeKind.LBracket,
-        "]" to LexemeKind.RBracket,
-        "(" to LexemeKind.LParen,
-        ")" to LexemeKind.RParen,
-        "{" to LexemeKind.LBrace,
-        "}" to LexemeKind.RBrace
+        ";" to Semicolon,
+        ":" to Colon,
+        "." to Dot,
+        "," to Comma,
+        "[" to LBracket,
+        "]" to RBracket,
+        "(" to LParen,
+        ")" to RParen,
+        "{" to LBrace,
+        "}" to RBrace
 )
 
 
@@ -111,7 +114,7 @@ private class LexerState(
     }
 
     private fun addEndLexeme() {
-        addLexeme(position, LexemeKind.EOL)
+        addLexeme(position, EOL)
     }
 
     private fun scanLexeme() {
@@ -122,8 +125,8 @@ private class LexerState(
         for ((punct, kind) in punctuationToKind) {
             if (tryWord(punct, kind)) return
         }
-        for (operator in operators) {
-            if (tryWord(operator, LexemeKind.Operator)) return
+        for ((op, kind) in operatorToKind) {
+            if (tryWord(op, kind)) return
         }
         if (tryIntLiteral()) return
         if (tryStringLiteral()) return
@@ -142,7 +145,7 @@ private class LexerState(
             current++
         }
         if (current != position) {
-            addLexeme(current, LexemeKind.IntLiteral)
+            addLexeme(current, IntLiteral)
             return true
         }
         return false
@@ -170,7 +173,7 @@ private class LexerState(
             activateRecovery(current)
             return true
         }
-        addLexeme(current + 1, LexemeKind.StringLiteral)
+        addLexeme(current + 1, StringLiteral)
         return true
     }
 
@@ -187,7 +190,7 @@ private class LexerState(
         while (!isEnd(current) && text[current].isLetterOrDigit()) {
             current++
         }
-        addLexeme(current, LexemeKind.Identifier)
+        addLexeme(current, Identifier)
         return true
     }
 
@@ -204,7 +207,7 @@ private class LexerState(
         }
         current++
         if (isEnd(current) || text[current] != '\'') return false
-        addLexeme(current, LexemeKind.CharLiteral)
+        addLexeme(current, CharLiteral)
         return true
     }
 
@@ -220,8 +223,9 @@ private class LexerState(
         }
         if (whitespaceEnd != position) {
             if (!skipWhitespace) {
-                addLexeme(whitespaceEnd, LexemeKind.WhiteSpace)
+                addLexeme(whitespaceEnd, WhiteSpace)
             } else {
+                addErrorWhenRecovery()
                 position = whitespaceEnd
             }
             return true
@@ -256,7 +260,7 @@ private class LexerState(
 
     private fun addErrorWhenRecovery() {
         if (isRecovery) {
-            lexemes.add(Lexeme(recoveryPosition, position, LexemeKind.Error, text.substring(recoveryPosition, position), line))
+            lexemes.add(Lexeme(recoveryPosition, position, Error, text.substring(recoveryPosition, position), line))
             isRecovery = false
         }
     }

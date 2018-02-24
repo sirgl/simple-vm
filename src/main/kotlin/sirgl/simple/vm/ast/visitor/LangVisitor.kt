@@ -70,6 +70,14 @@ abstract class LangVisitor {
         visitAstNode(expr)
     }
 
+    open fun visitReferenceExpr(expr: LangReferenceExpr) {
+        visitExpr(expr)
+    }
+
+    open fun visitPrefixExpr(expr: LangPrefixExpr) {
+        visitExpr(expr)
+    }
+
     open fun visitLiteral(literal: LangLiteralExpr) {
         visitExpr(literal)
     }

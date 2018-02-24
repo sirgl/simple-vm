@@ -1,7 +1,12 @@
 package sirgl.simple.vm.parser
 
 import sirgl.simple.vm.ast.*
+import sirgl.simple.vm.ast.ext.parseLiteral
 import sirgl.simple.vm.ast.impl.*
+import sirgl.simple.vm.ast.impl.expr.LangIntLiteralExprImpl
+import sirgl.simple.vm.ast.impl.expr.LangReferenceExprImpl
+import sirgl.simple.vm.ast.impl.expr.LangStringLiteralExprImpl
+import sirgl.simple.vm.ast.impl.stmt.LangContinueStmtImpl
 import sirgl.simple.vm.ast.impl.stmt.LangReturnStmtImpl
 import sirgl.simple.vm.ast.impl.stmt.LangStmtImpl
 import sirgl.simple.vm.lexer.Lexeme
@@ -9,6 +14,7 @@ import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
 import sirgl.simple.vm.scope.ScopeImpl
 import sirgl.simple.vm.type.*
+import kotlin.math.exp
 
 interface LangParser {
     fun parse(lexemes: List<Lexeme>): ParseResult<LangFileImpl>
@@ -43,14 +49,20 @@ class Fail(
 }
 
 class HandwrittenLangParser : LangParser {
-    override fun parseExpr(lexemes: List<Lexeme>) = ParserState(lexemes).expr()
+    override fun parseExpr(lexemes: List<Lexeme>) = ParserState(lexemes, prefixParsers).expr()
 
     override fun parse(lexemes: List<Lexeme>) = try {
-        ParseResult(ParserState(lexemes).file())
+        ParseResult(ParserState(lexemes, prefixParsers).file())
     } catch (e: ParseException) {
         ParseResult(null, Fail(e.lexeme, e.message, e))
     }
 }
+
+private val prefixParsers = mapOf(
+        IntLiteral to IntLiteralParser(),
+        StringLiteral to StringLiteralParser(),
+        Identifier to ReferenceExprParser()
+)
 
 
 class ParseException(val lexeme: Lexeme, message: String) : Exception(message)
@@ -58,7 +70,10 @@ class ParseException(val lexeme: Lexeme, message: String) : Exception(message)
 /**
  * No error recovery provided. Fails on first error.
  */
-private class ParserState(val lexemes: List<Lexeme>) {
+private class ParserState(
+        val lexemes: List<Lexeme>,
+        private val prefixParsers: Map<LexemeKind, PrefixParser>
+) {
     private var position = 0
     private val current: Lexeme
         get() = lexemes[position]
@@ -67,7 +82,7 @@ private class ParserState(val lexemes: List<Lexeme>) {
 
     // Utils
 
-    private fun matchThenAdvance(vararg types: LexemeKind): Boolean {
+    fun matchThenAdvance(vararg types: LexemeKind): Boolean {
         val matches = match(*types)
         if (matches) {
             advance()
@@ -75,18 +90,23 @@ private class ParserState(val lexemes: List<Lexeme>) {
         return matches
     }
 
-    private fun advance(): Lexeme {
+    fun advance(): Lexeme {
         if (position > lexemes.size) throw IndexOutOfBoundsException()
         val v = current
         position++
         return v
     }
 
-    private fun match(vararg types: LexemeKind) = types.any {
+    fun match(vararg types: LexemeKind) = types.any {
         it == current.kind
     }
 
-    private fun expectThenAdvance(vararg types: LexemeKind): Lexeme {
+    fun expectThenAdvance(vararg types: LexemeKind): Lexeme {
+        expect(types)
+        return advance()
+    }
+
+    fun expect(types: Array<out LexemeKind>) {
         if (!match(*types)) {
             val message = when {
                 types.isEmpty() -> throw IllegalStateException()
@@ -95,10 +115,9 @@ private class ParserState(val lexemes: List<Lexeme>) {
             }
             fail(message)
         }
-        return advance()
     }
 
-    private fun fail(message: String): Nothing = throw ParseException(current, message)
+    fun fail(message: String): Nothing = throw ParseException(current, message)
 
     // Rules
 
@@ -226,19 +245,19 @@ private class ParserState(val lexemes: List<Lexeme>) {
         expectThenAdvance(Colon)
         val type = type()
         val typeLast = lexemes[position - 1]
-        val initializer = if (current.text == "=") {
-            advance()
+        val initializer = if (matchThenAdvance(OpEq)) {
             expr()
         } else {
-            expectThenAdvance(Semicolon)
             null
         }
+        expectThenAdvance(Semicolon)
         val last = if (initializer == null) typeLast else current
         return LangFieldImpl(identifier.text, type, varLexeme, last, initializer)
     }
 
     fun stmt() = when (current.kind) {
         Return -> returnStmt()
+        Continue -> continueStmt()
         else -> TODO()
     }
 
@@ -248,7 +267,19 @@ private class ParserState(val lexemes: List<Lexeme>) {
         TODO()
     }
 
-    fun expr(): LangExpr = TODO()
+    fun continueStmt(): LangContinueStmtImpl {
+        val returnStmt = expectThenAdvance(Continue)
+        expectThenAdvance(Semicolon)
+        return LangContinueStmtImpl(returnStmt, returnStmt)
+    }
+
+    fun expr(): LangExpr  {
+        val parser = prefixParsers[current.kind] ?: fail("Expected prefix expression here")
+        val expr = parser.parse(this, current)
+        return expr
+
+
+    }
 
     fun parsePackageDecl(): LangPackageDeclImpl {
         val packageLexeme = expectThenAdvance(Package)
@@ -267,4 +298,43 @@ private class ParserState(val lexemes: List<Lexeme>) {
         }
         return lexemes
     }
+}
+
+
+/**
+ * Expected, that type of parser can be determined only by type of first lexeme
+ * parse invoked only when it is clear that this parser matches
+ */
+private interface PrefixParser {
+    fun parse(parser: ParserState, lexeme: Lexeme) : LangExpr
+}
+
+private class IntLiteralParser : PrefixParser {
+    override fun parse(parser: ParserState, lexeme: Lexeme): LangIntLiteralExprImpl {
+        return LangIntLiteralExprImpl(lexeme.text.toInt(), parser.advance())
+    }
+}
+
+private class StringLiteralParser : PrefixParser {
+    override fun parse(parser: ParserState, lexeme: Lexeme): LangStringLiteralExprImpl {
+        return LangStringLiteralExprImpl(parseLiteral(lexeme.text), parser.advance())
+    }
+}
+
+private class CharLiteralParser : PrefixParser {
+    override fun parse(parser: ParserState, lexeme: Lexeme): LangStringLiteralExprImpl {
+        TODO()
+    }
+}
+
+private class ReferenceExprParser : PrefixParser {
+    override fun parse(parser: ParserState, lexeme: Lexeme): LangReferenceExprImpl {
+        parser.advance()
+        return LangReferenceExprImpl(lexeme, lexeme.text)
+    }
+}
+
+private interface InfixExprParser {
+    val stickiness: Int
+    fun parse(parser: LangParser, left: LangExpr, lexeme: Lexeme): LangExpr
 }

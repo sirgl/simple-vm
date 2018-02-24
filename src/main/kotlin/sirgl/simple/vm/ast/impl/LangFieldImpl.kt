@@ -23,5 +23,9 @@ class LangFieldImpl(
 
     override val debugName = "Field"
 
-    override val children = emptyList<AstNode>()
+    override val children = makeChildren()
+
+    private fun makeChildren() : List<AstNode> {
+        return listOf(this.initializer ?: return emptyList())
+    }
 }

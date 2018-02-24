@@ -39,7 +39,17 @@ enum class LexemeKind {
     Identifier,
 
     // Operators
-    Operator,
+    OpPlus,
+    OpMinus,
+    OpAsterisk,
+    OpDiv,
+    OpPercent,
+    OpLtEq,
+    OpLt,
+    OpGtEq,
+    OpGt,
+    OpEq,
+    OpEqEq,
 
     // Comments
     Comment,
