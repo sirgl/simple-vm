@@ -22,7 +22,5 @@ class LangPrefixExprImpl(
 
     override val debugName = "PrefixExpr"
 
-    override val children: List<AstNode>
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-
+    override val children = listOf<AstNode>(expr)
 }

@@ -12,7 +12,7 @@ enum class PrefixOperatorType(val representation: String) {
     Minus("-"),
     Inversion("!");
 
-    fun from(str: String) {
-        values().any { it.representation == str }
+    companion object {
+        fun from(str: String) = values().first { it.representation == str }
     }
 }

@@ -6,7 +6,9 @@ import sirgl.simple.vm.ast.impl.AstNodeImpl
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
-abstract class LangStmtImpl(startLexeme: Lexeme, endLexeme: Lexeme) : AstNodeImpl(startLexeme, endLexeme), LangStmt {
+abstract class LangStmtImpl(startOffset: Int, endOffset: Int) : AstNodeImpl(startOffset, endOffset), LangStmt {
+    constructor(startLexeme: Lexeme, endLexeme: Lexeme) : this(startLexeme.startOffset, endLexeme.endOffset)
+
     override fun accept(visitor: LangVisitor) {
         visitor.visitStmt(this)
     }

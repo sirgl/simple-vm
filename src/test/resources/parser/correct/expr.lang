@@ -1,0 +1,7 @@
+package p;
+
+class A {
+    fun foo(p1: I32) {
+        12 + 13;
+    }
+}

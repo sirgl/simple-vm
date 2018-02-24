@@ -44,6 +44,7 @@ enum class LexemeKind {
     OpAsterisk,
     OpDiv,
     OpPercent,
+    OpExcl,
     OpLtEq,
     OpLt,
     OpGtEq,

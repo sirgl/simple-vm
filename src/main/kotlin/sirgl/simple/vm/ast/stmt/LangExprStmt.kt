@@ -4,5 +4,5 @@ import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangStmt
 
 interface LangExprStmt : LangStmt {
-    val expression: LangExpr
+    val expr: LangExpr
 }

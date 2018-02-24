@@ -1,20 +1,20 @@
 package sirgl.simple.vm.parser
 
 import sirgl.simple.vm.ast.*
+import sirgl.simple.vm.ast.expr.PrefixOperatorType
 import sirgl.simple.vm.ast.ext.parseLiteral
 import sirgl.simple.vm.ast.impl.*
-import sirgl.simple.vm.ast.impl.expr.LangIntLiteralExprImpl
-import sirgl.simple.vm.ast.impl.expr.LangReferenceExprImpl
-import sirgl.simple.vm.ast.impl.expr.LangStringLiteralExprImpl
+import sirgl.simple.vm.ast.impl.expr.*
 import sirgl.simple.vm.ast.impl.stmt.LangContinueStmtImpl
+import sirgl.simple.vm.ast.impl.stmt.LangExprStmtImpl
 import sirgl.simple.vm.ast.impl.stmt.LangReturnStmtImpl
 import sirgl.simple.vm.ast.impl.stmt.LangStmtImpl
+import sirgl.simple.vm.ast.stmt.LangExprStmt
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
 import sirgl.simple.vm.scope.ScopeImpl
 import sirgl.simple.vm.type.*
-import kotlin.math.exp
 
 interface LangParser {
     fun parse(lexemes: List<Lexeme>): ParseResult<LangFileImpl>
@@ -49,19 +49,31 @@ class Fail(
 }
 
 class HandwrittenLangParser : LangParser {
-    override fun parseExpr(lexemes: List<Lexeme>) = ParserState(lexemes, prefixParsers).expr()
+    override fun parseExpr(lexemes: List<Lexeme>) = ParserState(lexemes, prefixParsers, infixOperators).expr()
 
     override fun parse(lexemes: List<Lexeme>) = try {
-        ParseResult(ParserState(lexemes, prefixParsers).file())
+        ParseResult(ParserState(lexemes, prefixParsers, infixOperators).file())
     } catch (e: ParseException) {
         ParseResult(null, Fail(e.lexeme, e.message, e))
     }
 }
 
+private val opPrefixParser = OpPrefixParser()
+private val boolLiteralParser = BoolParser()
+
 private val prefixParsers = mapOf(
         IntLiteral to IntLiteralParser(),
         StringLiteral to StringLiteralParser(),
-        Identifier to ReferenceExprParser()
+        Identifier to ReferenceExprParser(),
+        OpPlus to opPrefixParser,
+        OpMinus to opPrefixParser,
+        OpExcl to opPrefixParser,
+        True to boolLiteralParser,
+        False to boolLiteralParser
+)
+
+private val infixOperators: Map<LexemeKind, InfixExprParser> = mapOf(
+        OpPlus to BinaryExprParser()
 )
 
 
@@ -72,7 +84,8 @@ class ParseException(val lexeme: Lexeme, message: String) : Exception(message)
  */
 private class ParserState(
         val lexemes: List<Lexeme>,
-        private val prefixParsers: Map<LexemeKind, PrefixParser>
+        private val prefixParsers: Map<LexemeKind, PrefixParser>,
+        private val infixParsers: Map<LexemeKind, InfixExprParser>
 ) {
     private var position = 0
     private val current: Lexeme
@@ -258,13 +271,21 @@ private class ParserState(
     fun stmt() = when (current.kind) {
         Return -> returnStmt()
         Continue -> continueStmt()
-        else -> TODO()
+        else -> exprStmt()
+    }
+
+    fun exprStmt() : LangExprStmtImpl {
+        val expr = expr()
+        val semi = expectThenAdvance(Semicolon)
+        return LangExprStmtImpl(expr.startOffset, semi.endOffset, expr)
     }
 
     fun returnStmt(): LangReturnStmtImpl {
-        val returnStmt = expectThenAdvance(Return)
-        if (matchThenAdvance(Semicolon)) return LangReturnStmtImpl(returnStmt, returnStmt)
-        TODO()
+        val returnLexeme = expectThenAdvance(Return)
+        if (matchThenAdvance(Semicolon)) return LangReturnStmtImpl(returnLexeme, returnLexeme)
+        val expr = expr()
+        val last = expectThenAdvance(Semicolon)
+        return LangReturnStmtImpl(returnLexeme, last, expr)
     }
 
     fun continueStmt(): LangContinueStmtImpl {
@@ -275,11 +296,13 @@ private class ParserState(
 
     fun expr(): LangExpr  {
         val parser = prefixParsers[current.kind] ?: fail("Expected prefix expression here")
-        val expr = parser.parse(this, current)
-        return expr
-
-
+        val left = parser.parse(this, current)
+        val infix = infixParsers[current.kind]?.parse(this, left, current)
+        return infix ?: left
     }
+
+    val previousLexeme: Lexeme
+        get() = lexemes[position - 1]
 
     fun parsePackageDecl(): LangPackageDeclImpl {
         val packageLexeme = expectThenAdvance(Package)
@@ -334,7 +357,30 @@ private class ReferenceExprParser : PrefixParser {
     }
 }
 
+private class OpPrefixParser : PrefixParser {
+    override fun parse(parser: ParserState, lexeme: Lexeme): LangPrefixExprImpl {
+        parser.advance()
+        val expr = parser.expr()
+        return LangPrefixExprImpl(lexeme, parser.previousLexeme, expr, PrefixOperatorType.from(lexeme.text))
+    }
+}
+
+private class BoolParser : PrefixParser {
+    override fun parse(parser: ParserState, lexeme: Lexeme): LangBoolLiteralExprImpl {
+        return LangBoolLiteralExprImpl(lexeme.text.toBoolean(), parser.advance())
+    }
+}
+
 private interface InfixExprParser {
-    val stickiness: Int
-    fun parse(parser: LangParser, left: LangExpr, lexeme: Lexeme): LangExpr
+//    val stickiness: Int
+    fun parse(parser: ParserState, left: LangExpr, lexeme: Lexeme): LangExpr
+}
+
+private class BinaryExprParser : InfixExprParser {
+    override fun parse(parser: ParserState, left: LangExpr, lexeme: Lexeme): LangExpr {
+        parser.advance()
+        val binOp = LangBinaryOperatorImpl(lexeme.text, lexeme.startOffset, lexeme.endOffset)
+        val right = parser.expr()
+        return LangBinaryExprImpl(left, right, binOp, left.startOffset, right.endOffset)
+    }
 }

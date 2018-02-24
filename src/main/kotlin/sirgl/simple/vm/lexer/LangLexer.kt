@@ -50,6 +50,7 @@ val operatorToKind = mutableMapOf(
         "*" to OpAsterisk,
         "/" to OpDiv,
         "%" to OpPercent,
+        "!" to OpExcl,
         "<=" to OpLtEq,
         "<" to OpLt,
         ">=" to OpGtEq,
