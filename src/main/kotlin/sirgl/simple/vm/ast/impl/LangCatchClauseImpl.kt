@@ -15,7 +15,7 @@ class LangCatchClauseImpl(
         override val block: LangBlock
 ) : AstNodeImpl(startLexeme, endLexeme), LangCatchClause {
     override fun accept(visitor: LangVisitor) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        visitor.visitCatchClause(this)
     }
 
     override lateinit var parent: LangTryStmt

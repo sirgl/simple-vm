@@ -330,7 +330,9 @@ private class ParserState(
         }
         expectThenAdvance(Semicolon)
         val last = if (initializer == null) typeLast else current
-        return LangFieldImpl(identifier.text, type, varLexeme, last, initializer)
+        val field = LangFieldImpl(identifier.text, type, varLexeme, last, initializer)
+        initializer?.parent = field
+        return field
     }
 
     fun stmt() = when (current.kind) {
@@ -345,7 +347,9 @@ private class ParserState(
     fun exprStmt(): LangExprStmtImpl {
         val expr = expr()
         val semi = expectThenAdvance(Semicolon)
-        return LangExprStmtImpl(expr.startOffset, semi.endOffset, expr)
+        val exprStmt = LangExprStmtImpl(expr.startOffset, semi.endOffset, expr)
+        expr.parent = exprStmt
+        return exprStmt
     }
 
     fun returnStmt(): LangReturnStmtImpl {
@@ -353,7 +357,9 @@ private class ParserState(
         if (matchThenAdvance(Semicolon)) return LangReturnStmtImpl(returnLexeme, returnLexeme)
         val expr = expr()
         val last = expectThenAdvance(Semicolon)
-        return LangReturnStmtImpl(returnLexeme, last, expr)
+        val returnStmt = LangReturnStmtImpl(returnLexeme, last, expr)
+        expr.parent = returnStmt
+        return returnStmt
     }
 
     fun continueStmt(): LangContinueStmtImpl {
@@ -488,7 +494,9 @@ private class ReferenceExprParser : PrefixParser {
         } else {
             null
         }
-        return LangReferenceExprImpl(lexeme, lexeme.text, qualifiedExpr)
+        val refExpr = LangReferenceExprImpl(lexeme, lexeme.text, qualifiedExpr)
+        qualifiedExpr?.parent = refExpr
+        return refExpr
     }
 }
 
@@ -496,7 +504,9 @@ private class OpPrefixParser : PrefixParser {
     override fun parse(parser: ParserState, lexeme: Lexeme): LangPrefixExprImpl {
         parser.advance()
         val expr = parser.expr()
-        return LangPrefixExprImpl(lexeme, parser.previousLexeme, expr, PrefixOperatorType.from(lexeme.text))
+        val prefixExpr = LangPrefixExprImpl(lexeme, parser.previousLexeme, expr, PrefixOperatorType.from(lexeme.text))
+        expr.parent = prefixExpr
+        return prefixExpr
     }
 }
 
@@ -522,7 +532,11 @@ private class BinaryExprParser(
         parser.advance()
         val binOp = LangBinaryOperatorImpl(lexeme.text, lexeme.startOffset, lexeme.endOffset)
         val right = parser.expr(precedence + if (isLeft) 0 else 1)
-        return LangBinaryExprImpl(left, right, binOp, left.startOffset, right.endOffset)
+        val binExpr = LangBinaryExprImpl(left, right, binOp, left.startOffset, right.endOffset)
+        left.parent = binExpr
+        binOp.parent = binExpr
+        right.parent = binExpr
+        return binExpr
     }
 }
 
@@ -533,7 +547,10 @@ private class AssignExprParser : InfixExprParser {
         if (left !is LangReferenceExpr) parser.fail("Left part of assignment expression must be reference")
         parser.advance()
         val right = parser.expr(precedence + 1)
-        return LangAssignExprImpl(left.startOffset, right.endOffset, left, right)
+        val assignExpr = LangAssignExprImpl(left.startOffset, right.endOffset, left, right)
+        left.parent = assignExpr
+        right.parent = assignExpr
+        return assignExpr
     }
 }
 
