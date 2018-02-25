@@ -9,7 +9,9 @@ import sirgl.simple.vm.lexer.Lexeme
 class LangReferenceExprImpl(
         nameLexeme: Lexeme,
         override val name: String,
-        override val qualifier: LangExpr? = null
+        override val qualifier: LangExpr? = null,
+        override val isSuper: Boolean,
+        override val isThis: Boolean
 ) : LangReferenceExpr, LangExprImpl(nameLexeme.startOffset, qualifier?.endOffset ?: nameLexeme.endOffset) {
     override fun accept(visitor: LangVisitor) = visitor.visitReferenceExpr(this)
 

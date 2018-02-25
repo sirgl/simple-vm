@@ -9,5 +9,12 @@ class A {
         foo.bar(); // simple call
         foo.bar.baz(12, "test"); // arguments
         baz(12); // single
+        super.field; // field
+        super.call(); // call
+        super(); // constructor
+        this.foo();
+        this.field;
+        this;
+        this.super.foo.this.super.bar = 12;
     }
 }

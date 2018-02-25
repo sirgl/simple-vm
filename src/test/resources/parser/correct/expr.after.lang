@@ -1,9 +1,9 @@
-File@[0, 306)
+File@[0, 496)
   Package@[0, 10)
-  Class@[12, 306)
-    Method@[26, 304)
+  Class@[12, 496)
+    Method@[26, 494)
       Parameter@[34, 41)
-      Block@[43, 304)
+      Block@[43, 494)
         ExprStmt@[53, 63)
           BinaryExpr@[53, 62)
             IntLiteral@[53, 54) value: 1
@@ -31,24 +31,52 @@ File@[0, 306)
               BinaryExpr@[134, 141)
                 ReferenceExpr@[134, 135) name: z
                 IntLiteral@[138, 141) value: 100
-        ExprStmt@[161, 178)
-          BinaryExpr@[161, 177)
-            ReferenceExpr@[161, 172) name: foo
-              ReferenceExpr@[165, 172) name: bar
-                ReferenceExpr@[169, 172) name: baz
+        ExprStmt@[169, 178)
+          BinaryExpr@[169, 177)
+            ReferenceExpr@[169, 164) name: baz
+              ReferenceExpr@[165, 164) name: bar
+                ReferenceExpr@[161, 164) name: foo
             IntLiteral@[175, 177) value: 12
-        ExprStmt@[200, 210)
-          CallExpr@[200, 209)
-            ReferenceExpr@[200, 207) name: foo
-              ReferenceExpr@[204, 207) name: bar
-        ExprStmt@[234, 258)
-          CallExpr@[234, 257)
-            ReferenceExpr@[234, 245) name: foo
-              ReferenceExpr@[238, 245) name: bar
-                ReferenceExpr@[242, 245) name: baz
+        ExprStmt@[204, 210)
+          CallExpr@[204, 209)
+            ReferenceExpr@[204, 203) name: bar
+              ReferenceExpr@[200, 203) name: foo
+        ExprStmt@[242, 258)
+          CallExpr@[242, 257)
+            ReferenceExpr@[242, 237) name: baz
+              ReferenceExpr@[238, 237) name: bar
+                ReferenceExpr@[234, 237) name: foo
             IntLiteral@[246, 248) value: 12
             StringLiteral@[250, 256) value: test
         ExprStmt@[280, 288)
           CallExpr@[280, 287)
             ReferenceExpr@[280, 283) name: baz
             IntLiteral@[284, 286) value: 12
+        ExprStmt@[313, 319)
+          ReferenceExpr@[313, 312) name: field
+            ReferenceExpr@[307, 312) name: super
+        ExprStmt@[343, 350)
+          CallExpr@[343, 349)
+            ReferenceExpr@[343, 342) name: call
+              ReferenceExpr@[337, 342) name: super
+        ExprStmt@[367, 375)
+          CallExpr@[367, 374)
+            ReferenceExpr@[367, 372) name: super
+        ExprStmt@[404, 410)
+          CallExpr@[404, 409)
+            ReferenceExpr@[404, 403) name: foo
+              ReferenceExpr@[399, 403) name: this
+        ExprStmt@[424, 430)
+          ReferenceExpr@[424, 423) name: field
+            ReferenceExpr@[419, 423) name: this
+        ExprStmt@[439, 444)
+          ReferenceExpr@[439, 443) name: this
+        ExprStmt@[479, 488)
+          BinaryExpr@[479, 487)
+            ReferenceExpr@[479, 457) name: bar
+              ReferenceExpr@[473, 457) name: super
+                ReferenceExpr@[468, 457) name: this
+                  ReferenceExpr@[464, 457) name: foo
+                    ReferenceExpr@[458, 457) name: super
+                      ReferenceExpr@[453, 457) name: this
+            IntLiteral@[485, 487) value: 12

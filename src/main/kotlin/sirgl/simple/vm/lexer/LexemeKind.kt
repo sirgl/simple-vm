@@ -18,6 +18,8 @@ enum class LexemeKind {
     Package,
     If,
     Else,
+    Super,
+    This,
 
     // Types
     I32,

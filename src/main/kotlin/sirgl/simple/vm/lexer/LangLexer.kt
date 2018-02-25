@@ -22,7 +22,9 @@ val keywords = mutableListOf(
         "import",
         "void",
         "if",
-        "else"
+        "else",
+        "super",
+        "this"
 )
 
 val keywordToKind = mutableMapOf(
@@ -45,7 +47,9 @@ val keywordToKind = mutableMapOf(
         "package" to Package,
         "void" to Void,
         "if" to If,
-        "else" to Else
+        "else" to Else,
+        "super" to Super,
+        "this" to This
 )
 
 val operatorToKind = mutableMapOf(
@@ -231,7 +235,7 @@ private class LexerState(
         current++
         while (true) {
             if (isEnd(current) || text[current] == '\n') {
-                addLexemeConditional(current, skipWhitespace, EolComment)
+                addLexemeConditional(current, skipComments, EolComment)
                 return true
             }
             current++

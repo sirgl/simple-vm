@@ -60,11 +60,14 @@ class HandwrittenLangParser : LangParser {
 
 private val opPrefixParser = OpPrefixParser()
 private val boolLiteralParser = BoolParser()
+private val referenceExprParser = ReferenceExprParser()
 
 private val prefixParsers = mapOf(
         IntLiteral to IntLiteralParser(),
         StringLiteral to StringLiteralParser(),
-        Identifier to ReferenceExprParser(),
+        Identifier to referenceExprParser,
+        Super to referenceExprParser,
+        This to referenceExprParser,
         OpPlus to opPrefixParser,
         OpMinus to opPrefixParser,
         OpExcl to opPrefixParser,
@@ -126,6 +129,7 @@ private fun buildInfixOperators(): Map<LexemeKind, InfixExprParser> {
     infixOperators.putAll(binOps)
     infixOperators[OpEq] = AssignExprParser()
     infixOperators[LParen] = CallExprParser()
+    infixOperators[Dot] = DotExprParser()
     return infixOperators
 }
 
@@ -486,17 +490,12 @@ private class CharLiteralParser : PrefixParser {
 
 private class ReferenceExprParser : PrefixParser {
     override fun parse(parser: ParserState, lexeme: Lexeme): LangReferenceExprImpl {
+        var isSuper = false
+        var isThis = false
+        if (lexeme.kind == Super) isSuper = true
+        else if (lexeme.kind == This) isThis = true
         parser.advance()
-        val qualifiedExpr = if (parser.match(Dot)) {
-            parser.advance()
-            parser.expect(Identifier)
-            parse(parser, parser.current)
-        } else {
-            null
-        }
-        val refExpr = LangReferenceExprImpl(lexeme, lexeme.text, qualifiedExpr)
-        qualifiedExpr?.parent = refExpr
-        return refExpr
+        return LangReferenceExprImpl(lexeme, lexeme.text, null, isSuper, isThis)
     }
 }
 
@@ -522,6 +521,22 @@ private class BoolParser : PrefixParser {
 private interface InfixExprParser {
     val precedence: Int
     fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl
+}
+
+private class DotExprParser: InfixExprParser {
+    override val precedence = 1
+
+    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
+        parser.advance()
+        var isSuper = false
+        var isThis = false
+        if (parser.current.kind == Super) isSuper = true
+        else if (parser.current.kind == This) isThis = true
+        val right = parser.advance()
+        val refExpr = LangReferenceExprImpl(right, right.text, left, isSuper, isThis)
+        left.parent = refExpr
+        return refExpr
+    }
 }
 
 private class BinaryExprParser(
@@ -558,7 +573,6 @@ private class CallExprParser : InfixExprParser {
     override val precedence = 1
 
     override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
-        if (left !is LangReferenceExpr) parser.fail("Call expression applicable only on reference expression")
         parser.advance()
         val arguments = mutableListOf<LangExprImpl>()
         while (!parser.match(RParen)) {
