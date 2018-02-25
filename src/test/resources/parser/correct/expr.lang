@@ -20,5 +20,6 @@ class A {
         field.super().arr[12];
         (foo as I32) is I8;
         null.foo();
+        'x' + '\t';
     }
 }

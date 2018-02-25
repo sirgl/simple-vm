@@ -227,6 +227,7 @@ private class LexerState(
         }
         current++
         if (isEnd(current) || text[current] != '\'') return false
+        current++
         addLexeme(current, CharLiteral)
         return true
     }

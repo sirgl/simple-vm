@@ -5,7 +5,8 @@ import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
-import sirgl.simple.vm.ast.ext.parseLiteral
+import sirgl.simple.vm.ast.ext.parseCharLiteral
+import sirgl.simple.vm.ast.ext.parseStringLiteral
 import sirgl.simple.vm.ast.impl.*
 import sirgl.simple.vm.ast.impl.expr.*
 import sirgl.simple.vm.ast.impl.stmt.*
@@ -73,7 +74,8 @@ private val prefixParsers = mapOf(
         True to boolLiteralParser,
         False to boolLiteralParser,
         LParen to ParenExprParser(),
-        Null to NullParser()
+        Null to NullParser(),
+        CharLiteral to CharLiteralParser()
 )
 
 private class InfixOperatorInfo(
@@ -515,7 +517,7 @@ private class NullParser : PrefixParser {
 
 private class StringLiteralParser : PrefixParser {
     override fun parse(parser: ParserState, lexeme: Lexeme): LangStringLiteralExprImpl {
-        return LangStringLiteralExprImpl(parseLiteral(lexeme.text), parser.advance())
+        return LangStringLiteralExprImpl(parseStringLiteral(lexeme.text), parser.advance())
     }
 }
 
@@ -531,8 +533,8 @@ private class ParenExprParser : PrefixParser {
 }
 
 private class CharLiteralParser : PrefixParser {
-    override fun parse(parser: ParserState, lexeme: Lexeme): LangStringLiteralExprImpl {
-        TODO()
+    override fun parse(parser: ParserState, lexeme: Lexeme): LangCharLiteralExprImpl {
+        return LangCharLiteralExprImpl(parseCharLiteral(lexeme.text), parser.advance())
     }
 }
 

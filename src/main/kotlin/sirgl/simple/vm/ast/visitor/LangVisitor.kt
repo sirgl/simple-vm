@@ -152,6 +152,10 @@ abstract class LangVisitor {
         visitLiteral(stringLiteralExpr)
     }
 
+    open fun visitCharLiteralExpr(literal: LangCharLiteralExpr) {
+        visitLiteral(literal)
+    }
+
     open fun visitBoolLiteralExpr(boolLiteralExpr: LangBoolLiteralExpr) {
         visitLiteral(boolLiteralExpr)
     }
