@@ -70,7 +70,8 @@ val operatorToKind = mutableMapOf(
         "!=" to OpNotEq,
         "&&" to OpAndAnd,
         "||" to OpOrOr,
-        "as" to OpAs
+        "as" to OpAs,
+        "is" to OpIs
 )
 
 val punctuationToKind = mutableMapOf(

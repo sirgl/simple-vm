@@ -124,6 +124,10 @@ abstract class LangVisitor {
         visitExpr(expr)
     }
 
+    open fun visitCastExpr(expr: LangCastExpr) {
+        visitExpr(expr)
+    }
+
     open fun visitCallExpr(expr: LangCallExpr) {
         visitExpr(expr)
     }

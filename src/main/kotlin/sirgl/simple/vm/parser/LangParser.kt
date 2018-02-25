@@ -88,40 +88,18 @@ private val binOpInfo = arrayOf(
         InfixOperatorInfo(OpPercent, 3, false),
         InfixOperatorInfo(OpPlus, 4, false),
         InfixOperatorInfo(OpMinus, 4, false),
-        InfixOperatorInfo(OpLt, 5, false),
-        InfixOperatorInfo(OpLtEq, 5, false),
-        InfixOperatorInfo(OpGt, 5, false),
-        InfixOperatorInfo(OpGtEq, 5, false),
-        InfixOperatorInfo(OpEqEq, 6, false),
-        InfixOperatorInfo(OpNotEq, 6, false),
-        InfixOperatorInfo(OpAndAnd, 7, false),
-        InfixOperatorInfo(OpOrOr, 8, false),
-        InfixOperatorInfo(OpEq, 9, true)
+        InfixOperatorInfo(OpLt, 6, false),
+        InfixOperatorInfo(OpLtEq, 6, false),
+        InfixOperatorInfo(OpGt, 6, false),
+        InfixOperatorInfo(OpGtEq, 6, false),
+        InfixOperatorInfo(OpEqEq, 7, false),
+        InfixOperatorInfo(OpNotEq, 7, false),
+        InfixOperatorInfo(OpAndAnd, 8, false),
+        InfixOperatorInfo(OpOrOr, 9, false),
+        InfixOperatorInfo(OpEq, 10, true)
 )
 
 private val binOps = binOpInfo.associateBy({ it.opKind }) { BinaryExprParser(it.precedence, it.isLeft) }
-
-// Precedence for infix operators
-private val precedenceTable = mapOf(
-        LParen to 1,
-        LBracket to 1,
-        Dot to 1,
-        OpAs to 2,
-        OpAsterisk to 3,
-        OpDiv to 3,
-        OpPercent to 3,
-        OpPlus to 4,
-        OpMinus to 4,
-        OpLt to 5,
-        OpLtEq to 5,
-        OpGtEq to 5,
-        OpGt to 5,
-        OpEqEq to 6,
-        OpNotEq to 6,
-        OpAndAnd to 7,
-        OpOrOr to 8,
-        OpEq to 9
-)
 
 private val infixOperators: Map<LexemeKind, InfixExprParser> = buildInfixOperators()
 
@@ -132,6 +110,8 @@ private fun buildInfixOperators(): Map<LexemeKind, InfixExprParser> {
     infixOperators[LParen] = CallExprParser()
     infixOperators[Dot] = DotExprParser()
     infixOperators[LBracket] = ElementAccessExprParser()
+    infixOperators[OpAs] = CastExprParser()
+    infixOperators[OpIs] = TypeCheckExpr()
     return infixOperators
 }
 
@@ -664,5 +644,29 @@ private class ElementAccessExprParser : InfixExprParser {
         indexExpr.parent = accessExpr
         left.parent = accessExpr
         return accessExpr
+    }
+}
+
+private class CastExprParser : InfixExprParser {
+    override val precedence = 2
+
+    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
+        parser.advance()
+        val type = parser.type()
+        val castExpr = LangCastExprImpl(parser.previousLexeme, left, type)
+        left.parent = castExpr
+        return castExpr
+    }
+}
+
+private class TypeCheckExpr : InfixExprParser {
+    override val precedence = 5
+
+    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
+        parser.advance()
+        val type = parser.type()
+        val castExpr = LangTypeCheckExprImpl(parser.previousLexeme, left, type)
+        left.parent = castExpr
+        return castExpr
     }
 }

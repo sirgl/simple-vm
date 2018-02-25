@@ -60,6 +60,7 @@ enum class LexemeKind {
     OpAndAnd,
     OpOrOr,
     OpAs,
+    OpIs,
 
     // Comments
     EolComment,

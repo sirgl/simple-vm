@@ -18,5 +18,6 @@ class A {
         this.super.foo.this.super.bar = 12;
         (cls.field + 12) * 42;
         field.super().arr[12];
+        (foo as I32) is I8;
     }
 }
