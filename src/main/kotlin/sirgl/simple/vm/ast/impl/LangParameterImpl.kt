@@ -23,5 +23,7 @@ class LangParameterImpl(
 
     override val debugName = "Parameter"
 
+    override fun toString() = super.toString() + " name: $name, type: ${type.name}"
+
     override val children = emptyList<AstNode>()
 }

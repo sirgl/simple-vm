@@ -1,11 +1,11 @@
 File@[0, 107)
   Package@[0, 10)
-  Class@[12, 107)
-    Method@[26, 105)
-      Parameter@[34, 41)
+  Class@[12, 107) name: A
+    Method@[26, 105) name: foo
+      Parameter@[34, 41) name: p1, type: I32
       Block@[43, 105)
         TryStmt@[53, 99)
           Block@[57, 69)
           CatchClause@[70, 99)
-            Parameter@[77, 85)
+            Parameter@[77, 85) name: bar, type: Baz
             Block@[87, 99)

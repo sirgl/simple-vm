@@ -1,6 +1,6 @@
 File@[0, 53)
   Package@[0, 10)
-  Class@[12, 53)
-    Method@[26, 51)
-      Parameter@[34, 41)
+  Class@[12, 53) name: A
+    Method@[26, 51) name: foo
+      Parameter@[34, 41) name: p1, type: I32
       Block@[43, 51)

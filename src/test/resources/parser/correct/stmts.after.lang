@@ -1,8 +1,8 @@
 File@[0, 277)
   Package@[0, 10)
-  Class@[12, 277)
-    Method@[26, 275)
-      Parameter@[34, 41)
+  Class@[12, 277) name: A
+    Method@[26, 275) name: foo
+      Parameter@[34, 41) name: p1, type: I32
       Block@[43, 275)
         ReturnStmt@[53, 59)
         ContinueStmt@[69, 77)

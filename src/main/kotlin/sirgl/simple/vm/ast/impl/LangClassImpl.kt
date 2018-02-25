@@ -25,6 +25,8 @@ class LangClassImpl(
 
     override val debugName = "Class"
 
+    override fun toString() = super.toString() + " name: $simpleName" + if (parentClassName != null) " parent: " + parentClassName else ""
+
     override val children: List<AstNode> = members
 
 }

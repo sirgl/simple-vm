@@ -1,8 +1,8 @@
 File@[0, 496)
   Package@[0, 10)
-  Class@[12, 496)
-    Method@[26, 494)
-      Parameter@[34, 41)
+  Class@[12, 496) name: A
+    Method@[26, 494) name: foo
+      Parameter@[34, 41) name: p1, type: I32
       Block@[43, 494)
         ExprStmt@[53, 63)
           BinaryExpr@[53, 62)

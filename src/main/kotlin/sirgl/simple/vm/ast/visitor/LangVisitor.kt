@@ -130,14 +130,6 @@ abstract class LangVisitor {
         visitLiteral(boolLiteralExpr)
     }
 
-    open fun visitThisExpr(thisExpr: LangThisExpr) {
-        visitExpr(thisExpr)
-    }
-
-    open fun visitSuperExpr(superExpr: LangSuperExpr) {
-        visitExpr(superExpr)
-    }
-
     open fun visitNullExpr(nullExpr: LangNullExpr) {
         visitExpr(nullExpr)
     }

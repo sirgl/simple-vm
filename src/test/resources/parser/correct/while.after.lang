@@ -1,8 +1,8 @@
 File@[0, 87)
   Package@[0, 10)
-  Class@[12, 87)
-    Method@[26, 85)
-      Parameter@[34, 41)
+  Class@[12, 87) name: A
+    Method@[26, 85) name: foo
+      Parameter@[34, 41) name: p1, type: I32
       Block@[43, 85)
         WhileStmt@[53, 79)
           BinaryExpr@[60, 66)

@@ -23,6 +23,8 @@ class LangFieldImpl(
 
     override val debugName = "Field"
 
+    override fun toString() = super.toString() +  " name: $name, type: ${type.name}"
+
     override val children = makeChildren()
 
     private fun makeChildren(): List<AstNode> {
