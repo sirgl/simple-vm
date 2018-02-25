@@ -141,4 +141,8 @@ abstract class LangVisitor {
     open fun visitAssignExpr(expr: LangAssignExpr) {
         visitExpr(expr)
     }
+
+    open fun visitParenExpr(expr: LangParenExpr) {
+        visitExpr(expr)
+    }
 }

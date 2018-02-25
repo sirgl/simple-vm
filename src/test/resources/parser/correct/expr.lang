@@ -16,5 +16,6 @@ class A {
         this.field;
         this;
         this.super.foo.this.super.bar = 12;
+        (cls.field + 12) * 42;
     }
 }
