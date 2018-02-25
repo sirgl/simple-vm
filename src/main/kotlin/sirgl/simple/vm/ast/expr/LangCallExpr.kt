@@ -4,5 +4,5 @@ import sirgl.simple.vm.ast.LangExpr
 
 interface LangCallExpr : LangExpr {
     val referenceExpr: LangReferenceExpr
-    val arguments: Array<LangExpr>
+    val arguments: List<LangExpr>
 }

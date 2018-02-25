@@ -18,8 +18,6 @@ class LangPrefixExprImpl(
         visitor.visitPrefixExpr(this)
     }
 
-    override lateinit var parent: AstNode
-
     override val debugName = "PrefixExpr"
 
     override val children = listOf<AstNode>(expr)

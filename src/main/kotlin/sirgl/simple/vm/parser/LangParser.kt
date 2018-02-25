@@ -125,6 +125,7 @@ private fun buildInfixOperators(): Map<LexemeKind, InfixExprParser> {
     val infixOperators = mutableMapOf<LexemeKind, InfixExprParser>()
     infixOperators.putAll(binOps)
     infixOperators[OpEq] = AssignExprParser()
+    infixOperators[LParen] = CallExprParser()
     return infixOperators
 }
 
@@ -278,7 +279,7 @@ private class ParserState(
         expectThenAdvance(RParen)
         val block = block()
         val whileStmt = LangWhileStmtImpl(whileLexeme, previousLexeme, expr, block)
-        expr.setParent(whileStmt)
+        expr.parent = whileStmt
         block.parent = whileStmt
         return whileStmt
     }
@@ -374,7 +375,7 @@ private class ParserState(
             null
         }
         val ifStmt = LangIfStmtImpl(startLexeme, previousLexeme, condition, thenBlock, elseBlock)
-        condition.setParent(ifStmt)
+        condition.parent = ifStmt
         thenBlock.parent = ifStmt
         elseBlock?.parent = ifStmt
         return ifStmt
@@ -450,14 +451,6 @@ private class ParserState(
         return lexemes
     }
 }
-
-private fun LangExpr.setParent(node: AstNode) {
-    when (this) {
-        is LangBinaryExprImpl -> parent = node
-        is LangLeafExprImpl -> parent = node
-    }
-}
-
 
 /**
  * Expected, that type of parser can be determined only by type of first lexeme
@@ -544,14 +537,26 @@ private class AssignExprParser : InfixExprParser {
     }
 }
 
-//private class DotExprParser : InfixExprParser {
-//    override val precedence = 1
-//
-//    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
-//        parser.advance()
-//        val nameLexeme = parser.expectThenAdvance(Identifier)
-//        val right = parser.expr(precedence)
-//        return LangReferenceExprImpl(nameLexeme, nameLexeme.text, right)
-//    }
-//
-//}
+private class CallExprParser : InfixExprParser {
+    override val precedence = 1
+
+    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
+        if (left !is LangReferenceExpr) parser.fail("Call expression applicable only on reference expression")
+        parser.advance()
+        val arguments = mutableListOf<LangExprImpl>()
+        while (!parser.match(RParen)) {
+            arguments.add(parser.expr())
+            if(!parser.matchThenAdvance(Comma)) {
+                break
+            }
+        }
+        val rParen = parser.expectThenAdvance(RParen)
+        val callExpr = LangCallExprImpl(rParen, left, arguments)
+        left.parent = callExpr
+        for (arg in arguments) {
+            arg.parent = callExpr
+        }
+        return callExpr
+    }
+
+}

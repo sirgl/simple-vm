@@ -11,7 +11,6 @@ class LangReferenceExprImpl(
         override val name: String,
         override val qualifier: LangExpr? = null
 ) : LangReferenceExpr, LangExprImpl(nameLexeme.startOffset, qualifier?.endOffset ?: nameLexeme.endOffset) {
-    override lateinit var parent: AstNode
     override fun accept(visitor: LangVisitor) = visitor.visitReferenceExpr(this)
 
     override val debugName = "ReferenceExpr"

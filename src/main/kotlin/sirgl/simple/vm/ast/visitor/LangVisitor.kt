@@ -106,6 +106,10 @@ abstract class LangVisitor {
         visitExpr(expr)
     }
 
+    open fun visitCallExpr(expr: LangCallExpr) {
+        visitExpr(expr)
+    }
+
     open fun visitPrefixExpr(expr: LangPrefixExpr) {
         visitExpr(expr)
     }

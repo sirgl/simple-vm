@@ -9,8 +9,6 @@ class LangThisExprImpl(
         startOffset: Int,
         endOffset: Int
 ) : LangThisExpr, LangLeafExprImpl(startOffset, endOffset) {
-    override lateinit var parent: AstNode
-
     override fun toString() = "ThisExpr$rangeText"
 
     override fun accept(visitor: LangVisitor) = visitor.visitThisExpr(this)

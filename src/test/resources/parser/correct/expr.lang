@@ -6,5 +6,8 @@ class A {
         1 * 2 + 3 * 4; // precedence
         x = y = z = 100; // assign
         foo.bar.baz = 12; // qualified
+        foo.bar(); // simple call
+        foo.bar.baz(12, "test"); // arguments
+        baz(12); // single
     }
 }

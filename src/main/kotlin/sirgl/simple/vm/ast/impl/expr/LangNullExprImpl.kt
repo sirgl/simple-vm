@@ -10,8 +10,6 @@ class LangNullExprImpl(
         startOffset: Int,
         endOffset: Int
 ) : LangNullExpr, LangLeafExprImpl(startOffset, endOffset) {
-    override lateinit var parent: AstNode
-
     override var type: LangType = NullType
 
     override fun accept(visitor: LangVisitor) = visitor.visitNullExpr(this)
