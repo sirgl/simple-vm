@@ -25,4 +25,7 @@ class LangParserCorrectTest : ParserBaseTest() {
 
     @Test
     fun testWhile() = runSingle("while")
+
+    @Test
+    fun testVariable() = runSingle("variable")
 }

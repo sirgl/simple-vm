@@ -19,7 +19,6 @@ abstract class LangVisitor {
     }
 
     open fun visitVarDecl(varDecl: LangVarDecl) {
-        visitAstNode(varDecl)
     }
 
     // Top level
@@ -44,12 +43,14 @@ abstract class LangVisitor {
 
     open fun visitField(field: LangField) {
         visitMember(field)
+        visitVarDecl(field)
     }
 
 
     // Other
 
     open fun visitParameter(parameter: LangParameter) {
+        visitAstNode(parameter)
         visitVarDecl(parameter)
     }
 
@@ -93,6 +94,11 @@ abstract class LangVisitor {
 
     open fun visitWhileStmt(stmt: LangWhileStmt) {
         visitStmt(stmt)
+    }
+
+    open fun visitVarDeclStmt(stmt: LangVarDeclStmt) {
+        visitStmt(stmt)
+        visitVarDecl(stmt)
     }
 
 

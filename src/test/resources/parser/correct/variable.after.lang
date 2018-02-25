@@ -1,0 +1,9 @@
+File@[0, 102)
+  Package@[0, 10)
+  Class@[12, 102) name: VarCls
+    Method@[31, 100) name: foo
+      Parameter@[39, 46) name: p1, type: I32
+      Block@[48, 100)
+        VarDeclStmt@[58, 86) name: x, type: Int
+          IntLiteral@[71, 73) value: 12
+        VarDeclStmt@[83, 93) name: y, type: Int

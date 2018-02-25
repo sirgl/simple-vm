@@ -1,9 +1,6 @@
 package sirgl.simple.vm.parser
 
-import sirgl.simple.vm.ast.AstNode
-import sirgl.simple.vm.ast.LangExpr
-import sirgl.simple.vm.ast.LangFile
-import sirgl.simple.vm.ast.LangMember
+import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.expr.LangParenExpr
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
@@ -11,6 +8,7 @@ import sirgl.simple.vm.ast.ext.parseLiteral
 import sirgl.simple.vm.ast.impl.*
 import sirgl.simple.vm.ast.impl.expr.*
 import sirgl.simple.vm.ast.impl.stmt.*
+import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
@@ -341,12 +339,31 @@ private class ParserState(
         return field
     }
 
+    fun localVar(): LangVarDeclStmtImpl {
+        val varLexeme = expectThenAdvance(Var)
+        val identifier = expectThenAdvance(Identifier)
+        expectThenAdvance(Colon)
+        val type = type()
+        val typeLast = lexemes[position - 1]
+        val initializer = if (matchThenAdvance(OpEq)) {
+            expr()
+        } else {
+            null
+        }
+        expectThenAdvance(Semicolon)
+        val last = if (initializer == null) typeLast else current
+        val localVar = LangVarDeclStmtImpl(identifier.text, type, varLexeme, last, initializer)
+        initializer?.parent = localVar
+        return localVar
+    }
+
     fun stmt() = when (current.kind) {
         Return -> returnStmt()
         Continue -> continueStmt()
         If -> ifStmt()
         Try -> tryStmt()
         While -> whileStmt()
+        Var -> localVar()
         else -> exprStmt()
     }
 
