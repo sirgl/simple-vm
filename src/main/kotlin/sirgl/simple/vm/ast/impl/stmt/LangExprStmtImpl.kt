@@ -7,8 +7,9 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 class LangExprStmtImpl(
         startOffset: Int,
         endOffset: Int,
+        line: Int,
         override val expr: LangExpr
-) : LangStmtImpl(startOffset, endOffset), LangExprStmt {
+) : LangStmtImpl(startOffset, endOffset, line), LangExprStmt {
     override val debugName = "ExprStmt"
 
     override val children = listOf(expr)

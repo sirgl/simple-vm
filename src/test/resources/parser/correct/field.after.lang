@@ -1,8 +1,8 @@
-File@[0, 95)
-  Package@[0, 14)
-  Class@[16, 95) name: A
-    Field@[30, 43) name: z, type: String
-    Field@[49, 73) name: z, type: Int
-      IntLiteral@[62, 64) value: 12
-    Field@[70, 95) name: z, type: String
-      StringLiteral@[86, 92) value: Good
+File#0@[0, 95)
+  Package#0@[0, 14)
+  Class#2@[16, 95) name: A
+    Field#3@[30, 43) name: z, type: String
+    Field#4@[49, 73) name: z, type: Int
+      IntLiteral#4@[62, 64) value: 12
+    Field#5@[70, 95) name: z, type: String
+      StringLiteral#5@[86, 92) value: Good

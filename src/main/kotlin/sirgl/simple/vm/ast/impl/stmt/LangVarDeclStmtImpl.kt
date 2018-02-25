@@ -20,7 +20,7 @@ class LangVarDeclStmtImpl(
 
     override val debugName = "VarDeclStmt"
 
-    override fun toString() = super.toString() +  " name: $name, type: ${type.name}"
+    override fun toString() = super.toString() + " name: $name, type: ${type.name}"
 
     override val children = makeChildren()
 

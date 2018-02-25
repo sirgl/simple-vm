@@ -6,9 +6,8 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangBreakStmtImpl(
-        startLexeme: Lexeme,
-        endLexeme: Lexeme
-) : LangStmtImpl(startLexeme, endLexeme), LangBreakStmt {
+        lexeme: Lexeme
+) : LangStmtImpl(lexeme, lexeme), LangBreakStmt {
     override val debugName = "BreakStmt"
 
     override val children = emptyList<AstNode>()

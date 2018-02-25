@@ -5,12 +5,12 @@ import sirgl.simple.vm.ast.BinaryOperatorType
 import sirgl.simple.vm.ast.LangBinaryOperator
 import sirgl.simple.vm.ast.ext.getOperatorTypeByText
 import sirgl.simple.vm.ast.visitor.LangVisitor
+import sirgl.simple.vm.lexer.Lexeme
 
 class LangBinaryOperatorImpl(
         private val operatorText: String,
-        startOffset: Int,
-        endOffset: Int
-) : LangBinaryOperator, AstNodeImpl(startOffset, endOffset) {
+        lexeme: Lexeme
+) : LangBinaryOperator, AstNodeImpl(lexeme, lexeme) {
     override lateinit var parent: AstNode
 
     override fun toString() = super.toString() + " type: $operatorText"

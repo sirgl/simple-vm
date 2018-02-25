@@ -12,7 +12,7 @@ class LangPrefixExprImpl(
         endLexeme: Lexeme,
         override val expr: LangExpr,
         override val prefixOperatorType: PrefixOperatorType
-) : LangExprImpl(startLexeme.startOffset, endLexeme.endOffset), LangPrefixExpr {
+) : LangExprImpl(startLexeme.startOffset, endLexeme.endOffset, startLexeme.line), LangPrefixExpr {
 
     override fun accept(visitor: LangVisitor) {
         visitor.visitPrefixExpr(this)

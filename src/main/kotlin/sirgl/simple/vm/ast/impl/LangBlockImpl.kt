@@ -12,7 +12,7 @@ class LangBlockImpl(
         override val stmts: List<LangStmt>,
         val lBrace: Lexeme,
         val rBrace: Lexeme
-) : AstNodeImpl(lBrace.startOffset, rBrace.endOffset), LangBlock, Scope by scope {
+) : AstNodeImpl(lBrace, rBrace), LangBlock, Scope by scope {
     override lateinit var parent: AstNode
 
     override fun accept(visitor: LangVisitor) {

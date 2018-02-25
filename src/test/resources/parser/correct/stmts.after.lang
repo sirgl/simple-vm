@@ -1,26 +1,27 @@
-File@[0, 277)
-  Package@[0, 10)
-  Class@[12, 277) name: A
-    Method@[26, 275) name: foo
-      Parameter@[34, 41) name: p1, type: I32
-      Block@[43, 275)
-        ReturnStmt@[53, 59)
-        ContinueStmt@[69, 77)
-        ReturnStmt@[87, 100)
-          PrefixExpr@[94, 99) op: !
-            BoolLiteral@[95, 99) value: true
-        ReturnStmt@[109, 191)
-          BoolLiteral@[113, 117) value: true
-          Block@[119, 152)
-            ReturnStmt@[133, 142)
-              IntLiteral@[140, 141) value: 0
-          Block@[158, 191)
-            ReturnStmt@[172, 181)
-              IntLiteral@[179, 180) value: 1
-        ReturnStmt@[225, 269)
-          BinaryExpr@[228, 234)
-            ReferenceExpr@[228, 229) name: a
-            BinaryOperator@[230, 231) type: <
-            IntLiteral@[232, 234) value: 12
-          Block@[236, 269)
-            ContinueStmt@[250, 258)
+File#0@[0, 292)
+  Package#0@[0, 10)
+  Class#2@[12, 292) name: A
+    Method#3@[26, 290) name: foo
+      Parameter#3@[34, 41) name: p1, type: I32
+      Block#3@[43, 290)
+        ReturnStmt#4@[53, 59)
+        ContinueStmt#5@[69, 77)
+        BreakStmt#6@[87, 92)
+        ReturnStmt#7@[102, 115)
+          PrefixExpr#7@[109, 114) op: !
+            BoolLiteral#7@[110, 114) value: true
+        ReturnStmt#8@[124, 206)
+          BoolLiteral#8@[128, 132) value: true
+          Block#8@[134, 167)
+            ReturnStmt#9@[148, 157)
+              IntLiteral#9@[155, 156) value: 0
+          Block#10@[173, 206)
+            ReturnStmt#11@[187, 196)
+              IntLiteral#11@[194, 195) value: 1
+        ReturnStmt#14@[240, 284)
+          BinaryExpr#14@[243, 249)
+            ReferenceExpr#14@[243, 244) name: a
+            BinaryOperator#14@[245, 246) type: <
+            IntLiteral#14@[247, 249) value: 12
+          Block#14@[251, 284)
+            ContinueStmt#15@[265, 273)

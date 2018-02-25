@@ -8,9 +8,10 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 class LangAssignExprImpl(
         startOffset: Int,
         endOffset: Int,
+        line: Int,
         override val leftRef: LangReferenceExpr,
         override val rightValue: LangExpr
-) : LangAssignExpr, LangExprImpl(startOffset, endOffset) {
+) : LangAssignExpr, LangExprImpl(startOffset, endOffset, line) {
     override fun accept(visitor: LangVisitor) {
         visitor.visitAssignExpr(this)
     }

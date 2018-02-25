@@ -15,7 +15,7 @@ class LangClassImpl(
         firstLexeme: Lexeme,
         endLexeme: Lexeme,
         override val parentClassName: String?
-) : AstNodeImpl(firstLexeme.startOffset, endLexeme.endOffset), LangClass, Scope by scope {
+) : AstNodeImpl(firstLexeme, endLexeme), LangClass, Scope by scope {
     override lateinit var qualifiedName: String
     override lateinit var parent: LangFile
 

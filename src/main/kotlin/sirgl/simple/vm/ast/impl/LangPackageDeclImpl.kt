@@ -10,7 +10,7 @@ class LangPackageDeclImpl(
         override val declaredPackage: String,
         startLexeme: Lexeme,
         endLexeme: Lexeme
-) : AstNodeImpl(startLexeme.startOffset, endLexeme.endOffset), LangPackageDecl {
+) : AstNodeImpl(startLexeme, endLexeme), LangPackageDecl {
 
     override lateinit var parent: LangFile
 

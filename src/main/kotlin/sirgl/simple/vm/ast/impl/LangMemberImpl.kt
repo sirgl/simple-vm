@@ -5,7 +5,7 @@ import sirgl.simple.vm.ast.LangMember
 import sirgl.simple.vm.lexer.Lexeme
 
 abstract class LangMemberImpl(startLexeme: Lexeme, endLexeme: Lexeme) :
-        AstNodeImpl(startLexeme.startOffset, endLexeme.endOffset), LangMember {
+        AstNodeImpl(startLexeme, endLexeme), LangMember {
     override lateinit var parent: LangClass
 
     override lateinit var enclosingClass: LangClass

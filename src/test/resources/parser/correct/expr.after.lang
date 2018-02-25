@@ -1,92 +1,92 @@
-File@[0, 527)
-  Package@[0, 10)
-  Class@[12, 527) name: A
-    Method@[26, 525) name: foo
-      Parameter@[34, 41) name: p1, type: I32
-      Block@[43, 525)
-        ExprStmt@[53, 63)
-          BinaryExpr@[53, 62)
-            IntLiteral@[53, 54) value: 1
-            BinaryOperator@[55, 56) type: +
-            BinaryExpr@[57, 62)
-              IntLiteral@[57, 58) value: 2
-              BinaryOperator@[59, 60) type: +
-              IntLiteral@[61, 62) value: 3
-        ExprStmt@[89, 103)
-          BinaryExpr@[89, 102)
-            BinaryExpr@[89, 94)
-              IntLiteral@[89, 90) value: 1
-              BinaryOperator@[91, 92) type: *
-              IntLiteral@[93, 94) value: 2
-            BinaryOperator@[95, 96) type: +
-            BinaryExpr@[97, 102)
-              IntLiteral@[97, 98) value: 3
-              BinaryOperator@[99, 100) type: *
-              IntLiteral@[101, 102) value: 4
-        ExprStmt@[126, 142)
-          BinaryExpr@[126, 141)
-            ReferenceExpr@[126, 127) name: x
-            BinaryExpr@[130, 141)
-              ReferenceExpr@[130, 131) name: y
-              BinaryExpr@[134, 141)
-                ReferenceExpr@[134, 135) name: z
-                IntLiteral@[138, 141) value: 100
-        ExprStmt@[169, 178)
-          BinaryExpr@[169, 177)
-            ReferenceExpr@[169, 164) name: baz
-              ReferenceExpr@[165, 164) name: bar
-                ReferenceExpr@[161, 164) name: foo
-            IntLiteral@[175, 177) value: 12
-        ExprStmt@[204, 210)
-          CallExpr@[204, 209)
-            ReferenceExpr@[204, 203) name: bar
-              ReferenceExpr@[200, 203) name: foo
-        ExprStmt@[242, 258)
-          CallExpr@[242, 257)
-            ReferenceExpr@[242, 237) name: baz
-              ReferenceExpr@[238, 237) name: bar
-                ReferenceExpr@[234, 237) name: foo
-            IntLiteral@[246, 248) value: 12
-            StringLiteral@[250, 256) value: test
-        ExprStmt@[280, 288)
-          CallExpr@[280, 287)
-            ReferenceExpr@[280, 283) name: baz
-            IntLiteral@[284, 286) value: 12
-        ExprStmt@[313, 319)
-          ReferenceExpr@[313, 312) name: field
-            ReferenceExpr@[307, 312) name: super
-        ExprStmt@[343, 350)
-          CallExpr@[343, 349)
-            ReferenceExpr@[343, 342) name: call
-              ReferenceExpr@[337, 342) name: super
-        ExprStmt@[367, 375)
-          CallExpr@[367, 374)
-            ReferenceExpr@[367, 372) name: super
-        ExprStmt@[404, 410)
-          CallExpr@[404, 409)
-            ReferenceExpr@[404, 403) name: foo
-              ReferenceExpr@[399, 403) name: this
-        ExprStmt@[424, 430)
-          ReferenceExpr@[424, 423) name: field
-            ReferenceExpr@[419, 423) name: this
-        ExprStmt@[439, 444)
-          ReferenceExpr@[439, 443) name: this
-        ExprStmt@[479, 488)
-          BinaryExpr@[479, 487)
-            ReferenceExpr@[479, 457) name: bar
-              ReferenceExpr@[473, 457) name: super
-                ReferenceExpr@[468, 457) name: this
-                  ReferenceExpr@[464, 457) name: foo
-                    ReferenceExpr@[458, 457) name: super
-                      ReferenceExpr@[453, 457) name: this
-            IntLiteral@[485, 487) value: 12
-        ExprStmt@[497, 519)
-          BinaryExpr@[497, 518)
-            ParenExpr@[497, 513)
-              BinaryExpr@[502, 512)
-                ReferenceExpr@[502, 501) name: field
-                  ReferenceExpr@[498, 501) name: cls
-                BinaryOperator@[508, 509) type: +
-                IntLiteral@[510, 512) value: 12
-            BinaryOperator@[514, 515) type: *
-            IntLiteral@[516, 518) value: 42
+File#0@[0, 527)
+  Package#0@[0, 10)
+  Class#2@[12, 527) name: A
+    Method#3@[26, 525) name: foo
+      Parameter#3@[34, 41) name: p1, type: I32
+      Block#3@[43, 525)
+        ExprStmt#4@[53, 63)
+          BinaryExpr#4@[53, 62)
+            IntLiteral#4@[53, 54) value: 1
+            BinaryOperator#4@[55, 56) type: +
+            BinaryExpr#4@[57, 62)
+              IntLiteral#4@[57, 58) value: 2
+              BinaryOperator#4@[59, 60) type: +
+              IntLiteral#4@[61, 62) value: 3
+        ExprStmt#5@[89, 103)
+          BinaryExpr#5@[89, 102)
+            BinaryExpr#5@[89, 94)
+              IntLiteral#5@[89, 90) value: 1
+              BinaryOperator#5@[91, 92) type: *
+              IntLiteral#5@[93, 94) value: 2
+            BinaryOperator#5@[95, 96) type: +
+            BinaryExpr#5@[97, 102)
+              IntLiteral#5@[97, 98) value: 3
+              BinaryOperator#5@[99, 100) type: *
+              IntLiteral#5@[101, 102) value: 4
+        ExprStmt#6@[126, 142)
+          BinaryExpr#6@[126, 141)
+            ReferenceExpr#6@[126, 127) name: x
+            BinaryExpr#6@[130, 141)
+              ReferenceExpr#6@[130, 131) name: y
+              BinaryExpr#6@[134, 141)
+                ReferenceExpr#6@[134, 135) name: z
+                IntLiteral#6@[138, 141) value: 100
+        ExprStmt#7@[169, 178)
+          BinaryExpr#7@[169, 177)
+            ReferenceExpr#7@[169, 164) name: baz
+              ReferenceExpr#7@[165, 164) name: bar
+                ReferenceExpr#7@[161, 164) name: foo
+            IntLiteral#7@[175, 177) value: 12
+        ExprStmt#8@[204, 210)
+          CallExpr#8@[204, 209)
+            ReferenceExpr#8@[204, 203) name: bar
+              ReferenceExpr#8@[200, 203) name: foo
+        ExprStmt#9@[242, 258)
+          CallExpr#9@[242, 257)
+            ReferenceExpr#9@[242, 237) name: baz
+              ReferenceExpr#9@[238, 237) name: bar
+                ReferenceExpr#9@[234, 237) name: foo
+            IntLiteral#9@[246, 248) value: 12
+            StringLiteral#9@[250, 256) value: test
+        ExprStmt#10@[280, 288)
+          CallExpr#10@[280, 287)
+            ReferenceExpr#10@[280, 283) name: baz
+            IntLiteral#10@[284, 286) value: 12
+        ExprStmt#11@[313, 319)
+          ReferenceExpr#11@[313, 312) name: field
+            ReferenceExpr#11@[307, 312) name: super
+        ExprStmt#12@[343, 350)
+          CallExpr#12@[343, 349)
+            ReferenceExpr#12@[343, 342) name: call
+              ReferenceExpr#12@[337, 342) name: super
+        ExprStmt#13@[367, 375)
+          CallExpr#13@[367, 374)
+            ReferenceExpr#13@[367, 372) name: super
+        ExprStmt#14@[404, 410)
+          CallExpr#14@[404, 409)
+            ReferenceExpr#14@[404, 403) name: foo
+              ReferenceExpr#14@[399, 403) name: this
+        ExprStmt#15@[424, 430)
+          ReferenceExpr#15@[424, 423) name: field
+            ReferenceExpr#15@[419, 423) name: this
+        ExprStmt#16@[439, 444)
+          ReferenceExpr#16@[439, 443) name: this
+        ExprStmt#17@[479, 488)
+          BinaryExpr#17@[479, 487)
+            ReferenceExpr#17@[479, 457) name: bar
+              ReferenceExpr#17@[473, 457) name: super
+                ReferenceExpr#17@[468, 457) name: this
+                  ReferenceExpr#17@[464, 457) name: foo
+                    ReferenceExpr#17@[458, 457) name: super
+                      ReferenceExpr#17@[453, 457) name: this
+            IntLiteral#17@[485, 487) value: 12
+        ExprStmt#18@[497, 519)
+          BinaryExpr#18@[497, 518)
+            ParenExpr#18@[497, 513)
+              BinaryExpr#18@[502, 512)
+                ReferenceExpr#18@[502, 501) name: field
+                  ReferenceExpr#18@[498, 501) name: cls
+                BinaryOperator#18@[508, 509) type: +
+                IntLiteral#18@[510, 512) value: 12
+            BinaryOperator#18@[514, 515) type: *
+            IntLiteral#18@[516, 518) value: 42

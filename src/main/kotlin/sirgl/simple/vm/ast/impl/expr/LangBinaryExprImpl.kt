@@ -10,8 +10,9 @@ class LangBinaryExprImpl(
         override val right: LangExpr,
         override val operator: LangBinaryOperator,
         startOffset: Int,
-        endOffset: Int
-) : LangBinaryExpr, LangExprImpl(startOffset, endOffset) {
+        endOffset: Int,
+        line: Int
+) : LangBinaryExpr, LangExprImpl(startOffset, endOffset, line) {
     override fun accept(visitor: LangVisitor) = visitor.visitBinaryExpr(this)
 
     override val debugName = "BinaryExpr"

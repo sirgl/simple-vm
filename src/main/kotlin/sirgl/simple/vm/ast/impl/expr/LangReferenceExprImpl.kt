@@ -12,7 +12,11 @@ class LangReferenceExprImpl(
         override val qualifier: LangExpr? = null,
         override val isSuper: Boolean,
         override val isThis: Boolean
-) : LangReferenceExpr, LangExprImpl(nameLexeme.startOffset, qualifier?.endOffset ?: nameLexeme.endOffset) {
+) : LangReferenceExpr, LangExprImpl(
+        nameLexeme.startOffset,
+        qualifier?.endOffset ?: nameLexeme.endOffset,
+        nameLexeme.line
+) {
     override fun accept(visitor: LangVisitor) = visitor.visitReferenceExpr(this)
 
     override val debugName = "ReferenceExpr"

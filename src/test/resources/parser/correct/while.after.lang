@@ -1,12 +1,12 @@
-File@[0, 87)
-  Package@[0, 10)
-  Class@[12, 87) name: A
-    Method@[26, 85) name: foo
-      Parameter@[34, 41) name: p1, type: I32
-      Block@[43, 85)
-        WhileStmt@[53, 79)
-          BinaryExpr@[60, 66)
-            ReferenceExpr@[60, 61) name: x
-            BinaryOperator@[62, 63) type: <
-            IntLiteral@[64, 66) value: 12
-          Block@[68, 79)
+File#0@[0, 87)
+  Package#0@[0, 10)
+  Class#2@[12, 87) name: A
+    Method#3@[26, 85) name: foo
+      Parameter#3@[34, 41) name: p1, type: I32
+      Block#3@[43, 85)
+        WhileStmt#4@[53, 79)
+          BinaryExpr#4@[60, 66)
+            ReferenceExpr#4@[60, 61) name: x
+            BinaryOperator#4@[62, 63) type: <
+            IntLiteral#4@[64, 66) value: 12
+          Block#4@[68, 79)

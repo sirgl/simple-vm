@@ -1,14 +1,15 @@
 package sirgl.simple.vm.parser
 
-import sirgl.simple.vm.ast.*
-import sirgl.simple.vm.ast.expr.LangParenExpr
+import sirgl.simple.vm.ast.AstNode
+import sirgl.simple.vm.ast.LangExpr
+import sirgl.simple.vm.ast.LangFile
+import sirgl.simple.vm.ast.LangMember
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
 import sirgl.simple.vm.ast.ext.parseLiteral
 import sirgl.simple.vm.ast.impl.*
 import sirgl.simple.vm.ast.impl.expr.*
 import sirgl.simple.vm.ast.impl.stmt.*
-import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
@@ -360,6 +361,7 @@ private class ParserState(
     fun stmt() = when (current.kind) {
         Return -> returnStmt()
         Continue -> continueStmt()
+        Break -> breakStmt()
         If -> ifStmt()
         Try -> tryStmt()
         While -> whileStmt()
@@ -370,7 +372,7 @@ private class ParserState(
     fun exprStmt(): LangExprStmtImpl {
         val expr = expr()
         val semi = expectThenAdvance(Semicolon)
-        val exprStmt = LangExprStmtImpl(expr.startOffset, semi.endOffset, expr)
+        val exprStmt = LangExprStmtImpl(expr.startOffset, semi.endOffset, expr.startLine, expr)
         expr.parent = exprStmt
         return exprStmt
     }
@@ -386,9 +388,16 @@ private class ParserState(
     }
 
     fun continueStmt(): LangContinueStmtImpl {
-        val returnStmt = expectThenAdvance(Continue)
+        val continueStmt = expectThenAdvance(Continue)
         expectThenAdvance(Semicolon)
-        return LangContinueStmtImpl(returnStmt, returnStmt)
+        return LangContinueStmtImpl(continueStmt)
+    }
+
+
+    fun breakStmt(): LangBreakStmtImpl {
+        val breakStmt = expectThenAdvance(Break)
+        expectThenAdvance(Semicolon)
+        return LangBreakStmtImpl(breakStmt)
     }
 
     fun ifStmt(): LangIfStmtImpl {
@@ -553,7 +562,7 @@ private interface InfixExprParser {
     fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl
 }
 
-private class DotExprParser: InfixExprParser {
+private class DotExprParser : InfixExprParser {
     override val precedence = 1
 
     override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
@@ -575,9 +584,9 @@ private class BinaryExprParser(
 ) : InfixExprParser {
     override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
         parser.advance()
-        val binOp = LangBinaryOperatorImpl(lexeme.text, lexeme.startOffset, lexeme.endOffset)
+        val binOp = LangBinaryOperatorImpl(lexeme.text, lexeme)
         val right = parser.expr(precedence + if (isLeft) 0 else 1)
-        val binExpr = LangBinaryExprImpl(left, right, binOp, left.startOffset, right.endOffset)
+        val binExpr = LangBinaryExprImpl(left, right, binOp, left.startOffset, right.endOffset, left.startLine)
         left.parent = binExpr
         binOp.parent = binExpr
         right.parent = binExpr
@@ -592,7 +601,7 @@ private class AssignExprParser : InfixExprParser {
         if (left !is LangReferenceExpr) parser.fail("Left part of assignment expression must be reference")
         parser.advance()
         val right = parser.expr(precedence + 1)
-        val assignExpr = LangAssignExprImpl(left.startOffset, right.endOffset, left, right)
+        val assignExpr = LangAssignExprImpl(left.startOffset, right.endOffset, left.startLine, left, right)
         left.parent = assignExpr
         right.parent = assignExpr
         return assignExpr
@@ -607,7 +616,7 @@ private class CallExprParser : InfixExprParser {
         val arguments = mutableListOf<LangExprImpl>()
         while (!parser.match(RParen)) {
             arguments.add(parser.expr())
-            if(!parser.matchThenAdvance(Comma)) {
+            if (!parser.matchThenAdvance(Comma)) {
                 break
             }
         }
