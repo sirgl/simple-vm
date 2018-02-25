@@ -1,9 +1,9 @@
-File#0@[0, 527)
+File#0@[0, 558)
   Package#0@[0, 10)
-  Class#2@[12, 527) name: A
-    Method#3@[26, 525) name: foo
+  Class#2@[12, 558) name: A
+    Method#3@[26, 556) name: foo
       Parameter#3@[34, 41) name: p1, type: I32
-      Block#3@[43, 525)
+      Block#3@[43, 556)
         ExprStmt#4@[53, 63)
           BinaryExpr#4@[53, 62)
             IntLiteral#4@[53, 54) value: 1
@@ -90,3 +90,10 @@ File#0@[0, 527)
                 IntLiteral#18@[510, 512) value: 12
             BinaryOperator#18@[514, 515) type: *
             IntLiteral#18@[516, 518) value: 42
+        ExprStmt#19@[542, 550)
+          ElementAccessExpr#19@[542, 549)
+            ReferenceExpr#19@[542, 541) name: arr
+              CallExpr#19@[534, 541)
+                ReferenceExpr#19@[534, 533) name: super
+                  ReferenceExpr#19@[528, 533) name: field
+            IntLiteral#19@[546, 548) value: 12

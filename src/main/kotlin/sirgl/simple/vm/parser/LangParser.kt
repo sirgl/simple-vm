@@ -131,6 +131,7 @@ private fun buildInfixOperators(): Map<LexemeKind, InfixExprParser> {
     infixOperators[OpEq] = AssignExprParser()
     infixOperators[LParen] = CallExprParser()
     infixOperators[Dot] = DotExprParser()
+    infixOperators[LBracket] = ElementAccessExprParser()
     return infixOperators
 }
 
@@ -650,5 +651,18 @@ private class CallExprParser : InfixExprParser {
         }
         return callExpr
     }
+}
 
+private class ElementAccessExprParser : InfixExprParser {
+    override val precedence = 1
+
+    override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
+        parser.advance()
+        val indexExpr = parser.expr()
+        val last = parser.expectThenAdvance(RBracket)
+        val accessExpr = LangElementAccessExprImpl(last, left, indexExpr)
+        indexExpr.parent = accessExpr
+        left.parent = accessExpr
+        return accessExpr
+    }
 }

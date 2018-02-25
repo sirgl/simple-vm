@@ -128,6 +128,10 @@ abstract class LangVisitor {
         visitExpr(expr)
     }
 
+    open fun visitElementAccessExpr(expr: LangElementAccessExpr) {
+        visitExpr(expr)
+    }
+
     open fun visitPrefixExpr(expr: LangPrefixExpr) {
         visitExpr(expr)
     }
