@@ -3,7 +3,6 @@ package sirgl.simple.vm.parser
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangFile
-import sirgl.simple.vm.ast.LangMember
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
 import sirgl.simple.vm.ast.ext.parseLiteral
@@ -73,7 +72,8 @@ private val prefixParsers = mapOf(
         OpExcl to opPrefixParser,
         True to boolLiteralParser,
         False to boolLiteralParser,
-        LParen to ParenExprParser()
+        LParen to ParenExprParser(),
+        Null to NullParser()
 )
 
 private class InfixOperatorInfo(
@@ -504,6 +504,12 @@ private interface PrefixParser {
 private class IntLiteralParser : PrefixParser {
     override fun parse(parser: ParserState, lexeme: Lexeme): LangIntLiteralExprImpl {
         return LangIntLiteralExprImpl(lexeme.text.toInt(), parser.advance())
+    }
+}
+
+private class NullParser : PrefixParser {
+    override fun parse(parser: ParserState, lexeme: Lexeme): LangNullExprImpl {
+        return LangNullExprImpl(parser.advance())
     }
 }
 

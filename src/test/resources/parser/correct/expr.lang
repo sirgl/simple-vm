@@ -19,5 +19,6 @@ class A {
         (cls.field + 12) * 42;
         field.super().arr[12];
         (foo as I32) is I8;
+        null.foo();
     }
 }

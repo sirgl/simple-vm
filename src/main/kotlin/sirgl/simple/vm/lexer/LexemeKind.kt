@@ -21,6 +21,7 @@ enum class LexemeKind {
     Else,
     Super,
     This,
+    Null,
 
     // Types
     I32,

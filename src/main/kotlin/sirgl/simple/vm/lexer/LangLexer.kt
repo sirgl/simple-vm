@@ -51,7 +51,8 @@ val keywordToKind = mutableMapOf(
         "if" to If,
         "else" to Else,
         "super" to Super,
-        "this" to This
+        "this" to This,
+        "null" to Null
 )
 
 val operatorToKind = mutableMapOf(
