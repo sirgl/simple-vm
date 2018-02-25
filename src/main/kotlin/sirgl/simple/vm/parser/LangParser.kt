@@ -211,11 +211,12 @@ private class ParserState(
             null
         }
         expectThenAdvance(LBrace)
-        val members = mutableListOf<LangMember>()
+        val members = mutableListOf<LangMemberImpl>()
         loop@
         while (true) {
-            val member: LangMember = when (current.kind) {
+            val member: LangMemberImpl = when (current.kind) {
                 Fun, Native -> method()
+                Constructor -> constructor()
                 Var -> field()
                 RBrace -> break@loop
                 else -> fail("Class member expected")
@@ -225,10 +226,7 @@ private class ParserState(
         val rBrace = expectThenAdvance(RBrace)
         val cls = LangClassImpl(ScopeImpl(), clsNameNode.text, members, clsNode, rBrace, parentClsName?.text)
         for (member in members) {
-            when (member) {
-                is LangMethodImpl -> member.parent = cls
-                is LangFieldImpl -> member.parent = cls
-            }
+            member.parent = cls
         }
         return cls
     }
@@ -246,7 +244,7 @@ private class ParserState(
         val method = LangMethodImpl(
                 ScopeImpl(),
                 methodNameLexeme.text,
-                parameters.toTypedArray(),
+                parameters,
                 block,
                 nativeLexeme ?: funLexeme,
                 block.rBrace,
@@ -257,6 +255,30 @@ private class ParserState(
         }
         block.parent = method
         return method
+    }
+
+    fun constructor(): LangConstructorImpl {
+        val nativeLexeme = if (match(Native)) {
+            advance()
+        } else {
+            null
+        }
+        val funLexeme = expectThenAdvance(Constructor)
+        val parameters = parameters()
+        val block = block()
+        val constructor = LangConstructorImpl(
+                ScopeImpl(),
+                parameters,
+                block,
+                nativeLexeme ?: funLexeme,
+                block.rBrace,
+                nativeLexeme != null
+        )
+        for (parameter in parameters) {
+            parameter.parent = constructor
+        }
+        block.parent = constructor
+        return constructor
     }
 
     fun parameters(): List<LangParameterImpl> {

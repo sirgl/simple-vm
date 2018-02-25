@@ -14,7 +14,7 @@ class LangFieldImpl(
         startLexeme: Lexeme,
         endLexeme: Lexeme,
         override val initializer: LangExpr?
-) : AstNodeImpl(startLexeme, endLexeme), LangField {
+) : LangMemberImpl(startLexeme, endLexeme), LangField {
     override lateinit var parent: LangClass
 
     override fun accept(visitor: LangVisitor) {

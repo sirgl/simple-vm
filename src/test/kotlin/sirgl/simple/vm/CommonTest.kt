@@ -28,7 +28,8 @@ abstract class FileBasedTestCaseBase<T> {
     }
 
     private fun check(beforePath: Path, actualValue: T) {
-        val expectedText = Files.newBufferedReader(findResultPath(beforePath)).readText()
+        val resultPath = findResultPath(beforePath)
+        val expectedText = Files.newBufferedReader(resultPath).readText()
         check(actualValue, expectedText)
     }
 

@@ -3,6 +3,7 @@ package sirgl.simple.vm.lexer
 enum class LexemeKind {
     // Keywords
     Fun,
+    Constructor,
     While,
     Class,
     Var,

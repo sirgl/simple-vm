@@ -1,5 +1,6 @@
-package sirgl.simple.vm.ast
+package sirgl.simple.vm.ast.support
 
+import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.type.LangType
 
 interface LangVarDecl {

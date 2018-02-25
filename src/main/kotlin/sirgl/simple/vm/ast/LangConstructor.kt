@@ -1,5 +1,5 @@
 package sirgl.simple.vm.ast
 
-interface LangConstructor : LangMember {
+import sirgl.simple.vm.ast.support.LangFunction
 
-}
+interface LangConstructor : LangMember, LangFunction

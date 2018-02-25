@@ -1,29 +1,23 @@
 package sirgl.simple.vm.ast.impl
 
-import sirgl.simple.vm.ast.AstNode
-import sirgl.simple.vm.ast.LangBlock
-import sirgl.simple.vm.ast.LangMethod
-import sirgl.simple.vm.ast.LangParameter
+import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.scope.Scope
 
-class LangMethodImpl(
+class LangConstructorImpl(
         private val scope: Scope,
-        override val name: String,
         override val parameters: List<LangParameter>,
         override val block: LangBlock,
         startLexeme: Lexeme,
         endLexeme: Lexeme,
         override val isNative: Boolean
-) : LangMemberImpl(startLexeme, endLexeme), LangMethod, Scope by scope {
+) : LangMemberImpl(startLexeme, endLexeme), LangConstructor, Scope by scope {
     override fun accept(visitor: LangVisitor) {
-        visitor.visitMethod(this)
+        visitor.visitConstructor(this)
     }
 
-    override val debugName = "Method"
-
-    override fun toString() = super.toString() + " name: $name"
+    override val debugName = "Constructor"
 
     override val children = makeChildren()
     private fun makeChildren(): List<AstNode> {

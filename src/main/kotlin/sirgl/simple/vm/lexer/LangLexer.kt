@@ -5,6 +5,7 @@ import sirgl.simple.vm.lexer.LexemeKind.*
 
 val keywords = mutableListOf(
         "fun",
+        "constructor",
         "while",
         "class",
         "var",
@@ -29,6 +30,7 @@ val keywords = mutableListOf(
 
 val keywordToKind = mutableMapOf(
         "fun" to Fun,
+        "constructor" to Constructor,
         "while" to While,
         "class" to Class,
         "var" to Var,

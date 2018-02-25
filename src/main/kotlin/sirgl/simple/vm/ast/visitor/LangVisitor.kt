@@ -3,6 +3,8 @@ package sirgl.simple.vm.ast.visitor
 import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.expr.*
 import sirgl.simple.vm.ast.stmt.*
+import sirgl.simple.vm.ast.support.LangFunction
+import sirgl.simple.vm.ast.support.LangVarDecl
 
 abstract class LangVisitor {
     open fun visitAstNode(element: AstNode) {}
@@ -19,6 +21,10 @@ abstract class LangVisitor {
     }
 
     open fun visitVarDecl(varDecl: LangVarDecl) {
+    }
+
+    open fun visitFunction(function: LangFunction) {
+
     }
 
     // Top level
@@ -39,6 +45,12 @@ abstract class LangVisitor {
 
     open fun visitMethod(method: LangMethod) {
         visitMember(method)
+        visitFunction(method)
+    }
+
+    open fun visitConstructor(constructor: LangConstructor) {
+        visitMember(constructor)
+        visitFunction(constructor)
     }
 
     open fun visitField(field: LangField) {
