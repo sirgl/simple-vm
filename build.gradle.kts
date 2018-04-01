@@ -27,6 +27,9 @@ repositories {
     maven {
         setUrl("https://jitpack.io")
     }
+    maven {
+        setUrl("https://dl.bintray.com/xenomachina/maven")
+    }
 }
 
 
@@ -36,6 +39,8 @@ apply {
 
 dependencies {
     compile(kotlinModule("stdlib-jdk8", kotlinVersion))
+    compile("com.xenomachina:kotlin-argparser:2.0.4")
+    compile("io.github.microutils:kotlin-logging:1.4.9")
     testCompile("org.junit.jupiter:junit-jupiter-api:5.0.3")
     testCompile("org.junit.jupiter:junit-jupiter-engine:5.0.3")
     testCompile("org.junit.platform:junit-platform-launcher:1.0.3")

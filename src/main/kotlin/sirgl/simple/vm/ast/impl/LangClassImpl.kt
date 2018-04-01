@@ -16,8 +16,13 @@ class LangClassImpl(
         endLexeme: Lexeme,
         override val parentClassName: String?
 ) : AstNodeImpl(firstLexeme, endLexeme), LangClass, Scope by scope {
-    override lateinit var qualifiedName: String
+    override val qualifiedName: String by lazy { findFqn() }
     override lateinit var parent: LangFile
+
+    private fun findFqn(): String {
+        val declaredPackage = parent.packageDeclaration?.declaredPackage ?: return simpleName
+        return "$declaredPackage.$simpleName"
+    }
 
     override fun accept(visitor: LangVisitor) {
         visitor.visitClass(this)
@@ -25,8 +30,7 @@ class LangClassImpl(
 
     override val debugName = "Class"
 
-    override fun toString() = super.toString() + " name: $simpleName" + if (parentClassName != null) " parent: " + parentClassName else ""
+    override fun toString() = super.toString() + " name: $simpleName" + if (parentClassName != null) " parent: $parentClassName" else ""
 
     override val children: List<AstNode> = members
-
 }
