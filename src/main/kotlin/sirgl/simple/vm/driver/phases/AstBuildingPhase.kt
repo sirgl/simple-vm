@@ -11,6 +11,7 @@ class AstBuildingPhase : CompilerPhase() {
             context.astBuilder.submit(source)
         }
         context.astBuilder.close()
+        context.resolveCache.complete()
     }
 
 }

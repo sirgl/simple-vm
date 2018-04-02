@@ -4,9 +4,12 @@ import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangBlock
 import sirgl.simple.vm.ast.LangMethod
 import sirgl.simple.vm.ast.LangParameter
+import sirgl.simple.vm.ast.ext.getSourceFile
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.scope.Scope
+import sirgl.simple.vm.signatures.MethodSignature
+import sirgl.simple.vm.type.LangType
 
 class LangMethodImpl(
         private val scope: Scope,
@@ -15,15 +18,18 @@ class LangMethodImpl(
         override val block: LangBlock,
         startLexeme: Lexeme,
         endLexeme: Lexeme,
-        override val isNative: Boolean
+        override val isNative: Boolean,
+        override val returnType: LangType
 ) : LangMemberImpl(startLexeme, endLexeme), LangMethod, Scope by scope {
+    override val signature: MethodSignature by lazy { MethodSignature(getSourceFile(), name, returnType, parameters.map { it.signature }) }
+
     override fun accept(visitor: LangVisitor) {
         visitor.visitMethod(this)
     }
 
     override val debugName = "Method"
 
-    override fun toString() = super.toString() + " name: $name"
+    override fun toString() = super.toString() + " name: $name, returnType: ${returnType.name}"
 
     override val children = makeChildren()
     private fun makeChildren(): List<AstNode> {

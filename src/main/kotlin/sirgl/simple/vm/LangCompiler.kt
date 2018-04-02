@@ -1,9 +1,11 @@
-package sirgl.simple.vm.driver
+package sirgl.simple.vm
 
 import mu.KotlinLogging
-import sirgl.simple.vm.Configuration
 import sirgl.simple.vm.common.CompilerContext
 import sirgl.simple.vm.common.CompilerPhase
+import sirgl.simple.vm.driver.AstBuilder
+import sirgl.simple.vm.driver.ErrorSink
+import sirgl.simple.vm.driver.ResolveCache
 import sirgl.simple.vm.driver.phases.AstBuildingPhase
 import sirgl.simple.vm.driver.phases.DiscoveryPhase
 import sirgl.simple.vm.lexer.HandwrittenLangLexer
@@ -25,7 +27,7 @@ class LangCompiler(
 ) {
     val lexer: LangLexer = HandwrittenLangLexer()
     val parser: LangParser = HandwrittenLangParser()
-    val astCache = AstCache()
+    val astCache = ResolveCache()
     val errorSink = ErrorSink()
 
     fun run() {
@@ -37,6 +39,7 @@ class LangCompiler(
             val timeMillis = measureTimeMillis {
                 phase.run(context)
             }
+            // TODO handle errors in every phase
             println("Phase $phaseName finished in $timeMillis ms")
         }
     }

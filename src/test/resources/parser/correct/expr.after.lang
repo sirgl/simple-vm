@@ -1,7 +1,7 @@
 File#0@[0, 626)
   Package#0@[0, 10)
   Class#2@[12, 626) name: A
-    Method#3@[26, 624) name: foo
+    Method#3@[26, 624) name: foo, returnType: void
       Parameter#3@[34, 41) name: p1, type: I32
       Block#3@[43, 624)
         ExprStmt#4@[53, 63)

@@ -5,6 +5,7 @@ import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.expr.LangCastExpr
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
+import sirgl.simple.vm.type.BoolType
 import sirgl.simple.vm.type.LangType
 
 class LangTypeCheckExprImpl(
@@ -12,6 +13,9 @@ class LangTypeCheckExprImpl(
         override val expr: LangExpr,
         override val targetType: LangType
 ) : LangCastExpr, LangExprImpl(expr.startOffset, last.endOffset, expr.startLine) {
+    override val type: BoolType
+        get() = BoolType
+
     override fun accept(visitor: LangVisitor) {
         visitor.visitCastExpr(this)
     }

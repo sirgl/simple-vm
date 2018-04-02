@@ -10,7 +10,7 @@ class ErrorSink {
     }
 
     val hasErrors: Boolean
-    get() = errors.isNotEmpty()
+        get() = errors.isNotEmpty()
 }
 
 interface CompilationError {

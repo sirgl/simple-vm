@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 // TODO probably thread pool is not needed, I can just create threads that will take sourceFile from
 class AstBuilder(
-        private val astCache: AstCache,
+        private val resolveCache: ResolveCache,
         private val errorSink: ErrorSink
 ) : AutoCloseable {
     private val threadPool = ThreadPoolExecutor(4, 4, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(100))
@@ -23,7 +23,7 @@ class AstBuilder(
     private val parser: LangParser = HandwrittenLangParser()
 
     fun submit(sourceFile: SourceFile) {
-        threadPool.submit(AstBuildingTask(sourceFile, astCache, lexer, parser, errorSink))
+        threadPool.submit(AstBuildingTask(sourceFile, resolveCache, lexer, parser, errorSink))
     }
 
     override fun close() {
@@ -33,7 +33,7 @@ class AstBuilder(
 
 class AstBuildingTask(
         private val sourceFile: SourceFile,
-        private val astCache: AstCache,
+        private val resolveCache: ResolveCache,
         private val lexer: LangLexer,
         private val parser: LangParser,
         private val errorSink: ErrorSink
@@ -41,10 +41,10 @@ class AstBuildingTask(
 
     override fun run() {
         val file = parse() ?: return
-        astCache.addSourceFile(sourceFile, file, this)
+        resolveCache.addSourceFile(sourceFile, file, this)
     }
 
-    fun parse() : LangFile? {
+    fun parse(): LangFile? {
         val text = sourceFile.inputStream.bufferedReader().readText()
         val tokens = lexer.tokenize(text)
 

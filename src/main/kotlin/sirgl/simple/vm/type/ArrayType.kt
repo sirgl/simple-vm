@@ -1,5 +1,5 @@
 package sirgl.simple.vm.type
 
-class ArrayType(val type: LangType) : LangType {
-    override val name: String = "$type[]"
+class ArrayType(val elementType: LangType) : LangType {
+    override val name: String = "$elementType[]"
 }

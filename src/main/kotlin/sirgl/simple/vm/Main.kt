@@ -3,7 +3,6 @@ package sirgl.simple.vm
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.ShowHelpException
 import com.xenomachina.argparser.default
-import sirgl.simple.vm.driver.LangCompiler
 import java.io.StringWriter
 
 class MyArgs(parser: ArgParser) {
@@ -15,7 +14,7 @@ class MyArgs(parser: ArgParser) {
 
 }
 
-class Configuration (
+class Configuration(
         val sourcePath: String, // TODO make it list
         val mainFQN: String
 )
@@ -28,7 +27,7 @@ fun main(args: Array<String>) {
 
     } catch (e: ShowHelpException) {
         val writer = StringWriter()
-        e.printUserMessage(writer, "langc" , 80)
+        e.printUserMessage(writer, "langc", 80)
         println(writer)
     }
 

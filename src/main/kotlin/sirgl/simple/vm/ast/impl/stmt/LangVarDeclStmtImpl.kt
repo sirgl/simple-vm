@@ -2,9 +2,11 @@ package sirgl.simple.vm.ast.impl.stmt
 
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangExpr
+import sirgl.simple.vm.ast.ext.getSourceFile
 import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
+import sirgl.simple.vm.signatures.VariableSignature
 import sirgl.simple.vm.type.LangType
 
 class LangVarDeclStmtImpl(
@@ -14,6 +16,8 @@ class LangVarDeclStmtImpl(
         endLexeme: Lexeme,
         override val initializer: LangExpr?
 ) : LangStmtImpl(startLexeme, endLexeme), LangVarDeclStmt {
+    override val signature: VariableSignature by lazy { VariableSignature(getSourceFile(), type, name) }
+
     override fun accept(visitor: LangVisitor) {
         visitor.visitVarDeclStmt(this)
     }

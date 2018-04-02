@@ -11,5 +11,4 @@ abstract class LangExprImpl(startOffset: Int, endOffset: Int, line: Int) : LangE
 
     override lateinit var parent: AstNode
     override var promoteToType: LangType? = null
-    override lateinit var type: LangType
 }

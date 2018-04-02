@@ -3,8 +3,10 @@ package sirgl.simple.vm.ast.impl
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangParameter
+import sirgl.simple.vm.ast.ext.getSourceFile
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
+import sirgl.simple.vm.signatures.VariableSignature
 import sirgl.simple.vm.type.LangType
 
 class LangParameterImpl(
@@ -13,6 +15,8 @@ class LangParameterImpl(
         startLexeme: Lexeme,
         endLexeme: Lexeme
 ) : AstNodeImpl(startLexeme, endLexeme), LangParameter {
+    override val signature: VariableSignature by lazy { VariableSignature(getSourceFile(), type, name) }
+
     override val initializer: LangExpr? = null
 
     override lateinit var parent: AstNode

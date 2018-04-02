@@ -178,7 +178,7 @@ private class ParserState(
     fun file(): LangFileImpl {
         val packageDecl = if (match(Package)) parsePackageDecl() else null
         val cls = parseClass()
-        val file = LangFileImpl(packageDecl, cls)
+        val file = LangFileImpl(ScopeImpl(), packageDecl, cls)
         packageDecl?.parent = file
         cls.parent = file
         return file
@@ -223,6 +223,12 @@ private class ParserState(
         val funLexeme = expectThenAdvance(Fun)
         val methodNameLexeme = expectThenAdvance(Identifier)
         val parameters = parameters()
+        val returnType = if (match(Colon)) {
+            advance()
+            type()
+        } else {
+            VoidType
+        }
         val block = block()
         val method = LangMethodImpl(
                 ScopeImpl(),
@@ -231,7 +237,8 @@ private class ParserState(
                 block,
                 nativeLexeme ?: funLexeme,
                 block.rBrace,
-                nativeLexeme != null
+                nativeLexeme != null,
+                returnType
         )
         for (parameter in parameters) {
             parameter.parent = method

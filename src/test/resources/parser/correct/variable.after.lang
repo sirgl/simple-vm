@@ -1,7 +1,7 @@
 File#0@[0, 102)
   Package#0@[0, 10)
   Class#2@[12, 102) name: VarCls
-    Method#3@[31, 100) name: foo
+    Method#3@[31, 100) name: foo, returnType: void
       Parameter#3@[39, 46) name: p1, type: I32
       Block#3@[48, 100)
         VarDeclStmt#4@[58, 86) name: x, type: Int

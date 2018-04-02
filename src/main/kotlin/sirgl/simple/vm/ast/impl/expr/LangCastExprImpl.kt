@@ -12,6 +12,8 @@ class LangCastExprImpl(
         override val expr: LangExpr,
         override val targetType: LangType
 ) : LangCastExpr, LangExprImpl(expr.startOffset, last.endOffset, expr.startLine) {
+    override val type: LangType = targetType
+
     override fun accept(visitor: LangVisitor) {
         visitor.visitCastExpr(this)
     }
