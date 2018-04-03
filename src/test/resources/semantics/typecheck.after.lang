@@ -1,0 +1,5 @@
+Error in (IntLiteral#2@[38, 40) value: 12): Expected bool but found type i32
+Error in (BoolLiteral#3@[58, 62) value: true): Expected i32 but found type bool
+Error in (IntLiteral#4@[73, 76) value: 234): Expected bool but found type i32
+Error in (BoolLiteral#5@[87, 91) value: true): Expected i32 but found type bool
+Error in (IntLiteral#7@[138, 140) value: 12): Expected bool but found type i32

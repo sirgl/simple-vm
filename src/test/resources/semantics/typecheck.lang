@@ -1,0 +1,11 @@
+class A {
+    fun foo() {
+        if (12) {}
+        12 + true;
+        !234;
+        -true;
+        12 + 'f'; // No error
+        while (12) {}
+        var x: i32[] = 12;
+    }
+}

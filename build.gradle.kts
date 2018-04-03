@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.Coroutines
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
 buildscript {
     var kotlinVersion: String by extra
@@ -49,4 +51,9 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+
+}
+
+configure<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension> {
+    experimental.coroutines = Coroutines.ENABLE
 }

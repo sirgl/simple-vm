@@ -7,8 +7,21 @@ import sirgl.simple.vm.driver.ErrorSink
 import sirgl.simple.vm.driver.SourceFile
 
 interface LangInspection {
-    val errorSink: ErrorSink
+    val errorHolder: ErrorHolder
     val visitor: LangVisitor
+}
+
+interface ErrorHolder {
+    fun registerProblem(node: AstNode, description: String)
+}
+
+class ErrorHolderImpl(
+        private val errorSink: ErrorSink,
+        private val sourceFile: SourceFile
+) : ErrorHolder {
+    override fun registerProblem(node: AstNode, description: String) {
+        errorSink.submitError(SemanticError(node, description, sourceFile))
+    }
 }
 
 class SemanticError(
@@ -17,6 +30,6 @@ class SemanticError(
         override val sourceFile: SourceFile?
 ) : CompilationError {
     override val text: String
-        get() = "Error in $node: $comment"
+        get() = "Error in ($node): $comment"
 
 }

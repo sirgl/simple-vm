@@ -12,6 +12,8 @@ class ScopeImpl() : Scope {
     private val localSignatures = mutableMapOf<String, Signature>()
     private val multipleDeclarations = mutableMapOf<String, MutableSet<Signature>>()
 
+    override fun getMultipleDeclarations() = multipleDeclarations.keys.toList()
+
     override fun resolve(reference: LangReferenceExpr): Signature? {
         if (reference.isThis) {
             return reference.getClass().signature

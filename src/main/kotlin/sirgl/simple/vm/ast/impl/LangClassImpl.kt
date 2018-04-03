@@ -21,7 +21,8 @@ class LangClassImpl(
         override val parentClassName: String?
 ) : AstNodeImpl(firstLexeme, endLexeme), LangClass, Scope by scope {
     override fun toSignature(sourceFile: SourceFile): ClassSignature {
-        val classSignature = signatureCache ?: createSignature(getFile().sourceFile)
+        (parent as LangFileImpl).sourceFile = sourceFile
+        val classSignature = signatureCache ?: createSignature(sourceFile)
         signatureCache = classSignature
         return classSignature
     }

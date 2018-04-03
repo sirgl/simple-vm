@@ -17,17 +17,17 @@ class AstBuilder(
         private val resolveCache: ResolveCache,
         private val errorSink: ErrorSink
 ) : AutoCloseable {
-    private val threadPool = ThreadPoolExecutor(4, 4, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(100))
+//    private val threadPool = ThreadPoolExecutor(4, 4, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(100))
 
     private val lexer: LangLexer = HandwrittenLangLexer()
     private val parser: LangParser = HandwrittenLangParser()
 
     fun submit(sourceFile: SourceFile) {
-        threadPool.submit(AstBuildingTask(sourceFile, resolveCache, lexer, parser, errorSink))
+        AstBuildingTask(sourceFile, resolveCache, lexer, parser, errorSink).run() // TODO get back thread pool
     }
 
     override fun close() {
-        threadPool.shutdown()
+//        threadPool.shutdown()
     }
 }
 
@@ -56,6 +56,7 @@ class AstBuildingTask(
         if (errorSink.hasErrors) return null
 
         val parseResult = parser.parse(tokens)
+        println(parseResult)
         val fail = parseResult.fail
         return if (fail != null) {
             errorSink.submitError(ParseError(fail.toString(), sourceFile))

@@ -15,4 +15,6 @@ interface Scope {
     fun register(signature: Signature)
 
     fun containsName(name: String): Boolean
+
+    fun getMultipleDeclarations() : List<String>
 }

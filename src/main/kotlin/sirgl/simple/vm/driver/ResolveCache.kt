@@ -3,12 +3,17 @@ package sirgl.simple.vm.driver
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.signatures.ClassSignature
 import java.lang.ref.SoftReference
+import kotlin.coroutines.experimental.buildSequence
 
 private data class SourceFileComputable(
         val sourceFile: SourceFile,
         val astBuildingTask: AstBuildingTask
 )
 
+data class SourceFileInfo(
+        val sourceFile: SourceFile,
+        val ast: LangFile
+)
 
 /**
  * Class designed to be filled completely, after which adding will be not possible
@@ -43,5 +48,13 @@ class ResolveCache {
 
     fun complete() {
         completed = true
+    }
+
+    fun getAllFiles()  = buildSequence {
+        for ((qualifiedName, fileReference) in fqnToAst) {
+            val computable = fqnToSource[qualifiedName]!!
+            val file = fileReference.get() ?: computable.astBuildingTask.parse()!!
+            yield(SourceFileInfo(computable.sourceFile, file))
+        }
     }
 }

@@ -8,10 +8,6 @@ import sirgl.simple.vm.driver.ErrorSink
 import sirgl.simple.vm.driver.ResolveCache
 import sirgl.simple.vm.driver.phases.AstBuildingPhase
 import sirgl.simple.vm.driver.phases.DiscoveryPhase
-import sirgl.simple.vm.lexer.HandwrittenLangLexer
-import sirgl.simple.vm.lexer.LangLexer
-import sirgl.simple.vm.parser.HandwrittenLangParser
-import sirgl.simple.vm.parser.LangParser
 import kotlin.system.measureTimeMillis
 
 private val log = KotlinLogging.logger {}
@@ -25,22 +21,25 @@ class LangCompiler(
         val configuration: Configuration,
         val phases: List<CompilerPhase> = defaultPhases
 ) {
-    val lexer: LangLexer = HandwrittenLangLexer()
-    val parser: LangParser = HandwrittenLangParser()
     val astCache = ResolveCache()
     val errorSink = ErrorSink()
 
     fun run() {
-        val context = CompilerContext(AstBuilder(astCache, errorSink), astCache, configuration)
+        val context = CompilerContext(AstBuilder(astCache, errorSink), astCache, configuration, errorSink)
 
 
-        for (phase in phases) {
-            val phaseName = phase.name
-            val timeMillis = measureTimeMillis {
-                phase.run(context)
-            }
-            // TODO handle errors in every phase
-            println("Phase $phaseName finished in $timeMillis ms")
+        runCompiler(context, phases)
+    }
+
+}
+
+fun runCompiler(context: CompilerContext, phases: List<CompilerPhase>) {
+    for (phase in phases) {
+        val phaseName = phase.name
+        val timeMillis = measureTimeMillis {
+            phase.run(context)
         }
+        // TODO handle errors in every phase
+        println("Phase $phaseName finished in $timeMillis ms")
     }
 }

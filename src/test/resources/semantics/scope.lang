@@ -1,0 +1,13 @@
+class A {
+    fun foo() {
+        var y: i32 = 12;
+        var y: i32 = 12; // redeclaration
+    }
+    fun bar() {
+        var bar: i32 = 0; // ok
+    }
+
+    fun foo() { // redeclaration
+
+    }
+}

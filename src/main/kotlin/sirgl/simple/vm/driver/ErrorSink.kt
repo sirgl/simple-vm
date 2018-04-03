@@ -2,7 +2,7 @@ package sirgl.simple.vm.driver
 
 
 class ErrorSink {
-    private val errors = mutableListOf<CompilationError>()
+    val errors = mutableListOf<CompilationError>()
     fun submitError(error: CompilationError) {
         synchronized(this) {
             errors.add(error)
