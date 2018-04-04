@@ -6,7 +6,7 @@ import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.LangPackageDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.driver.SourceFile
-import sirgl.simple.vm.scope.Scope
+import sirgl.simple.vm.resolve.Scope
 
 class LangFileImpl(
         var scope: Scope,

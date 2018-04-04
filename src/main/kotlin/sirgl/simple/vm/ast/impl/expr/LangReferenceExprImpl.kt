@@ -6,10 +6,10 @@ import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.ext.getScope
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
-import sirgl.simple.vm.signatures.ClassSignature
-import sirgl.simple.vm.signatures.MethodSignature
-import sirgl.simple.vm.signatures.Signature
-import sirgl.simple.vm.signatures.VariableSignature
+import sirgl.simple.vm.resolve.signatures.ClassSignature
+import sirgl.simple.vm.resolve.signatures.MethodSignature
+import sirgl.simple.vm.resolve.signatures.Signature
+import sirgl.simple.vm.resolve.signatures.VariableSignature
 import sirgl.simple.vm.type.LangType
 import sirgl.simple.vm.type.MethodReferenceType
 import sirgl.simple.vm.type.UnknownType
@@ -34,7 +34,7 @@ class LangReferenceExprImpl(
             null -> UnknownType
             else -> throw UnsupportedOperationException("This kind of signature is not supported: ${signature.javaClass}")
         }
-        (resolve() as? ClassSignature)?.type ?: UnknownType
+//        (resolve() as? ClassSignature)?.type ?: UnknownType
     }
 
     override fun accept(visitor: LangVisitor) = visitor.visitReferenceExpr(this)
@@ -48,7 +48,9 @@ class LangReferenceExprImpl(
         else -> listOf(qualifier)
     }
 
-    private val resolvedSignature: Signature? by lazy { getScope().resolve(this) }
+    private val resolvedSignature: Signature? by lazy {
+        getScope().resolve(this)
+    }
 
     override fun resolve() = resolvedSignature
 }

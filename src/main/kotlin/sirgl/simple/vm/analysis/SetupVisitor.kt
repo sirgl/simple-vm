@@ -1,13 +1,16 @@
 package sirgl.simple.vm.analysis
 
+import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangClass
 import sirgl.simple.vm.ast.LangFile
+import sirgl.simple.vm.ast.LangParameter
+import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.ext.getScope
 import sirgl.simple.vm.ast.impl.LangFileImpl
 import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.driver.SourceFile
-import sirgl.simple.vm.scope.Scope
+import sirgl.simple.vm.resolve.Scope
 
 /**
  * Visitor used to set up scope, resolve references,
@@ -24,18 +27,25 @@ class SetupVisitor(
         file.sourceFile = sourceFile
     }
 
-    override fun visitClass(cls: LangClass) {
-        val signature = cls.signature
-        for (fieldSignature in signature.fieldSignatures) {
-            cls.register(fieldSignature)
-        }
-        for (methodSignature in signature.methodSignatures) {
-            cls.register(methodSignature)
+    override fun visitVarDeclStmt(stmt: LangVarDeclStmt) {
+        val scope = stmt.getScope()
+        scope.register(stmt.signature)
+    }
+
+    override fun visitParameter(parameter: LangParameter) {
+        val scope = parameter.getScope()
+        scope.register(parameter.signature)
+    }
+
+
+    override fun visitAstNode(element: AstNode) {
+        if (element is Scope) {
+            element.element = element
         }
     }
 
-    override fun visitVarDeclStmt(stmt: LangVarDeclStmt) {
-        stmt.getScope().register(stmt.signature)
+    override fun visitReferenceExpr(expr: LangReferenceExpr) {
+        expr.resolve()
     }
 
     // TODO resolve class type's target

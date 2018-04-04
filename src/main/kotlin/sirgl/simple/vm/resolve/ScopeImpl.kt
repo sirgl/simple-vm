@@ -1,14 +1,16 @@
-package sirgl.simple.vm.scope
+package sirgl.simple.vm.resolve
 
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
+import sirgl.simple.vm.ast.ext.findParentOfClass
 import sirgl.simple.vm.ast.ext.getClass
-import sirgl.simple.vm.ast.ext.getScope
-import sirgl.simple.vm.signatures.Signature
+import sirgl.simple.vm.resolve.signatures.Signature
 
 class ScopeImpl() : Scope {
     override lateinit var element: AstNode
-    override val parentScope: Scope? by lazy { element.getScope() }
+    override val parentScope: Scope? by lazy {
+        element.findParentOfClass<Scope>()
+    }
     private val localSignatures = mutableMapOf<String, Signature>()
     private val multipleDeclarations = mutableMapOf<String, MutableSet<Signature>>()
 
@@ -23,7 +25,8 @@ class ScopeImpl() : Scope {
         }
         if (!reference.isQualified) {
             val targetName = reference.name
-            return localSignatures[targetName] ?: parentScope?.resolve(reference)
+            return localSignatures[targetName]
+                    ?: parentScope?.resolve(reference)
         } else {
             // TODO make it in global scope
         }

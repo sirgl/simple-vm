@@ -3,6 +3,7 @@ package sirgl.simple.vm.parser
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangFile
+import sirgl.simple.vm.ast.expr.LangElementAccessExpr
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
 import sirgl.simple.vm.ast.ext.parseCharLiteral
@@ -13,7 +14,7 @@ import sirgl.simple.vm.ast.impl.stmt.*
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
-import sirgl.simple.vm.scope.ScopeImpl
+import sirgl.simple.vm.resolve.ScopeImpl
 import sirgl.simple.vm.type.*
 
 interface LangParser {
@@ -616,7 +617,7 @@ private class AssignExprParser : InfixExprParser {
     override val precedence = 9
 
     override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
-        if (left !is LangReferenceExpr) parser.fail("Left part of assignment expression must be reference")
+        if (left !is LangReferenceExpr && left !is LangElementAccessExpr) parser.fail("Left part of assignment expression must be reference or array element access")
         parser.advance()
         val right = parser.expr(precedence + 1)
         val assignExpr = LangAssignExprImpl(left.startOffset, right.endOffset, left.startLine, left, right)

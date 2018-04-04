@@ -10,4 +10,10 @@ class A {
     fun foo() { // redeclaration
 
     }
+
+    fun duplicatingParams(x: i32, x: i32) {
+    }
+
+    var field: i32 = 2;
+    var field: i32 = 244;
 }

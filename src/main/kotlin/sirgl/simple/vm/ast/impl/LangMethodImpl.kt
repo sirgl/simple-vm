@@ -7,8 +7,8 @@ import sirgl.simple.vm.ast.LangParameter
 import sirgl.simple.vm.ast.ext.getSourceFile
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
-import sirgl.simple.vm.scope.Scope
-import sirgl.simple.vm.signatures.MethodSignature
+import sirgl.simple.vm.resolve.Scope
+import sirgl.simple.vm.resolve.signatures.MethodSignature
 import sirgl.simple.vm.type.LangType
 
 class LangMethodImpl(
@@ -21,6 +21,9 @@ class LangMethodImpl(
         override val isNative: Boolean,
         override val returnType: LangType
 ) : LangMemberImpl(startLexeme, endLexeme), LangMethod, Scope by scope {
+    init {
+        scope.element = this
+    }
     override val signature: MethodSignature by lazy { MethodSignature(getSourceFile(), name, returnType, parameters.map { it.signature }) }
 
     override fun accept(visitor: LangVisitor) {

@@ -1,7 +1,7 @@
 package sirgl.simple.vm.ast.expr
 
 import sirgl.simple.vm.ast.LangExpr
-import sirgl.simple.vm.signatures.Signature
+import sirgl.simple.vm.resolve.signatures.Signature
 
 interface LangReferenceExpr : LangExpr {
     val name: String

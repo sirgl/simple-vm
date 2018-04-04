@@ -6,14 +6,22 @@ interface AstWalker {
     /**
      * Implement tree prepass
      */
-    fun walkRecursive(node: AstNode, callback: (AstNode) -> Unit)
+    fun prepassRecursive(node: AstNode, callback: (AstNode) -> Unit)
+    fun postpassRecursive(node: AstNode, callback: (AstNode) -> Unit)
 }
 
 class SimpleWalker : AstWalker {
-    override fun walkRecursive(node: AstNode, callback: (AstNode) -> Unit) {
+    override fun postpassRecursive(node: AstNode, callback: (AstNode) -> Unit) {
+        for (child in node.children) {
+            postpassRecursive(child, callback)
+        }
+        callback(node)
+    }
+
+    override fun prepassRecursive(node: AstNode, callback: (AstNode) -> Unit) {
         callback(node)
         for (child in node.children) {
-            walkRecursive(child, callback)
+            prepassRecursive(child, callback)
         }
     }
 }

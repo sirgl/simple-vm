@@ -1,8 +1,8 @@
 package sirgl.simple.vm.ast
 
 import sirgl.simple.vm.driver.SourceFile
-import sirgl.simple.vm.scope.Scope
-import sirgl.simple.vm.signatures.ClassSignature
+import sirgl.simple.vm.resolve.Scope
+import sirgl.simple.vm.resolve.signatures.ClassSignature
 
 interface LangClass : AstNode, Scope {
     fun toSignature(sourceFile: SourceFile): ClassSignature

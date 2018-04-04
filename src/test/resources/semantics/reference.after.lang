@@ -1,0 +1,2 @@
+Error in (ReferenceExpr#2@[34, 35) name: x): Expected i32 but found type <unknown>
+Error in (ReferenceExpr#2@[34, 35) name: x): Unresolved reference ReferenceExpr#2@[34, 35) name: x

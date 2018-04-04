@@ -1,4 +1,4 @@
-package sirgl.simple.vm.scope
+package sirgl.simple.vm.resolve
 
 class ScopeError {
 

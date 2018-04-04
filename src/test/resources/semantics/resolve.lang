@@ -1,0 +1,21 @@
+class A {
+    fun localVars() {
+        x; // unresolved
+        var y: i32 = 12;
+        var x: i32 = y + 1;
+        x;
+        var z: i32 = z; // same variable
+    }
+
+    fun parametersResolve(x: i32) {
+        x + 12;
+    }
+
+    fun fieldResolve() {
+        forwardField + 1;
+    }
+
+    var forwardField: i32 = 2;
+
+
+}

@@ -6,6 +6,9 @@ class A {
         -true;
         12 + 'f'; // No error
         while (12) {}
-        var x: i32[] = 12;
+        var x: i32[] = 12; // bad initializer
+        x[12] = 2;
+        var nonarr: i32 = 44;
+        nonarr[23] = 2;
     }
 }

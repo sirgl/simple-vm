@@ -1,7 +1,7 @@
 package sirgl.simple.vm.driver
 
 import sirgl.simple.vm.ast.LangFile
-import sirgl.simple.vm.signatures.ClassSignature
+import sirgl.simple.vm.resolve.signatures.ClassSignature
 import java.lang.ref.SoftReference
 import kotlin.coroutines.experimental.buildSequence
 

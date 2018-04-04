@@ -9,11 +9,9 @@ import sirgl.simple.vm.ast.stmt.LangIfStmt
 import sirgl.simple.vm.ast.stmt.LangWhileStmt
 import sirgl.simple.vm.ast.support.LangVarDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
-import sirgl.simple.vm.scope.Scope
+import sirgl.simple.vm.resolve.Scope
 import sirgl.simple.vm.type.*
-import kotlin.math.exp
 
-// TODO check all scopes
 class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangInspection {
     override val visitor: LangVisitor = object : LangVisitor() {
         override fun visitIfStmt(stmt: LangIfStmt) {
@@ -65,9 +63,9 @@ class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangIn
             super.visitVarDecl(varDecl)
         }
 
-        override fun visitMethod(method: LangMethod) {
-
-        }
+//        override fun visitMethod(method: LangMethod) {
+//
+//        }
 
         override fun visitAstNode(element: AstNode) {
             if (element is Scope) {

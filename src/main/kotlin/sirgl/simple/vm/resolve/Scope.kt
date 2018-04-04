@@ -1,8 +1,8 @@
-package sirgl.simple.vm.scope
+package sirgl.simple.vm.resolve
 
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
-import sirgl.simple.vm.signatures.Signature
+import sirgl.simple.vm.resolve.signatures.Signature
 
 interface Scope {
     val parentScope: Scope?

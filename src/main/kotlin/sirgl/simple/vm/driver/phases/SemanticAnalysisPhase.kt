@@ -14,7 +14,7 @@ class SemanticAnalysisPhase : CompilerPhase() {
         for (ast in context.asts) {
             val inspection = SemanticAnalysisInspection(ErrorHolderImpl(context.errorSink, ast.sourceFile))
             val walker: AstWalker = SimpleWalker()
-            walker.walkRecursive(ast) {
+            walker.prepassRecursive(ast) {
                 it.accept(inspection.visitor)
             }
         }

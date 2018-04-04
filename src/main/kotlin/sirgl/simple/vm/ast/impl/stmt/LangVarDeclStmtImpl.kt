@@ -6,7 +6,7 @@ import sirgl.simple.vm.ast.ext.getSourceFile
 import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
-import sirgl.simple.vm.signatures.VariableSignature
+import sirgl.simple.vm.resolve.signatures.VariableSignature
 import sirgl.simple.vm.type.LangType
 
 class LangVarDeclStmtImpl(

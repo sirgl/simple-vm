@@ -8,8 +8,8 @@ import sirgl.simple.vm.ast.ext.getFile
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.driver.SourceFile
 import sirgl.simple.vm.lexer.Lexeme
-import sirgl.simple.vm.scope.Scope
-import sirgl.simple.vm.signatures.ClassSignature
+import sirgl.simple.vm.resolve.Scope
+import sirgl.simple.vm.resolve.signatures.ClassSignature
 import sirgl.simple.vm.type.ClassType
 
 class LangClassImpl(

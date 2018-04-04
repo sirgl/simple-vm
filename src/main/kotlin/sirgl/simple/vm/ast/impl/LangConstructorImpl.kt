@@ -6,7 +6,7 @@ import sirgl.simple.vm.ast.LangConstructor
 import sirgl.simple.vm.ast.LangParameter
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
-import sirgl.simple.vm.scope.Scope
+import sirgl.simple.vm.resolve.Scope
 import sirgl.simple.vm.type.LangType
 import sirgl.simple.vm.type.toType
 

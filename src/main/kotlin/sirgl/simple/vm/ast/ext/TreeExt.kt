@@ -3,7 +3,7 @@ package sirgl.simple.vm.ast.ext
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangClass
 import sirgl.simple.vm.ast.LangFile
-import sirgl.simple.vm.scope.Scope
+import sirgl.simple.vm.resolve.Scope
 import java.lang.IllegalStateException
 
 inline fun <reified T> AstNode.findParentOfClass(parentClass: T) = findParentOfClass<T>()
@@ -19,7 +19,7 @@ inline fun <reified T> AstNode.findParentOfClass(): T? {
     while (current != null && current !is T) {
         current = current.parent
     }
-    return current as T
+    return current as T?
 }
 
 fun AstNode.getScope() = getParentOfClass<Scope>()

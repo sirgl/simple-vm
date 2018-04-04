@@ -1,4 +1,4 @@
-package sirgl.simple.vm.signatures
+package sirgl.simple.vm.resolve.signatures
 
 import sirgl.simple.vm.driver.SourceFile
 

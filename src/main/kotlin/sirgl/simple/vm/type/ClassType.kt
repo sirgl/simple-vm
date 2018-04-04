@@ -1,7 +1,7 @@
 package sirgl.simple.vm.type
 
 import sirgl.simple.vm.ast.LangClass
-import sirgl.simple.vm.signatures.ClassSignature
+import sirgl.simple.vm.resolve.signatures.ClassSignature
 
 class ClassType(override val name: String) : LangType {
     lateinit var classSignature: ClassSignature
