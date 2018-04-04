@@ -88,9 +88,15 @@ class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangIn
             super.visitVarDecl(varDecl)
         }
 
-//        override fun visitMethod(method: LangMethod) {
-//
-//        }
+        override fun visitMethod(method: LangMethod) {
+            super.visitMethod(method)
+            if (method.isNative && method.block != null) {
+                errorHolder.registerProblem(method, "Method declared as native must have no body")
+            }
+            if (!method.isNative && method.block == null) {
+                errorHolder.registerProblem(method, "Only native methods can have no body")
+            }
+        }
 
         override fun visitAstNode(element: AstNode) {
             super.visitAstNode(element)

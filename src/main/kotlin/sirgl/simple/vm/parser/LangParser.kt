@@ -1,6 +1,7 @@
 package sirgl.simple.vm.parser
 
 import sirgl.simple.vm.ast.AstNode
+import sirgl.simple.vm.ast.LangBlock
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.expr.LangElementAccessExpr
@@ -230,21 +231,27 @@ private class ParserState(
         } else {
             VoidType
         }
-        val block = block()
+        val block = if (match(LBrace)) {
+            block()
+        } else {
+            null
+        }
+        val lastLexeme = previousLexeme
+
         val method = LangMethodImpl(
                 ScopeImpl(),
                 methodNameLexeme.text,
                 parameters,
                 block,
                 nativeLexeme ?: funLexeme,
-                block.rBrace,
+                lastLexeme,
                 nativeLexeme != null,
                 returnType
         )
         for (parameter in parameters) {
             parameter.parent = method
         }
-        block.parent = method
+        block?.parent = method
         return method
     }
 

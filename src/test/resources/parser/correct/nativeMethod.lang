@@ -1,0 +1,5 @@
+package p;
+
+class A {
+    native fun foo(p1: I32)
+}

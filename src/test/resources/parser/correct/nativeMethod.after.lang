@@ -1,0 +1,5 @@
+File#0@[0, 51)
+  Package#0@[0, 10)
+  Class#2@[12, 51) name: A
+    Method#3@[26, 49) name: foo, returnType: void
+      Parameter#3@[41, 48) name: p1, type: I32

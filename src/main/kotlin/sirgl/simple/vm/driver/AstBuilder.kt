@@ -56,7 +56,6 @@ class AstBuildingTask(
         if (errorSink.hasErrors) return null
 
         val parseResult = parser.parse(tokens)
-        println(parseResult)
         val fail = parseResult.fail
         return if (fail != null) {
             errorSink.submitError(ParseError(fail.toString(), sourceFile))

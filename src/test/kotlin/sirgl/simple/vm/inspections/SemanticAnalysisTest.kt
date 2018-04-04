@@ -21,4 +21,7 @@ class SemanticAnalysisTest : SemanticAnalysisTestBase() {
 
     @Test
     fun typecheck() = runSingle("typecheck")
+
+    @Test
+    fun methods() = runSingle("methods")
 }

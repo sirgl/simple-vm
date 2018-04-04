@@ -15,7 +15,7 @@ class LangMethodImpl(
         private val scope: Scope,
         override val name: String,
         override val parameters: List<LangParameter>,
-        override val block: LangBlock,
+        override val block: LangBlock?,
         startLexeme: Lexeme,
         endLexeme: Lexeme,
         override val isNative: Boolean,
@@ -38,7 +38,9 @@ class LangMethodImpl(
     private fun makeChildren(): List<AstNode> {
         val nodes = mutableListOf<AstNode>()
         nodes.addAll(parameters)
-        nodes.add(block)
+        if (block != null) {
+            nodes.add(block)
+        }
         return nodes
     }
 }

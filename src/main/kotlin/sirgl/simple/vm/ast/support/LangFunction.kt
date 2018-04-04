@@ -6,7 +6,7 @@ import sirgl.simple.vm.type.LangType
 
 interface LangFunction {
     val parameters: List<LangParameter>
-    val block: LangBlock
+    val block: LangBlock?
     val isNative: Boolean
     val returnType: LangType
 }

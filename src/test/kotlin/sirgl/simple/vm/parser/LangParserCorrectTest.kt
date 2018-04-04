@@ -31,4 +31,7 @@ class LangParserCorrectTest : ParserBaseTest() {
 
     @Test
     fun testInheritance() = runSingle("inheritance")
+
+    @Test
+    fun testNativeMethod() = runSingle("nativeMethod")
 }

@@ -1,0 +1,7 @@
+class A {
+    native fun bar() {
+    // body
+    }
+
+    fun foo()
+}
