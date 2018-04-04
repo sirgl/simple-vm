@@ -22,29 +22,34 @@ class SetupVisitor(
         val sourceFile: SourceFile
 ) : LangVisitor() {
     override fun visitFile(file: LangFile) {
+        super.visitFile(file)
         file as LangFileImpl
         file.scope = globalScope
         file.sourceFile = sourceFile
     }
 
     override fun visitVarDeclStmt(stmt: LangVarDeclStmt) {
+        super.visitVarDeclStmt(stmt)
         val scope = stmt.getScope()
         scope.register(stmt.signature)
     }
 
     override fun visitParameter(parameter: LangParameter) {
+        super.visitParameter(parameter)
         val scope = parameter.getScope()
         scope.register(parameter.signature)
     }
 
 
     override fun visitAstNode(element: AstNode) {
+        super.visitAstNode(element)
         if (element is Scope) {
             element.element = element
         }
     }
 
     override fun visitReferenceExpr(expr: LangReferenceExpr) {
+        super.visitReferenceExpr(expr)
         expr.resolve()
     }
 

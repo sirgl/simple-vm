@@ -1,12 +1,24 @@
 package sirgl.simple.vm.inspections
 
-import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.Test
 import java.nio.file.Path
 import java.nio.file.Paths
 
 class SemanticAnalysisTest : SemanticAnalysisTestBase() {
     override val relativePath: Path = Paths.get("semantics")
 
-    @TestFactory
-    fun runTests() = getAllTests()
+    @Test
+    fun calls() = runSingle("calls")
+
+    @Test
+    fun reference() = runSingle("reference")
+
+    @Test
+    fun resolve() = runSingle("resolve")
+
+    @Test
+    fun scope() = runSingle("scope")
+
+    @Test
+    fun typecheck() = runSingle("typecheck")
 }

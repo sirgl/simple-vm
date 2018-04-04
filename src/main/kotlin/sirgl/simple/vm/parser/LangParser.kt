@@ -190,7 +190,7 @@ private class ParserState(
         val clsNameNode = expectThenAdvance(Identifier)
         val parentClsName = if (match(Colon)) {
             advance()
-            expectThenAdvance(Identifier)
+            separatedList(Identifier, Dot).joinToString(".") { it.text }
         } else {
             null
         }
@@ -208,7 +208,7 @@ private class ParserState(
             members.add(member)
         }
         val rBrace = expectThenAdvance(RBrace)
-        val cls = LangClassImpl(ScopeImpl(), clsNameNode.text, members, clsNode, rBrace, parentClsName?.text)
+        val cls = LangClassImpl(ScopeImpl(), clsNameNode.text, members, clsNode, rBrace, parentClsName)
         for (member in members) {
             member.parent = cls
         }

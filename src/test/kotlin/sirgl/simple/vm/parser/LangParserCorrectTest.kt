@@ -28,4 +28,7 @@ class LangParserCorrectTest : ParserBaseTest() {
 
     @Test
     fun testVariable() = runSingle("variable")
+
+    @Test
+    fun testInheritance() = runSingle("inheritance")
 }

@@ -19,4 +19,5 @@ interface LangClass : AstNode, Scope {
         get() = members.filter { it is LangMethod }.map { it as LangMethod }
 
     val signature: ClassSignature
+    val parentClassSignature: ClassSignature
 }

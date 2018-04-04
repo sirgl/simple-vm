@@ -15,14 +15,17 @@ import sirgl.simple.vm.type.*
 class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangInspection {
     override val visitor: LangVisitor = object : LangVisitor() {
         override fun visitIfStmt(stmt: LangIfStmt) {
+            super.visitIfStmt(stmt)
             expectType(stmt.condition, BoolType)
         }
 
         override fun visitWhileStmt(stmt: LangWhileStmt) {
+            super.visitWhileStmt(stmt)
             expectType(stmt.condition, BoolType)
         }
 
         override fun visitBinaryExpr(expr: LangBinaryExpr) {
+            super.visitBinaryExpr(expr)
             when (expr.opTypeBinary) {
                 Eq, Lt, Le, Gt, Ge -> {
                     expectType(expr.left, BoolType)
@@ -36,6 +39,7 @@ class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangIn
         }
 
         override fun visitPrefixExpr(expr: LangPrefixExpr) {
+            super.visitPrefixExpr(expr)
             when (expr.prefixOperatorType) {
                 PrefixOperatorType.Inversion -> expectType(expr.expr, BoolType)
                 else -> expectI32OrPromote(expr.expr)
@@ -44,22 +48,43 @@ class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangIn
 
         override fun visitCallExpr(expr: LangCallExpr) {
             super.visitCallExpr(expr)
+            val callerType = expr.caller.type
+            if (callerType !is MethodReferenceType) {
+                errorHolder.registerProblem(expr, "Expected method reference type but found type ${callerType.name}")
+                return
+            }
+            val methodSignature = callerType.method
+            val arguments = expr.arguments
+            if (methodSignature.parameters.size != arguments.size) {
+                errorHolder.registerProblem(expr, "Method has different count of arguments ($methodSignature)")
+                return
+            }
+            for ((index, parameterSignature) in methodSignature.parameters.withIndex()) {
+                val argument = arguments[index]
+                if (argument.type != parameterSignature.type) { // TODO not only equals, but with promotion
+                    val description = "Argument type expected to be ${parameterSignature.type.name} but was ${argument.type.name}"
+                    errorHolder.registerProblem(argument, description)
+                }
+            }
         }
 
         override fun visitCastExpr(expr: LangCastExpr) {
+            super.visitCastExpr(expr)
             val type = expr.targetType
             if (type !is ClassType) { // TODO arrays also
                 errorHolder.registerProblem(expr, "Expected class type but found type ${type.name}")
             }
+
         }
 
         override fun visitElementAccessExpr(expr: LangElementAccessExpr) {
+            super.visitElementAccessExpr(expr)
             expectArrayType(expr.arrayExpr)
             expectI32OrPromote(expr.indexExpr)
         }
 
         override fun visitVarDecl(varDecl: LangVarDecl) {
-            // TODO compatibility of initializer and type
+            // TODO compatibility of initializer and type, also assignment
             super.visitVarDecl(varDecl)
         }
 
@@ -68,6 +93,7 @@ class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangIn
 //        }
 
         override fun visitAstNode(element: AstNode) {
+            super.visitAstNode(element)
             if (element is Scope) {
                 for (name: String in element.getMultipleDeclarations()) {
                     errorHolder.registerProblem(element, "Multiple definitions of $name name")
@@ -76,6 +102,7 @@ class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangIn
         }
 
         override fun visitReferenceExpr(expr: LangReferenceExpr) {
+            super.visitReferenceExpr(expr)
             if (expr.resolve() == null) {
                 errorHolder.registerProblem(expr, "Unresolved reference $expr")
             }

@@ -1,0 +1,13 @@
+class A {
+    fun m() {}
+
+    fun methodParams(p1: i32, p2: i32) {}
+
+    fun foo() {
+        m();
+        var x: i32 = 23;
+        x();
+        methodParams();
+        methodParams(12, false);
+    }
+}

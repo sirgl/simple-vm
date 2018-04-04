@@ -8,4 +8,8 @@ class MethodSignature(
         override val name: String,
         val returnType: LangType,
         val parameters: List<VariableSignature>
-) : Signature
+) : Signature {
+    override fun toString(): String {
+        return "method '$name' returnType=${returnType.name}, parameters=${parameters.joinToString(", ") { it.name + ": " + it.type.name}})"
+    }
+}
