@@ -1,0 +1,10 @@
+package lang;
+
+class String {
+    //var array: i8[] =
+
+    // ascii charset
+    constructor(array: i8[]) {
+        // TODO
+    }
+}

@@ -1,0 +1,9 @@
+package lang;
+
+class I8 {
+    constructor(v: bool) {
+        value = v;
+    }
+
+    var value: bool = false;
+}

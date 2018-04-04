@@ -1,0 +1,5 @@
+package lang;
+
+// Root of exception hierarchy
+class Exception {
+}

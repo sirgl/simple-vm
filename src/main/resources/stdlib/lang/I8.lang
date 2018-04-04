@@ -1,0 +1,9 @@
+package lang;
+
+class I8 {
+    constructor(v: i8) {
+        value = v;
+    }
+
+    var value: i8 = '0';
+}

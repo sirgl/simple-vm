@@ -1,0 +1,9 @@
+package lang;
+
+class I32 {
+    constructor(v: i32) {
+        value = v;
+    }
+
+    var value: i32 = 0;
+}

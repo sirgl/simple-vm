@@ -1,0 +1,5 @@
+package lang;
+
+class Object {
+    native fun equals(other: Object);
+}
