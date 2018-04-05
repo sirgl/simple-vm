@@ -1,6 +1,7 @@
 package sirgl.simple.vm.type
 
 fun LangType.isSubtypeOf(another: LangType) : Boolean {
+    // TODO consider boxing
     return when (another) {
         is NullType -> true
         is I32Type -> this === I32Type || this === I8Type
