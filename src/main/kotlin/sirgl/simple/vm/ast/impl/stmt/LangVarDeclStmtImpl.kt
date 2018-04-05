@@ -16,6 +16,7 @@ class LangVarDeclStmtImpl(
         endLexeme: Lexeme,
         override val initializer: LangExpr?
 ) : LangStmtImpl(startLexeme, endLexeme), LangVarDeclStmt {
+    override var slot: Short = -1
     override val signature: VariableSignature by lazy { VariableSignature(getSourceFile(), type, name) }
 
     override fun accept(visitor: LangVisitor) {

@@ -44,7 +44,7 @@ class MethodWriter {
 
     lateinit var name: String
 
-    fun add(insn: Instruction) {
+    fun emit(insn: Instruction) {
         position += insn.size
         if (position > 65535) {
             throw UnsupportedOperationException("")
@@ -93,13 +93,16 @@ class ConstantPool { // High level pool, not using indices
     val methodNameToRef = mutableMapOf<String, MethodBaseInfo>()
     val strings = mutableSetOf<String>()
     val ints = mutableSetOf<Int>() // TODO primitive set
+    var position = 0
 
 
-    fun addClassReference(className: String) {
+    fun addClassReference(className: String): Int {
         classRefs.add(className)
+        position++
+        return position - 1
     }
 
-    fun addMethodReference(methodName: String, className: String, parameters: List<ParameterInfo>, returnType: LangType) {
+    fun addMethodReference(methodName: String, className: String, parameters: List<ParameterInfo>, returnType: LangType): Int {
         classRefs.add(className)
         addClassTypeIfMissing(returnType)
         for (parameter in parameters) {
@@ -107,21 +110,29 @@ class ConstantPool { // High level pool, not using indices
             addClassTypeIfMissing(type)
         }
         methodNameToRef[methodName] = MethodBaseInfo(methodName, parameters, className)
+        position++
+        return position - 1
     }
 
-    private fun addClassTypeIfMissing(returnType: LangType) {
+    private fun addClassTypeIfMissing(returnType: LangType): Int {
         if (returnType is ClassType) {
             classRefs.add(returnType.classSignature.qualifiedName)
         }
+        position++
+        return position - 1
     }
 
 
-    fun addString(str: String) {
+    fun addString(str: String): Int {
         strings.add(str)
+        position++
+        return position - 1
     }
 
-    fun addInt(value: Int) {
+    fun addInt(value: Int): Int {
         ints.add(value)
+        position++
+        return position - 1
     }
 
     private fun computeClassRefsByteCount(): Int {

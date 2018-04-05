@@ -35,6 +35,26 @@ const val OP_IF_FALSE = 15
 const val OP_IF_NULL = 16
 const val OP_IF_NOT_NULL = 17
 
+const val OP_ILOAD_CONST = 18
+const val OP_CLOAD_CONST = 19
+const val OP_SLOAD_CONST = 20
+const val OP_LOAD_TRUE = 21
+const val OP_LOAD_FALSE = 22
+const val OP_LOAD_ONE = 23
+const val OP_LOAD_ZERO = 24
+const val OP_LOAD_NULL = 25
+
+const val OP_DROP = 26 // for discarding method result in ExprStmt
+
+const val OP_I2C = 27
+const val OP_C2I = 28
+
+// Store
+const val OP_ISTORE = 29
+const val OP_CSTORE = 30
+const val OP_BSTORE = 31
+const val OP_RSTORE = 32
+
 open class SingleByteInstruction(val opcode: Int) : Instruction() {
     override fun serialize(buffer: ByteBuffer) {
         buffer.put(opcode.toByte())
@@ -80,13 +100,27 @@ class UnaryInstruction(
 
 class Label(val position: Int)
 
-abstract class ControlInstruction(
-        val label: Label,
-        val code: Int
-) : InlinedOperandInstruction(code, label.position.toShort())
 
-class GotoInstruction(label: Label) : ControlInstruction(label, OP_GOTO)
-class IfTrueInstruction(label: Label) : ControlInstruction(label, OP_IF_TRUE)
-class IfFalseInstruction(label: Label) : ControlInstruction(label, OP_IF_FALSE)
-class IfNullInstruction(label: Label) : ControlInstruction(label, OP_IF_NULL)
-class IfNotNullInstruction(label: Label) : ControlInstruction(label, OP_IF_NOT_NULL)
+abstract class ControlInstruction(
+        var label: Label?,
+        code: Int
+) : InlinedOperandInstruction(code, label?.position?.toShort() ?: 0)
+
+class GotoInstruction(label: Label?) : ControlInstruction(label, OP_GOTO)
+class IfTrueInstruction(label: Label?) : ControlInstruction(label, OP_IF_TRUE)
+class IfFalseInstruction(label: Label?) : ControlInstruction(label, OP_IF_FALSE)
+class IfNullInstruction(label: Label?) : ControlInstruction(label, OP_IF_NULL)
+class IfNotNullInstruction(label: Label?) : ControlInstruction(label, OP_IF_NOT_NULL)
+
+class IloadConstInstruction(index: Short) : InlinedOperandInstruction(OP_ILOAD_CONST, index)
+class LoadTrueInstruction : SingleByteInstruction(OP_LOAD_TRUE)
+class LoadFalseInstruction : SingleByteInstruction(OP_LOAD_FALSE)
+class LoadNullInstruction : SingleByteInstruction(OP_LOAD_NULL)
+
+class ConvertCharToIntInstruction : SingleByteInstruction(OP_C2I)
+class ConvertIntToCharInstruction : SingleByteInstruction(OP_I2C)
+
+class StoreIntInstruction(slot: Short) : InlinedOperandInstruction(OP_ISTORE, slot)
+class StoreCharInstruction(slot: Short) : InlinedOperandInstruction(OP_CSTORE, slot)
+class StoreBoolInstruction(slot: Short) : InlinedOperandInstruction(OP_BSTORE, slot)
+class StoreReferenceInstruction(slot: Short) : InlinedOperandInstruction(OP_RSTORE, slot)
