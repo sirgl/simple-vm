@@ -10,9 +10,9 @@ import sirgl.simple.vm.type.LangType
 import sirgl.simple.vm.type.UnknownType
 
 class LangElementAccessExprImpl(
-        last: Lexeme,
-        override val arrayExpr: LangExpr,
-        override val indexExpr: LangExpr
+    last: Lexeme,
+    override val arrayExpr: LangExpr,
+    override val indexExpr: LangExpr
 ) : LangElementAccessExpr, LangExprImpl(arrayExpr.startOffset, last.endOffset, arrayExpr.startLine) {
     override val type: LangType by lazy {
         (arrayExpr.type as? ArrayType)?.elementType ?: UnknownType

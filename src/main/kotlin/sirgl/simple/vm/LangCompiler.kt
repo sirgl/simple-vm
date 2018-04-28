@@ -13,13 +13,13 @@ import kotlin.system.measureTimeMillis
 private val log = KotlinLogging.logger {}
 
 private val defaultPhases = listOf(
-        DiscoveryPhase(),
-        AstBuildingPhase()
+    DiscoveryPhase(),
+    AstBuildingPhase()
 )
 
 class LangCompiler(
-        val configuration: Configuration,
-        val phases: List<CompilerPhase> = defaultPhases
+    val configuration: Configuration,
+    val phases: List<CompilerPhase> = defaultPhases
 ) {
     val astCache = ResolveCache()
     val errorSink = ErrorSink()

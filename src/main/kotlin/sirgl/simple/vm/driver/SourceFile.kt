@@ -3,8 +3,8 @@ package sirgl.simple.vm.driver
 import java.io.InputStream
 
 class SourceFile(
-        val path: String?,
-        private val inputStreamProvider: () -> InputStream
+    val path: String?,
+    private val inputStreamProvider: () -> InputStream
 ) {
     val inputStream: InputStream
         get() = inputStreamProvider()

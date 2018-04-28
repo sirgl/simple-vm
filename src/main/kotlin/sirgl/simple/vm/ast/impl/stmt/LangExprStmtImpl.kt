@@ -5,10 +5,10 @@ import sirgl.simple.vm.ast.stmt.LangExprStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 
 class LangExprStmtImpl(
-        startOffset: Int,
-        endOffset: Int,
-        line: Int,
-        override val expr: LangExpr
+    startOffset: Int,
+    endOffset: Int,
+    line: Int,
+    override val expr: LangExpr
 ) : LangStmtImpl(startOffset, endOffset, line), LangExprStmt {
     override val debugName = "ExprStmt"
 

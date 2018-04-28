@@ -10,7 +10,7 @@ class AstBuildingPhase : CompilerPhase() {
         for (source in context.sourceFiles) {
             context.astBuilder.submit(source)
         }
-        context.resolveCache.complete()
+//        context.resolveCache.complete()
     }
 
 }

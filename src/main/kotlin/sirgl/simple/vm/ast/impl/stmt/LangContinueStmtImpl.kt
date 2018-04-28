@@ -6,7 +6,7 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangContinueStmtImpl(
-        lexeme: Lexeme
+    lexeme: Lexeme
 ) : LangStmtImpl(lexeme, lexeme), LangContinueStmt {
     override val debugName = "ContinueStmt"
 

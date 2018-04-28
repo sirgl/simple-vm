@@ -17,12 +17,18 @@ class CodegenVisitor : LangVisitor() {
     override fun visitMethod(method: LangMethod) {
         super.visitMethod(method)
         val mw = MethodWriter()
-        val methodContext = MethodContext() // TODO it will not from zero if parameters present (always, considering this and absence of )
+        val methodContext =
+            MethodContext() // TODO it will not from zero if parameters present (always, considering this and absence of )
         val block = method.block ?: return
         generateBlockCode(block, mw, pool, methodContext)
     }
 
-    private fun generateBlockCode(block: LangBlock, mw: MethodWriter, pool: ConstantPool, methodContext: MethodContext) {
+    private fun generateBlockCode(
+        block: LangBlock,
+        mw: MethodWriter,
+        pool: ConstantPool,
+        methodContext: MethodContext
+    ) {
         for (stmt in block.stmts) {
             when (stmt) {
                 is LangIfStmt -> {
@@ -42,7 +48,8 @@ class CodegenVisitor : LangVisitor() {
                 is LangVarDeclStmt -> {
                     val initializer = stmt.initializer
                     if (initializer != null) {
-                        stmt.slot = methodContext.slot // TODO Can be more smart slot allocation (branches of if can get different slots)
+                        stmt.slot =
+                                methodContext.slot // TODO Can be more smart slot allocation (branches of if can get different slots)
                         generateExprCode(initializer, mw, pool)
                         when (initializer.type) {
                             I32Type -> mw.emit(StoreIntInstruction(methodContext.slot))
@@ -100,5 +107,5 @@ class CodegenVisitor : LangVisitor() {
 }
 
 class MethodContext(
-        var slot: Short = 0
+    var slot: Short = 0
 )

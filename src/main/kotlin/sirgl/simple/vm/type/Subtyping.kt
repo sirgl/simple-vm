@@ -1,6 +1,6 @@
 package sirgl.simple.vm.type
 
-fun LangType.isSubtypeOf(another: LangType) : Boolean {
+fun LangType.isSubtypeOf(another: LangType): Boolean {
     // TODO consider boxing
     return when (another) {
         is NullType -> true

@@ -1,10 +1,10 @@
 package sirgl.simple.vm.ast
 
 import sirgl.simple.vm.ast.support.LangFunction
-import sirgl.simple.vm.resolve.Scope
-import sirgl.simple.vm.resolve.signatures.MethodSignature
+import sirgl.simple.vm.resolve.symbols.MethodSymbol
 
-interface LangMethod : LangMember, Scope, LangFunction {
+interface LangMethod : LangMember, LangFunction {
     val name: String
-    val signature: MethodSignature
+    val symbol: MethodSymbol
+    val returnTypeElement: LangTypeElement?
 }

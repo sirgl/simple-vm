@@ -6,23 +6,20 @@ import sirgl.simple.vm.ast.LangConstructor
 import sirgl.simple.vm.ast.LangParameter
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
+import sirgl.simple.vm.resolve.LocalScope
 import sirgl.simple.vm.resolve.Scope
 import sirgl.simple.vm.type.LangType
-import sirgl.simple.vm.type.toType
 
 class LangConstructorImpl(
-        private val scope: Scope,
-        override val parameters: List<LangParameter>,
-        override val block: LangBlock,
-        startLexeme: Lexeme,
-        endLexeme: Lexeme,
-        override val isNative: Boolean
-) : LangMemberImpl(startLexeme, endLexeme), LangConstructor, Scope by scope {
-    init {
-        scope.element = this
-    }
+    override val parameters: List<LangParameter>,
+    override val block: LangBlock,
+    startLexeme: Lexeme,
+    endLexeme: Lexeme,
+    override val isNative: Boolean
+) : LangMemberImpl(startLexeme, endLexeme), LangConstructor {
+    override val scope: Scope = LocalScope(this)
 
-    override val returnType: LangType by lazy { enclosingClass.toType() }
+    override val returnType: LangType by lazy { TODO() }
 
     override fun accept(visitor: LangVisitor) {
         visitor.visitConstructor(this)

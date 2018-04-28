@@ -2,22 +2,24 @@ package sirgl.simple.vm.ast.impl.stmt
 
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangExpr
-import sirgl.simple.vm.ast.ext.getSourceFile
+import sirgl.simple.vm.ast.LangTypeElement
 import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
-import sirgl.simple.vm.resolve.signatures.VariableSignature
+import sirgl.simple.vm.resolve.symbols.LocalVarSymbol
 import sirgl.simple.vm.type.LangType
 
 class LangVarDeclStmtImpl(
-        override val name: String,
-        override val type: LangType,
-        startLexeme: Lexeme,
-        endLexeme: Lexeme,
-        override val initializer: LangExpr?
+    override val name: String,
+    startLexeme: Lexeme,
+    endLexeme: Lexeme,
+    override val initializer: LangExpr?,
+    override val typeElement: LangTypeElement
 ) : LangStmtImpl(startLexeme, endLexeme), LangVarDeclStmt {
+    override val type: LangType
+        get() = typeElement.type
     override var slot: Short = -1
-    override val signature: VariableSignature by lazy { VariableSignature(getSourceFile(), type, name) }
+    override lateinit var symbol: LocalVarSymbol
 
     override fun accept(visitor: LangVisitor) {
         visitor.visitVarDeclStmt(this)
@@ -25,11 +27,16 @@ class LangVarDeclStmtImpl(
 
     override val debugName = "VarDeclStmt"
 
-    override fun toString() = super.toString() + " name: $name, type: ${type.name}"
+    override fun toString() = super.toString() + " name: $name"
 
     override val children = makeChildren()
 
     private fun makeChildren(): List<AstNode> {
-        return listOf(this.initializer ?: return emptyList())
+        val nodes = mutableListOf<AstNode>()
+        nodes.add(typeElement)
+        if (initializer != null) {
+            nodes.add(initializer)
+        }
+        return nodes
     }
 }

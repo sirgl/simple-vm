@@ -1,7 +1,7 @@
 package p;
 
 class A {
-    fun foo(p1: I32) {
+    fun foo(p1: i32) {
         while (x < 12) {
         }
     }

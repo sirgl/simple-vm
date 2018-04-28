@@ -1,7 +1,7 @@
 package sirgl.simple.vm.ast.expr
 
 import sirgl.simple.vm.ast.LangExpr
-import sirgl.simple.vm.resolve.signatures.Signature
+import sirgl.simple.vm.resolve.symbols.Symbol
 
 interface LangReferenceExpr : LangExpr {
     val name: String
@@ -12,5 +12,5 @@ interface LangReferenceExpr : LangExpr {
     val isQualified: Boolean
         get() = qualifier != null
 
-    fun resolve(): Signature?
+    fun resolve(): Symbol?
 }

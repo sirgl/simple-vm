@@ -1,20 +1,12 @@
 package sirgl.simple.vm.resolve
 
 import sirgl.simple.vm.ast.AstNode
-import sirgl.simple.vm.ast.expr.LangReferenceExpr
-import sirgl.simple.vm.resolve.signatures.Signature
+import sirgl.simple.vm.resolve.symbols.Symbol
 
 interface Scope {
-    val parentScope: Scope?
-    var element: AstNode
-    /**
-     * Single namespace for all Symbols
-     */
-    fun resolve(reference: LangReferenceExpr): Signature?
+    fun resolve(name: String): Symbol?
 
-    fun register(signature: Signature)
+    fun register(symbol: Symbol, node: AstNode?)
 
-    fun containsName(name: String): Boolean
-
-    fun getMultipleDeclarations() : List<String>
+    fun getMultipleDeclarations(): Map<String, Set<Symbol>>
 }

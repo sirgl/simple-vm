@@ -22,7 +22,6 @@ const val OP_IGE = 8
 const val OP_IEQ = 9
 
 
-
 const val OP_NOOP = 10
 
 const val OP_NEG = 11 // -x
@@ -59,6 +58,7 @@ open class SingleByteInstruction(val opcode: Int) : Instruction() {
     override fun serialize(buffer: ByteBuffer) {
         buffer.put(opcode.toByte())
     }
+
     override val size: Int = 1
 }
 
@@ -85,7 +85,8 @@ private fun binopToOpcode(operatorType: BinaryOperatorType) = when (operatorType
     BinaryOperatorType.Eq -> OP_IEQ
 }
 
-class BinopInstruction(binaryOperatorType: BinaryOperatorType) : SingleByteInstruction(binopToOpcode(binaryOperatorType))
+class BinopInstruction(binaryOperatorType: BinaryOperatorType) :
+    SingleByteInstruction(binopToOpcode(binaryOperatorType))
 
 
 private fun unopToOpcode(prefixOperatorType: PrefixOperatorType) = when (prefixOperatorType) {
@@ -95,15 +96,15 @@ private fun unopToOpcode(prefixOperatorType: PrefixOperatorType) = when (prefixO
 }
 
 class UnaryInstruction(
-        prefixOperatorType: PrefixOperatorType
+    prefixOperatorType: PrefixOperatorType
 ) : SingleByteInstruction(unopToOpcode(prefixOperatorType))
 
 class Label(val position: Int)
 
 
 abstract class ControlInstruction(
-        var label: Label?,
-        code: Int
+    var label: Label?,
+    code: Int
 ) : InlinedOperandInstruction(code, label?.position?.toShort() ?: 0)
 
 class GotoInstruction(label: Label?) : ControlInstruction(label, OP_GOTO)

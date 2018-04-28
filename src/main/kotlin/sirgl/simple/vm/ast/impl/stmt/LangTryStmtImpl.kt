@@ -8,10 +8,10 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangTryStmtImpl(
-        startLexeme: Lexeme,
-        endLexeme: Lexeme,
-        override val tryBlock: LangBlock,
-        override val catchBlocks: List<LangCatchClause>
+    startLexeme: Lexeme,
+    endLexeme: Lexeme,
+    override val tryBlock: LangBlock,
+    override val catchBlocks: List<LangCatchClause>
 ) : LangStmtImpl(startLexeme, endLexeme), LangTryStmt {
     override val debugName = "TryStmt"
 

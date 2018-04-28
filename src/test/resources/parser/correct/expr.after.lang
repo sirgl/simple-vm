@@ -1,8 +1,11 @@
 File#0@[0, 626)
   Package#0@[0, 10)
+    Reference#0@[8, 9) name: p
   Class#2@[12, 626) name: A
-    Method#3@[26, 624) name: foo, returnType: void
-      Parameter#3@[34, 41) name: p1, type: I32
+    Method#3@[26, 624) name: foo
+      Parameter#3@[34, 41) name: p1
+        TypeElement#3@[38, 41) sort: Reference
+          Reference#3@[38, 41) name: I32
       Block#3@[43, 624)
         ExprStmt#4@[53, 63)
           BinaryExpr#4@[53, 62)
@@ -98,9 +101,9 @@ File#0@[0, 626)
                   ReferenceExpr#19@[528, 533) name: field
             IntLiteral#19@[546, 548) value: 12
         ExprStmt#20@[559, 578)
-          TypeCheckExpr#20@[559, 577) type: I8
+          TypeCheckExpr#20@[559, 577) type: i8
             ParenExpr#20@[559, 571)
-              CastExpr#20@[560, 570) type: I32
+              CastExpr#20@[560, 570) type: i32
                 ReferenceExpr#20@[560, 563) name: foo
         ExprStmt#21@[592, 598)
           CallExpr#21@[592, 597)

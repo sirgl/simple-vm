@@ -6,8 +6,8 @@ import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.BoolType
 
 class LangBoolLiteralExprImpl(
-        override val value: Boolean,
-        lexeme: Lexeme
+    override val value: Boolean,
+    lexeme: Lexeme
 ) : LangBoolLiteralExpr, LangLeafExprImpl(lexeme) {
     override val type = BoolType
 

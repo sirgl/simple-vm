@@ -11,10 +11,10 @@ import sirgl.simple.vm.type.I32Type
 import sirgl.simple.vm.type.LangType
 
 class LangPrefixExprImpl(
-        startLexeme: Lexeme,
-        endLexeme: Lexeme,
-        override val expr: LangExpr,
-        override val prefixOperatorType: PrefixOperatorType
+    startLexeme: Lexeme,
+    endLexeme: Lexeme,
+    override val expr: LangExpr,
+    override val prefixOperatorType: PrefixOperatorType
 ) : LangExprImpl(startLexeme.startOffset, endLexeme.endOffset, startLexeme.line), LangPrefixExpr {
     override val type: LangType by lazy {
         when (prefixOperatorType) {

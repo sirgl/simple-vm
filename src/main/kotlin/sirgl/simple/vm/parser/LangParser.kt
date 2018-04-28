@@ -1,9 +1,9 @@
 package sirgl.simple.vm.parser
 
 import sirgl.simple.vm.ast.AstNode
-import sirgl.simple.vm.ast.LangBlock
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangFile
+import sirgl.simple.vm.ast.LangTypeElementSort
 import sirgl.simple.vm.ast.expr.LangElementAccessExpr
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
@@ -11,12 +11,12 @@ import sirgl.simple.vm.ast.ext.parseCharLiteral
 import sirgl.simple.vm.ast.ext.parseStringLiteral
 import sirgl.simple.vm.ast.impl.*
 import sirgl.simple.vm.ast.impl.expr.*
+import sirgl.simple.vm.ast.impl.resolve.LangReferenceElementImpl
 import sirgl.simple.vm.ast.impl.stmt.*
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
-import sirgl.simple.vm.resolve.ScopeImpl
-import sirgl.simple.vm.type.*
+import sirgl.simple.vm.resolve.LocalScope
 
 interface LangParser {
     fun parse(lexemes: List<Lexeme>): ParseResult<LangFileImpl>
@@ -25,14 +25,14 @@ interface LangParser {
 }
 
 class ParseResult<out T : AstNode>(
-        val ast: T?,
-        val fail: Fail? = null
+    val ast: T?,
+    val fail: Fail? = null
 )
 
 class Fail(
-        val lexeme: Lexeme,
-        val message: String?,
-        val parseException: ParseException? = null
+    val lexeme: Lexeme,
+    val message: String?,
+    val parseException: ParseException? = null
 ) {
     override fun toString(): String {
         return "Parser error #${lexeme.line}@[${lexeme.startOffset}, ${lexeme.endOffset}) : $message, " +
@@ -65,42 +65,42 @@ private val boolLiteralParser = BoolParser()
 private val referenceExprParser = ReferenceExprParser()
 
 private val prefixParsers = mapOf(
-        IntLiteral to IntLiteralParser(),
-        StringLiteral to StringLiteralParser(),
-        Identifier to referenceExprParser,
-        Super to referenceExprParser,
-        This to referenceExprParser,
-        OpPlus to opPrefixParser,
-        OpMinus to opPrefixParser,
-        OpExcl to opPrefixParser,
-        True to boolLiteralParser,
-        False to boolLiteralParser,
-        LParen to ParenExprParser(),
-        Null to NullParser(),
-        CharLiteral to CharLiteralParser()
+    IntLiteral to IntLiteralParser(),
+    StringLiteral to StringLiteralParser(),
+    Identifier to referenceExprParser,
+    Super to referenceExprParser,
+    This to referenceExprParser,
+    OpPlus to opPrefixParser,
+    OpMinus to opPrefixParser,
+    OpExcl to opPrefixParser,
+    True to boolLiteralParser,
+    False to boolLiteralParser,
+    LParen to ParenExprParser(),
+    Null to NullParser(),
+    CharLiteral to CharLiteralParser()
 )
 
 private class InfixOperatorInfo(
-        val opKind: LexemeKind,
-        val precedence: Int, // the more value, the lower precedence
-        val isLeft: Boolean
+    val opKind: LexemeKind,
+    val precedence: Int, // the more value, the lower precedence
+    val isLeft: Boolean
 )
 
 private val binOpInfo = arrayOf(
-        InfixOperatorInfo(OpAsterisk, 3, false),
-        InfixOperatorInfo(OpDiv, 3, false),
-        InfixOperatorInfo(OpPercent, 3, false),
-        InfixOperatorInfo(OpPlus, 4, false),
-        InfixOperatorInfo(OpMinus, 4, false),
-        InfixOperatorInfo(OpLt, 6, false),
-        InfixOperatorInfo(OpLtEq, 6, false),
-        InfixOperatorInfo(OpGt, 6, false),
-        InfixOperatorInfo(OpGtEq, 6, false),
-        InfixOperatorInfo(OpEqEq, 7, false),
-        InfixOperatorInfo(OpNotEq, 7, false),
-        InfixOperatorInfo(OpAndAnd, 8, false),
-        InfixOperatorInfo(OpOrOr, 9, false),
-        InfixOperatorInfo(OpEq, 10, true)
+    InfixOperatorInfo(OpAsterisk, 3, false),
+    InfixOperatorInfo(OpDiv, 3, false),
+    InfixOperatorInfo(OpPercent, 3, false),
+    InfixOperatorInfo(OpPlus, 4, false),
+    InfixOperatorInfo(OpMinus, 4, false),
+    InfixOperatorInfo(OpLt, 6, false),
+    InfixOperatorInfo(OpLtEq, 6, false),
+    InfixOperatorInfo(OpGt, 6, false),
+    InfixOperatorInfo(OpGtEq, 6, false),
+    InfixOperatorInfo(OpEqEq, 7, false),
+    InfixOperatorInfo(OpNotEq, 7, false),
+    InfixOperatorInfo(OpAndAnd, 8, false),
+    InfixOperatorInfo(OpOrOr, 9, false),
+    InfixOperatorInfo(OpEq, 10, true)
 )
 
 private val binOps = binOpInfo.associateBy({ it.opKind }) { BinaryExprParser(it.precedence, it.isLeft) }
@@ -126,9 +126,9 @@ class ParseException(val lexeme: Lexeme, message: String) : Exception(message)
  * No error recovery provided. Fails on first error.
  */
 private class ParserState(
-        val lexemes: List<Lexeme>,
-        private val prefixParsers: Map<LexemeKind, PrefixParser>,
-        private val infixParsers: Map<LexemeKind, InfixExprParser>
+    val lexemes: List<Lexeme>,
+    private val prefixParsers: Map<LexemeKind, PrefixParser>,
+    private val infixParsers: Map<LexemeKind, InfixExprParser>
 ) {
     private var position = 0
     val current: Lexeme
@@ -178,9 +178,9 @@ private class ParserState(
     // Rules
 
     fun file(): LangFileImpl {
-        val packageDecl = if (match(Package)) parsePackageDecl() else null
+        val packageDecl = if (match(Package)) packageDecl() else null
         val cls = parseClass()
-        val file = LangFileImpl(ScopeImpl(), packageDecl, cls)
+        val file = LangFileImpl(packageDecl, cls)
         packageDecl?.parent = file
         cls.parent = file
         return file
@@ -189,9 +189,9 @@ private class ParserState(
     fun parseClass(): LangClassImpl {
         val clsNode = expectThenAdvance(Class)
         val clsNameNode = expectThenAdvance(Identifier)
-        val parentClsName = if (match(Colon)) {
+        val parentClassReference = if (match(Colon)) {
             advance()
-            separatedList(Identifier, Dot).joinToString(".") { it.text }
+            reference()
         } else {
             null
         }
@@ -209,7 +209,10 @@ private class ParserState(
             members.add(member)
         }
         val rBrace = expectThenAdvance(RBrace)
-        val cls = LangClassImpl(ScopeImpl(), clsNameNode.text, members, clsNode, rBrace, parentClsName)
+        val cls = LangClassImpl(clsNameNode.text, members, clsNode, rBrace, parentClassReference)
+        if (parentClassReference != null) {
+            parentClassReference.parent = cls
+        }
         for (member in members) {
             member.parent = cls
         }
@@ -227,9 +230,9 @@ private class ParserState(
         val parameters = parameters()
         val returnType = if (match(Colon)) {
             advance()
-            type()
+            typeElement()
         } else {
-            VoidType
+            null
         }
         val block = if (match(LBrace)) {
             block()
@@ -239,15 +242,15 @@ private class ParserState(
         val lastLexeme = previousLexeme
 
         val method = LangMethodImpl(
-                ScopeImpl(),
-                methodNameLexeme.text,
-                parameters,
-                block,
-                nativeLexeme ?: funLexeme,
-                lastLexeme,
-                nativeLexeme != null,
-                returnType
+            methodNameLexeme.text,
+            parameters,
+            block,
+            nativeLexeme ?: funLexeme,
+            lastLexeme,
+            nativeLexeme != null,
+            returnType
         )
+        returnType?.parent = method
         for (parameter in parameters) {
             parameter.parent = method
         }
@@ -265,12 +268,11 @@ private class ParserState(
         val parameters = parameters()
         val block = block()
         val constructor = LangConstructorImpl(
-                ScopeImpl(),
-                parameters,
-                block,
-                nativeLexeme ?: funLexeme,
-                block.rBrace,
-                nativeLexeme != null
+            parameters,
+            block,
+            nativeLexeme ?: funLexeme,
+            block.rBrace,
+            nativeLexeme != null
         )
         for (parameter in parameters) {
             parameter.parent = constructor
@@ -293,8 +295,10 @@ private class ParserState(
     fun parameter(): LangParameterImpl {
         val identifier = expectThenAdvance(Identifier)
         expectThenAdvance(Colon)
-        val type = type()
-        return LangParameterImpl(identifier.text, type, identifier, lexemes[position - 1])
+        val type = typeElement()
+        val parameter = LangParameterImpl(identifier.text, type, identifier, lexemes[position - 1])
+        type.parent = parameter
+        return parameter
     }
 
     fun whileStmt(): LangWhileStmtImpl {
@@ -309,23 +313,49 @@ private class ParserState(
         return whileStmt
     }
 
-    fun type(): LangType {
-        val simpleType = when (current.kind) {
-            Identifier -> ClassType(current.text)
-            I32 -> I32Type
-            I8 -> I8Type
-            Bool -> BoolType
-            Void -> VoidType
-            else -> fail("Type expected")
-        }
-        advance()
-        var currentType = simpleType
-        while (match(LBracket)) {
+    fun reference(): LangReferenceElementImpl {
+        val identifier = expectThenAdvance(Identifier)
+        var current = LangReferenceElementImpl(null, identifier.text, identifier, identifier)
+        while (match(Dot)) {
             advance()
-            expectThenAdvance(RBracket)
-            currentType = ArrayType(currentType)
+            val nextIdentifier = expectThenAdvance(Identifier)
+            val next = LangReferenceElementImpl(current, nextIdentifier.text, nextIdentifier, nextIdentifier)
+            current.parent = next
+            current = next
         }
-        return currentType
+        return current
+    }
+
+    fun typeElement(): LangTypeElementImpl {
+        // parsing base type (without array)
+        val currentKind = current.kind
+        var baseType = when (currentKind) {
+            Identifier -> {
+                val reference = reference()
+                val typeElement = LangTypeElementImpl(reference)
+                reference.parent = typeElement
+                typeElement
+            }
+            I32, I8, Bool, Void -> {
+                val sort = when (currentKind) {
+                    I32 -> LangTypeElementSort.I32
+                    I8 -> LangTypeElementSort.I8
+                    Bool -> LangTypeElementSort.Bool
+                    Void -> LangTypeElementSort.Void
+                    else -> throw UnsupportedOperationException()
+                }
+                LangTypeElementImpl(advance(), sort)
+            }
+            else -> fail("Type element expected")
+        }
+        while (current.kind == LBracket) {
+            advance()
+            val rBracket = expectThenAdvance(RBracket)
+            val arrayTypeElement = LangTypeElementImpl(baseType, rBracket)
+            baseType.parent = arrayTypeElement
+            baseType = arrayTypeElement
+        }
+        return baseType
     }
 
     fun block(): LangBlockImpl {
@@ -335,7 +365,7 @@ private class ParserState(
             stmts.add(stmt())
         }
         val rBrace = expectThenAdvance(RBrace)
-        val block = LangBlockImpl(ScopeImpl(), stmts, lBrace, rBrace)
+        val block = LangBlockImpl(stmts, lBrace, rBrace)
         for (stmt in stmts) {
             stmt.parent = block
         }
@@ -346,7 +376,7 @@ private class ParserState(
         val varLexeme = expectThenAdvance(Var)
         val identifier = expectThenAdvance(Identifier)
         expectThenAdvance(Colon)
-        val type = type()
+        val type = typeElement()
         val typeLast = lexemes[position - 1]
         val initializer = if (matchThenAdvance(OpEq)) {
             expr()
@@ -355,7 +385,8 @@ private class ParserState(
         }
         expectThenAdvance(Semicolon)
         val last = if (initializer == null) typeLast else current
-        val field = LangFieldImpl(identifier.text, type, varLexeme, last, initializer)
+        val field = LangFieldImpl(identifier.text, varLexeme, last, initializer, type)
+        type.parent = field
         initializer?.parent = field
         return field
     }
@@ -364,7 +395,7 @@ private class ParserState(
         val varLexeme = expectThenAdvance(Var)
         val identifier = expectThenAdvance(Identifier)
         expectThenAdvance(Colon)
-        val type = type()
+        val typeElement = typeElement()
         val typeLast = lexemes[position - 1]
         val initializer = if (matchThenAdvance(OpEq)) {
             expr()
@@ -373,7 +404,8 @@ private class ParserState(
         }
         expectThenAdvance(Semicolon)
         val last = if (initializer == null) typeLast else current
-        val localVar = LangVarDeclStmtImpl(identifier.text, type, varLexeme, last, initializer)
+        val localVar = LangVarDeclStmtImpl(identifier.text, varLexeme, last, initializer, typeElement)
+        typeElement.parent = localVar
         initializer?.parent = localVar
         return localVar
     }
@@ -491,22 +523,14 @@ private class ParserState(
     val previousLexeme: Lexeme
         get() = lexemes[position - 1]
 
-    fun parsePackageDecl(): LangPackageDeclImpl {
+    fun packageDecl(): LangPackageDeclImpl {
         val packageLexeme = expectThenAdvance(Package)
 
-        val packageName = separatedList(Identifier, Dot).joinToString(".") { it.text }
+        val reference = reference()
         val semicolonLexeme = expectThenAdvance(Semicolon)
-        return LangPackageDeclImpl(packageName, packageLexeme, semicolonLexeme)
-    }
-
-    fun separatedList(entryKind: LexemeKind, separatorKind: LexemeKind): List<Lexeme> {
-        val lexemes = mutableListOf<Lexeme>()
-        lexemes.add(expectThenAdvance(entryKind))
-        while (match(separatorKind)) {
-            advance()
-            lexemes.add(expectThenAdvance(entryKind))
-        }
-        return lexemes
+        val packageDeclImpl = LangPackageDeclImpl(reference, packageLexeme, semicolonLexeme)
+        reference.parent = packageDeclImpl
+        return packageDeclImpl
     }
 }
 
@@ -605,8 +629,8 @@ private class DotExprParser : InfixExprParser {
 }
 
 private class BinaryExprParser(
-        override val precedence: Int,
-        val isLeft: Boolean
+    override val precedence: Int,
+    val isLeft: Boolean
 ) : InfixExprParser {
     override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
         parser.advance()
@@ -675,9 +699,10 @@ private class CastExprParser : InfixExprParser {
 
     override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
         parser.advance()
-        val type = parser.type()
-        val castExpr = LangCastExprImpl(parser.previousLexeme, left, type)
+        val typeElement = parser.typeElement()
+        val castExpr = LangCastExprImpl(parser.previousLexeme, left, typeElement)
         left.parent = castExpr
+        typeElement.parent = castExpr
         return castExpr
     }
 }
@@ -687,9 +712,10 @@ private class TypeCheckExpr : InfixExprParser {
 
     override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
         parser.advance()
-        val type = parser.type()
-        val castExpr = LangTypeCheckExprImpl(parser.previousLexeme, left, type)
-        left.parent = castExpr
-        return castExpr
+        val type = parser.typeElement()
+        val typeCheckExpr = LangTypeCheckExprImpl(parser.previousLexeme, left, type)
+        left.parent = typeCheckExpr
+        type.parent = typeCheckExpr
+        return typeCheckExpr
     }
 }

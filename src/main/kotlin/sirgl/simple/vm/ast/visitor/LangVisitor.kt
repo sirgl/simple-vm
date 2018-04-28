@@ -27,6 +27,10 @@ abstract class LangVisitor {
 
     }
 
+    open fun visitTypeElement(typeElement: LangTypeElement) {
+        visitAstNode(typeElement)
+    }
+
     // Top level
 
     open fun visitPackageDecl(packageDecl: LangPackageDecl) {
@@ -60,6 +64,9 @@ abstract class LangVisitor {
 
 
     // Other
+    open fun visitReference(referenceElement: LangReferenceElement) {
+        visitAstNode(referenceElement)
+    }
 
     open fun visitParameter(parameter: LangParameter) {
         visitAstNode(parameter)

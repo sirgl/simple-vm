@@ -22,20 +22,21 @@ abstract class SemanticAnalysisTestBase : FileTestCase<String>() {
 
         val astBuilder = AstBuilder(resolveCache, errorSink)
         runCompiler(
-                CompilerContext(
-                        astBuilder,
-                        resolveCache,
-                        Configuration("", "Main"),
-                        sourceFiles = listOf(
-                                SourceFile("__DUMMY__.lang", { text.byteInputStream() })
-                        ),
-                        errorSink = errorSink
+            CompilerContext(
+                astBuilder,
+                resolveCache,
+                Configuration("", "Main"),
+                sourceFiles = listOf(
+                    SourceFile("__DUMMY__.lang", { text.byteInputStream() })
                 ),
-                phases = listOf(
-                        AstBuildingPhase(),
-                        SetupPhase(),
-                        SemanticAnalysisPhase()
-                ))
+                errorSink = errorSink
+            ),
+            phases = listOf(
+                AstBuildingPhase(),
+                SetupPhase(),
+                SemanticAnalysisPhase()
+            )
+        )
         return errorSink.errors.joinToString("\n") { it.text }
     }
 

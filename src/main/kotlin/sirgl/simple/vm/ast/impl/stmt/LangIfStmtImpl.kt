@@ -7,11 +7,11 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangIfStmtImpl(
-        startLexeme: Lexeme,
-        endLexeme: Lexeme,
-        override val condition: LangExpr,
-        override val thenBlock: LangBlock,
-        override val elseBlock: LangBlock?
+    startLexeme: Lexeme,
+    endLexeme: Lexeme,
+    override val condition: LangExpr,
+    override val thenBlock: LangBlock,
+    override val elseBlock: LangBlock?
 ) : LangStmtImpl(startLexeme, endLexeme), LangIfStmt {
     override fun accept(visitor: LangVisitor) {
         visitor.visitIfStmt(this)

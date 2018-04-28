@@ -1,8 +1,8 @@
 package p;
 
 class VarCls {
-    fun foo(p1: I32) {
-        var x: Int = 12;
-        var y: Int;
+    fun foo(p1: i32) {
+        var x: i32 = 12;
+        var y: i32;
     }
 }

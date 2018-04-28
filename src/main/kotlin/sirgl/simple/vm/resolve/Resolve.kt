@@ -1,9 +1,6 @@
 package sirgl.simple.vm.resolve
 
-import sirgl.simple.vm.ast.LangClass
-import sirgl.simple.vm.ast.expr.LangReferenceExpr
-import sirgl.simple.vm.ast.ext.getClass
-import sirgl.simple.vm.resolve.signatures.ClassSignature
+import sirgl.simple.vm.resolve.symbols.Symbol
 
 ///**
 // * @param resolutionOriginCls - qualifier type's class
@@ -14,3 +11,7 @@ import sirgl.simple.vm.resolve.signatures.ClassSignature
 //    }
 //
 //}
+
+fun resolveQualified(name: String, qualifierSymbol: Symbol) {
+
+}

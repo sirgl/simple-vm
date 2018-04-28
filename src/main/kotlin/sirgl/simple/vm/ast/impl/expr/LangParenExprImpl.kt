@@ -8,9 +8,9 @@ import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.LangType
 
 class LangParenExprImpl(
-        lParen: Lexeme,
-        rParen: Lexeme,
-        override val expr: LangExpr
+    lParen: Lexeme,
+    rParen: Lexeme,
+    override val expr: LangExpr
 ) : LangParenExpr, LangExprImpl(lParen, rParen) {
     override val type: LangType
         get() = expr.type

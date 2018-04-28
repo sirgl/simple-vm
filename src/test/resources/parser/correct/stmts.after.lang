@@ -1,8 +1,11 @@
 File#0@[0, 292)
   Package#0@[0, 10)
+    Reference#0@[8, 9) name: p
   Class#2@[12, 292) name: A
-    Method#3@[26, 290) name: foo, returnType: void
-      Parameter#3@[34, 41) name: p1, type: I32
+    Method#3@[26, 290) name: foo
+      Parameter#3@[34, 41) name: p1
+        TypeElement#3@[38, 41) sort: Reference
+          Reference#3@[38, 41) name: I32
       Block#3@[43, 290)
         ReturnStmt#4@[53, 59)
         ContinueStmt#5@[69, 77)

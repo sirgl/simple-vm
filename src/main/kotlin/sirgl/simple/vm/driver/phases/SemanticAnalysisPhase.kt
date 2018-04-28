@@ -11,12 +11,12 @@ class SemanticAnalysisPhase : CompilerPhase() {
     override val name = "Semantic analysis"
 
     override fun run(context: CompilerContext) {
-        for (ast in context.asts) {
-            val inspection = SemanticAnalysisInspection(ErrorHolderImpl(context.errorSink, ast.sourceFile))
-            val walker: AstWalker = SimpleWalker()
-            walker.prepassRecursive(ast) {
-                it.accept(inspection.visitor)
-            }
-        }
+//        for (ast in context.asts) {
+//            val inspection = SemanticAnalysisInspection(ErrorHolderImpl(context.errorSink, ast.sourceFile))
+//            val walker: AstWalker = SimpleWalker()
+//            walker.prepassRecursive(ast) {
+//                it.accept(inspection.visitor)
+//            }
+//        }
     }
 }

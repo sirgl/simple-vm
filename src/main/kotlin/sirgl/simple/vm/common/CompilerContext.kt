@@ -8,11 +8,11 @@ import sirgl.simple.vm.driver.ResolveCache
 import sirgl.simple.vm.driver.SourceFile
 
 class CompilerContext(
-        val astBuilder: AstBuilder,
-        val resolveCache: ResolveCache,
-        val configuration: Configuration,
-        val errorSink: ErrorSink,
-        var sourceFiles: List<SourceFile> = listOf(),
-        val asts: MutableList<LangFile> = mutableListOf()
+    val astBuilder: AstBuilder,
+    val resolveCache: ResolveCache,
+    val configuration: Configuration,
+    val errorSink: ErrorSink,
+    var sourceFiles: List<SourceFile> = listOf(),
+    val asts: MutableList<LangFile> = mutableListOf()
 ) {
 }

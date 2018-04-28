@@ -6,8 +6,8 @@ import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.I32Type
 
 class LangIntLiteralExprImpl(
-        override val value: Int,
-        lexeme: Lexeme
+    override val value: Int,
+    lexeme: Lexeme
 ) : LangIntLiteralExpr, LangLeafExprImpl(lexeme) {
     override val type = I32Type
 

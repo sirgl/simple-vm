@@ -5,17 +5,16 @@ import sirgl.simple.vm.ast.LangBlock
 import sirgl.simple.vm.ast.LangStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
+import sirgl.simple.vm.resolve.LocalScope
 import sirgl.simple.vm.resolve.Scope
 
 class LangBlockImpl(
-        val scope: Scope,
-        override val stmts: List<LangStmt>,
-        val lBrace: Lexeme,
-        val rBrace: Lexeme
-) : AstNodeImpl(lBrace, rBrace), LangBlock, Scope by scope {
-    init {
-        scope.element = this
-    }
+    override val stmts: List<LangStmt>,
+    val lBrace: Lexeme,
+    val rBrace: Lexeme
+) : AstNodeImpl(lBrace, rBrace), LangBlock {
+    override val scope: Scope = LocalScope(this)
+
 
     override lateinit var parent: AstNode
 

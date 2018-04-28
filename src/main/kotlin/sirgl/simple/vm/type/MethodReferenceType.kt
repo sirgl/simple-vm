@@ -1,9 +1,9 @@
 package sirgl.simple.vm.type
 
-import sirgl.simple.vm.resolve.signatures.MethodSignature
+import sirgl.simple.vm.resolve.symbols.MethodSymbol
 
 class MethodReferenceType(
-        override val name: String
+    override val name: String
 ) : LangType {
-    lateinit var method: MethodSignature
+    lateinit var methodSymbol: MethodSymbol
 }

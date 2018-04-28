@@ -1,12 +1,12 @@
 package sirgl.simple.vm.ast
 
-import sirgl.simple.vm.driver.SourceFile
-import sirgl.simple.vm.resolve.Scope
+import sirgl.simple.vm.resolve.Scoped
+import sirgl.simple.vm.roots.SymbolSource
 
-interface LangFile : AstNode, Scope {
+interface LangFile : AstNode, Scoped {
     val classDecl: LangClass
     val packageDeclaration: LangPackageDecl?
-    val sourceFile: SourceFile
+    val symbolSource: SymbolSource
 //    val path: Path
     // TODO think about error handling
 }

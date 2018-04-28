@@ -24,5 +24,5 @@ inline fun <reified T> AstNode.findParentOfClass(): T? {
 
 fun AstNode.getScope() = getParentOfClass<Scope>()
 fun AstNode.getFile() = getParentOfClass<LangFile>()
-fun AstNode.getSourceFile() = getParentOfClass<LangFile>().sourceFile
+fun AstNode.getSymbolSource() = getParentOfClass<LangFile>().symbolSource
 fun AstNode.getClass() = getParentOfClass<LangClass>()

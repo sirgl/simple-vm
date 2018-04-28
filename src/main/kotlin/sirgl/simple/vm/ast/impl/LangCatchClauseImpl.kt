@@ -9,10 +9,10 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangCatchClauseImpl(
-        startLexeme: Lexeme,
-        endLexeme: Lexeme,
-        override val parameter: LangParameter,
-        override val block: LangBlock
+    startLexeme: Lexeme,
+    endLexeme: Lexeme,
+    override val parameter: LangParameter,
+    override val block: LangBlock
 ) : AstNodeImpl(startLexeme, endLexeme), LangCatchClause {
     override fun accept(visitor: LangVisitor) {
         visitor.visitCatchClause(this)

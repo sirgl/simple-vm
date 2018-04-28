@@ -6,7 +6,7 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangBreakStmtImpl(
-        lexeme: Lexeme
+    lexeme: Lexeme
 ) : LangStmtImpl(lexeme, lexeme), LangBreakStmt {
     override val debugName = "BreakStmt"
 

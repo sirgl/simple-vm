@@ -8,14 +8,11 @@ import sirgl.simple.vm.lexer.UnknownLexemeError
 import sirgl.simple.vm.parser.HandwrittenLangParser
 import sirgl.simple.vm.parser.LangParser
 import sirgl.simple.vm.parser.ParseError
-import java.util.concurrent.ArrayBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 
 // TODO probably thread pool is not needed, I can just create threads that will take sourceFile from
 class AstBuilder(
-        private val resolveCache: ResolveCache,
-        private val errorSink: ErrorSink
+    private val resolveCache: ResolveCache,
+    private val errorSink: ErrorSink
 ) : AutoCloseable {
 //    private val threadPool = ThreadPoolExecutor(4, 4, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(100))
 
@@ -32,16 +29,16 @@ class AstBuilder(
 }
 
 class AstBuildingTask(
-        private val sourceFile: SourceFile,
-        private val resolveCache: ResolveCache,
-        private val lexer: LangLexer,
-        private val parser: LangParser,
-        private val errorSink: ErrorSink
+    private val sourceFile: SourceFile,
+    private val resolveCache: ResolveCache,
+    private val lexer: LangLexer,
+    private val parser: LangParser,
+    private val errorSink: ErrorSink
 ) : Runnable {
 
     override fun run() {
         val file = parse() ?: return
-        resolveCache.addSourceFile(sourceFile, file, this)
+//        resolveCache.addSourceFile(sourceFile, file, this) // TODO
     }
 
     fun parse(): LangFile? {

@@ -10,12 +10,12 @@ import sirgl.simple.vm.type.I32Type
 import sirgl.simple.vm.type.LangType
 
 class LangBinaryExprImpl(
-        override val left: LangExpr,
-        override val right: LangExpr,
-        override val operator: LangBinaryOperator,
-        startOffset: Int,
-        endOffset: Int,
-        line: Int
+    override val left: LangExpr,
+    override val right: LangExpr,
+    override val operator: LangBinaryOperator,
+    startOffset: Int,
+    endOffset: Int,
+    line: Int
 ) : LangBinaryExpr, LangExprImpl(startOffset, endOffset, line) {
     override val type: LangType by lazy {
         when (operator.typeBinary) {
