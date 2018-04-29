@@ -23,13 +23,13 @@ interface SourceFileSource : FileSymbolSource
 
 interface CompiledFileSource : FileSymbolSource
 
-class RealSourceFileSource(override val path: Path) : SourceFileSource {
+class FsSourceFileSource(override val path: Path) : SourceFileSource {
     override val type = SymbolSourceType.Source
 
     override fun getInputStream(): InputStream = Files.newInputStream(path)
 }
 
-class RealCompiledFileSource(override val path: Path) : CompiledFileSource {
+class FsCompiledFileSource(override val path: Path) : CompiledFileSource {
     override val type = SymbolSourceType.Compiled
 
     override fun getInputStream(): InputStream = Files.newInputStream(path)
