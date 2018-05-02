@@ -2,7 +2,7 @@ package sirgl.simple.vm.analysis
 
 import sirgl.simple.vm.ast.visitor.LangVisitor
 
-class SemanticAnalysisInspection(override val errorHolder: ErrorHolder) : LangInspection {
+class SemanticAnalysisInspection(override val problemHolder: ProblemHolder) : LangInspection {
     override val visitor: LangVisitor
         get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
     //    override val visitor: LangVisitor = object : LangVisitor() {

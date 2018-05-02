@@ -1,6 +1,9 @@
 package sirgl.simple.vm.resolve.symbols
 
 import sirgl.simple.vm.ast.AstNode
+import sirgl.simple.vm.ast.LangImport
+import sirgl.simple.vm.ast.LangPackageDecl
+import sirgl.simple.vm.driver.GlobalScope
 import sirgl.simple.vm.roots.SymbolSource
 
 class PackageSymbolImpl(
@@ -30,3 +33,9 @@ class PackageSymbolImpl(
         emptyMap()
     }
 }
+
+fun LangPackageDecl.toSymbol(globalScope: GlobalScope): PackageSymbol =
+    globalScope.findOrCreatePackageSymbol(referenceElement.fullName)
+
+fun LangImport.toSymbol(globalScope: GlobalScope): PackageSymbol =
+    globalScope.findOrCreatePackageSymbol(referenceElement.fullName)

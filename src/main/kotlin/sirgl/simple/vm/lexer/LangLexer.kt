@@ -45,7 +45,7 @@ val keywordToKind = mutableMapOf(
     "i8" to I8,
     "true" to True,
     "false" to False,
-    "import" to Return,
+    "import" to Import,
     "package" to Package,
     "void" to Void,
     "if" to If,

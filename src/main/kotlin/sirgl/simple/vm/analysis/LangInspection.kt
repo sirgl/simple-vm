@@ -4,21 +4,22 @@ import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.driver.CompilationError
 import sirgl.simple.vm.driver.ErrorSink
-import sirgl.simple.vm.driver.SourceFile
+import sirgl.simple.vm.roots.SourceFileSource
+import sirgl.simple.vm.roots.SymbolSource
 
 interface LangInspection {
-    val errorHolder: ErrorHolder
+    val problemHolder: ProblemHolder
     val visitor: LangVisitor
 }
 
-interface ErrorHolder {
+interface ProblemHolder {
     fun registerProblem(node: AstNode, description: String)
 }
 
-class ErrorHolderImpl(
+class ProblemHolderImpl(
     private val errorSink: ErrorSink,
-    private val sourceFile: SourceFile
-) : ErrorHolder {
+    private val sourceFile: SourceFileSource
+) : ProblemHolder {
     override fun registerProblem(node: AstNode, description: String) {
         errorSink.submitError(SemanticError(node, description, sourceFile))
     }
@@ -27,7 +28,7 @@ class ErrorHolderImpl(
 class SemanticError(
     private val node: AstNode,
     private val comment: String,
-    override val sourceFile: SourceFile?
+    override val symbolSource: SymbolSource?
 ) : CompilationError {
     override val text: String
         get() = "Error in ($node): $comment"

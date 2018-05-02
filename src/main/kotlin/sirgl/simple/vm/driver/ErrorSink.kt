@@ -1,8 +1,10 @@
 package sirgl.simple.vm.driver
 
+import sirgl.simple.vm.roots.SymbolSource
 
 class ErrorSink {
     val errors = mutableListOf<CompilationError>()
+
     fun submitError(error: CompilationError) {
         synchronized(this) {
             errors.add(error)
@@ -15,5 +17,5 @@ class ErrorSink {
 
 interface CompilationError {
     val text: String
-    val sourceFile: SourceFile?
+    val symbolSource: SymbolSource?
 }

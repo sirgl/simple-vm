@@ -1,6 +1,7 @@
 package sirgl.simple.vm.resolve.symbols
 
 import sirgl.simple.vm.resolve.Scope
+import sirgl.simple.vm.resolve.Scoped
 import sirgl.simple.vm.roots.SymbolSource
 import sirgl.simple.vm.type.LangType
 
@@ -17,6 +18,11 @@ interface MemberSymbol : Symbol {
     val enclosingClass: ClassSymbol
 }
 
+interface ScopedSymbol : Scope, Symbol, Scoped {
+    override val scope: Scope
+        get() = this
+}
+
 interface FieldSymbol : VarSymbol, MemberSymbol
 
 interface LengthSymbol : VarSymbol
@@ -30,13 +36,14 @@ interface MethodSymbol : Symbol, MemberSymbol {
     val parameters: List<ParameterSymbol>
 }
 
-interface ClassSymbol : Symbol, Scope {
+interface ClassSymbol : ScopedSymbol {
+    val imports: List<PackageSymbol>
     val members: Map<String, MemberSymbol>
     val simpleName: String
-    val packageSymbol: PackageSymbol
+    val packageSymbol: PackageSymbol // Do I really need this?
     // Null only for Object
     val parentClassSymbol: ClassSymbol?
 }
 
-interface PackageSymbol : Symbol, Scope
+interface PackageSymbol : ScopedSymbol
 

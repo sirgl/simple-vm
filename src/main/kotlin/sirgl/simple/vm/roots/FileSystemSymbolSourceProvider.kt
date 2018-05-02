@@ -1,5 +1,8 @@
 package sirgl.simple.vm.roots
 
+import sirgl.simple.vm.common.defaultCompiledFileExtension
+import sirgl.simple.vm.common.defaultSourceFileExtension
+import sirgl.simple.vm.ext.extension
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
@@ -8,10 +11,10 @@ import kotlin.coroutines.experimental.buildSequence
 typealias PathPredicate = (Path) -> Boolean
 
 class FileSystemSymbolSourceProvider(
-    val sourceFilePredicate: PathPredicate,
-    val compiledFilePredicate: PathPredicate,
-    sourceRoots: List<Path>
-) : SymbolSourceProvider {
+    sourceRoots: List<Path>,
+    val sourceFilePredicate: PathPredicate = { path -> path.extension() == defaultSourceFileExtension },
+    val compiledFilePredicate: PathPredicate = { path -> path.extension() == defaultCompiledFileExtension }
+        ) : SymbolSourceProvider {
     val pathStack = ArrayDeque<Path>()
     init {
         for (sourceRoot in sourceRoots.reversed()) {

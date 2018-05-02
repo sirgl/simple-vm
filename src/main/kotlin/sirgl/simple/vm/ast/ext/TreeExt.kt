@@ -4,6 +4,7 @@ import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangClass
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.resolve.Scope
+import sirgl.simple.vm.resolve.Scoped
 import java.lang.IllegalStateException
 
 inline fun <reified T> AstNode.findParentOfClass(parentClass: T) = findParentOfClass<T>()
@@ -22,7 +23,7 @@ inline fun <reified T> AstNode.findParentOfClass(): T? {
     return current as T?
 }
 
-fun AstNode.getScope() = getParentOfClass<Scope>()
+fun AstNode.getScope() = getParentOfClass<Scoped>().scope
 fun AstNode.getFile() = getParentOfClass<LangFile>()
 fun AstNode.getSymbolSource() = getParentOfClass<LangFile>().symbolSource
 fun AstNode.getClass() = getParentOfClass<LangClass>()

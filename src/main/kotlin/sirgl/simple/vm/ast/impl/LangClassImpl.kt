@@ -2,9 +2,11 @@ package sirgl.simple.vm.ast.impl
 
 import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.visitor.LangVisitor
+import sirgl.simple.vm.driver.GlobalScope
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.resolve.Scope
 import sirgl.simple.vm.resolve.symbols.ClassSymbol
+import sirgl.simple.vm.resolve.symbols.toSymbol
 
 class LangClassImpl(
     override val simpleName: String,
@@ -16,6 +18,10 @@ class LangClassImpl(
     override lateinit var symbol: ClassSymbol
     override lateinit var scope: Scope
     override lateinit var parent: LangFile
+
+    fun setupSymbol(globalScope: GlobalScope) {
+        symbol = toSymbol(globalScope)
+    }
 
     override val qualifiedName: String by lazy { findFqn() }
     override val parentClassName: String?

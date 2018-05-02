@@ -1,9 +1,9 @@
 package sirgl.simple.vm.parser
 
 import sirgl.simple.vm.driver.CompilationError
-import sirgl.simple.vm.driver.SourceFile
+import sirgl.simple.vm.roots.SymbolSource
 
 class ParseError(
     override val text: String,
-    override val sourceFile: SourceFile?
+    override val symbolSource: SymbolSource?
 ) : CompilationError

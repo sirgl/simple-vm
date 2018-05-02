@@ -34,4 +34,7 @@ class LangParserCorrectTest : ParserBaseTest() {
 
     @Test
     fun testNativeMethod() = runSingle("nativeMethod")
+
+    @Test
+    fun testImports() = runSingle("import")
 }

@@ -1,14 +1,17 @@
-package sirgl.simple.vm.driver
+package sirgl.simple.vm.driver.phases
 
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.ast.bypass.AstWalker
 import sirgl.simple.vm.ast.visitor.LangVisitor
+import sirgl.simple.vm.common.CompilerContext
 
-class AstPass(
-    private val visitors: List<LangVisitor>,
-    private val walker: AstWalker
+abstract class AstPass(
+    val context: CompilerContext
 ) {
-    fun makePass(file: LangFile) {
+    abstract val visitors: List<LangVisitor>
+
+
+    fun doPass(file: LangFile, walker: AstWalker) {
         walker.postpassRecursive(file) {
             for (visitor in visitors) {
                 it.accept(visitor)

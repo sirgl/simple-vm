@@ -81,6 +81,11 @@ abstract class LangVisitor {
         visitAstNode(catchClause)
     }
 
+    open fun visitImport(import: LangImport) {
+        visitAstNode(import)
+    }
+
+
     // Statements
 
     open fun visitStmt(stmt: LangStmt) {

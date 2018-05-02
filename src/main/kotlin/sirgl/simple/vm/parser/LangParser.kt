@@ -1,9 +1,6 @@
 package sirgl.simple.vm.parser
 
-import sirgl.simple.vm.ast.AstNode
-import sirgl.simple.vm.ast.LangExpr
-import sirgl.simple.vm.ast.LangFile
-import sirgl.simple.vm.ast.LangTypeElementSort
+import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.expr.LangElementAccessExpr
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
@@ -16,7 +13,6 @@ import sirgl.simple.vm.ast.impl.stmt.*
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
-import sirgl.simple.vm.resolve.LocalScope
 
 interface LangParser {
     fun parse(lexemes: List<Lexeme>): ParseResult<LangFileImpl>
@@ -177,11 +173,27 @@ private class ParserState(
 
     // Rules
 
+    fun import(): LangImportImpl {
+        val importLexeme = expectThenAdvance(Import)
+        val reference = reference()
+        val semicolon = expectThenAdvance(Semicolon)
+        val import = LangImportImpl(importLexeme, semicolon, reference)
+        reference.parent = import
+        return import
+    }
+
     fun file(): LangFileImpl {
         val packageDecl = if (match(Package)) packageDecl() else null
+        val imports = mutableListOf<LangImportImpl>()
+        while (match(Import)) {
+            imports.add(import())
+        }
         val cls = parseClass()
-        val file = LangFileImpl(packageDecl, cls)
+        val file = LangFileImpl(packageDecl, cls, imports)
         packageDecl?.parent = file
+        for (import in imports) {
+            import.parent = file
+        }
         cls.parent = file
         return file
     }
