@@ -15,7 +15,7 @@ class ClassSymbolImpl(
     override val simpleName: String
         get() = name
 
-    val qualifiedName: String by lazy {
+    override val qualifiedName: String by lazy {
         val packageName = packageSymbol.name
         packageName
     }
@@ -31,6 +31,24 @@ class ClassSymbolImpl(
 
     override fun getMultipleDeclarations() =
         throw UnsupportedOperationException("It should be done at the beginning")
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ClassSymbolImpl) return false
+
+        if (name != other.name) return false
+        if (packageSymbol != other.packageSymbol) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + packageSymbol.hashCode()
+        return result
+    }
+
+
 }
 
 fun LangClass.toSymbol(globalScope: GlobalScope) : ClassSymbol {

@@ -43,7 +43,17 @@ interface ClassSymbol : ScopedSymbol {
     val packageSymbol: PackageSymbol // Do I really need this?
     // Null only for Object
     val parentClassSymbol: ClassSymbol?
+    val qualifiedName: String
 }
 
 interface PackageSymbol : ScopedSymbol
+
+fun ClassSymbol.findParentSymbol(predicate: (ClassSymbol) -> Boolean): ClassSymbol? {
+    var current: ClassSymbol? = this.parentClassSymbol
+    while (current != null) {
+        if (predicate(current)) return current
+        current = current.parentClassSymbol
+    }
+    return null
+}
 
