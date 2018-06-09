@@ -9,10 +9,11 @@ import sirgl.simple.vm.type.LangType
 class MethodSymbolImpl(
     override val name: String,
     override val symbolSource: SymbolSource,
-    override val enclosingClass: ClassSymbol,
     override val returnType: LangType,
     override val parameters: List<ParameterSymbol>
-) : MethodSymbol
+) : MethodSymbol {
+    override lateinit var enclosingClass: ClassSymbol
+}
 
 fun LangMethod.toSymbol() : MethodSymbol =
-    MethodSymbolImpl(name, getSymbolSource(), getClass().symbol, returnType, parameters.map { it.toSymbol() })
+    MethodSymbolImpl(name, getSymbolSource(), returnType, parameters.map { it.toSymbol() })

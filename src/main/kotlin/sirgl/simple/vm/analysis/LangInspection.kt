@@ -13,14 +13,13 @@ interface LangInspection {
 }
 
 interface ProblemHolder {
-    fun registerProblem(node: AstNode, description: String)
+    fun registerProblem(node: AstNode, description: String, sourceFile: SourceFileSource)
 }
 
 class ProblemHolderImpl(
-    private val errorSink: ErrorSink,
-    private val sourceFile: SourceFileSource
+    private val errorSink: ErrorSink
 ) : ProblemHolder {
-    override fun registerProblem(node: AstNode, description: String) {
+    override fun registerProblem(node: AstNode, description: String, sourceFile: SourceFileSource) {
         errorSink.submitError(SemanticError(node, description, sourceFile))
     }
 }

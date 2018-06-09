@@ -10,7 +10,6 @@ import sirgl.simple.vm.lexer.UnknownLexemeError
 import sirgl.simple.vm.parser.HandwrittenLangParser
 import sirgl.simple.vm.parser.LangParser
 import sirgl.simple.vm.parser.ParseError
-import sirgl.simple.vm.roots.FileSymbolSource
 import sirgl.simple.vm.roots.SourceFileSource
 
 // TODO probably thread pool is not needed, I can just create threads that will take sourceFile from
@@ -34,7 +33,7 @@ class AstBuilder(
 }
 
 class AstBuildingTask(
-    private val fileSymbolSource: FileSymbolSource,
+    private val sourceFileSource: SourceFileSource,
     private val globalScope: GlobalScope,
     private val astCache: AstCache,
     private val lexer: LangLexer,
@@ -50,12 +49,12 @@ class AstBuildingTask(
     }
 
     fun parse(): LangFile? {
-        val text = fileSymbolSource.getInputStream().bufferedReader().readText()
+        val text = sourceFileSource.getInputStream().bufferedReader().readText()
         val tokens = lexer.tokenize(text)
 
         for (token in tokens) {
             if (token.kind == LexemeKind.Error) {
-                errorSink.submitError(UnknownLexemeError(token, fileSymbolSource))
+                errorSink.submitError(UnknownLexemeError(token, sourceFileSource))
             }
         }
         if (errorSink.hasErrors) return null
@@ -63,10 +62,12 @@ class AstBuildingTask(
         val parseResult = parser.parse(tokens)
         val fail = parseResult.fail
         return if (fail != null) {
-            errorSink.submitError(ParseError(fail.toString(), fileSymbolSource))
+            errorSink.submitError(ParseError(fail.toString(), sourceFileSource))
             null
         } else {
-            parseResult.ast!!
+            val ast = parseResult.ast!!
+            ast.symbolSource = sourceFileSource
+            ast
         }
     }
 }

@@ -5,11 +5,8 @@ import sirgl.simple.vm.ast.bypass.AstWalker
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.common.CompilerContext
 
-abstract class AstPass(
-    val context: CompilerContext
-) {
+abstract class AstPass {
     abstract val visitors: List<LangVisitor>
-
 
     fun doPass(file: LangFile, walker: AstWalker) {
         walker.postpassRecursive(file) {

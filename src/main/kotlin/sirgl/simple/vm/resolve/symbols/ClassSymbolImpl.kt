@@ -63,5 +63,12 @@ fun LangClass.toSymbol(globalScope: GlobalScope) : ClassSymbol {
     for (field in fields) {
         memberSymbols[field.name] = field.toSymbol()
     }
-    return ClassSymbolImpl(simpleName, file.symbolSource, memberSymbols, packageSymbol, importSymbols)
+    val classSymbol = ClassSymbolImpl(simpleName, file.symbolSource, memberSymbols, packageSymbol, importSymbols)
+    for (method in methods) {
+        (memberSymbols[method.name] as MethodSymbolImpl).enclosingClass = classSymbol
+    }
+    for (field in fields) {
+        (memberSymbols[field.name] as FieldSymbolImpl).enclosingClass = classSymbol
+    }
+    return classSymbol
 }

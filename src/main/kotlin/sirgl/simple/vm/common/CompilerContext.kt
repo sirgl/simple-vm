@@ -12,7 +12,6 @@ class CompilerContext(
     val astBuilder: AstBuilder,
     val astCache: AstCache,
     val globalScope: GlobalScope,
-    val configuration: Configuration,
     val errorSink: ErrorSink,
     val sourceProviders: List<SymbolSourceProvider>
 )

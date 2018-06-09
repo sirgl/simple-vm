@@ -27,8 +27,8 @@ fun main(args: Array<String>) {
     try {
         val parsedArgs = ArgParser(args)
             .parseInto(::MyArgs)
-        val compiler = LangCompiler(Configuration(parsedArgs.sourcePath, parsedArgs.mainQualifiedName))
-
+        val compiler = LangCompiler(Configuration(parsedArgs.sourcePath, parsedArgs.mainQualifiedName), ::buildDefaultPipeline)
+        compiler.run()
     } catch (e: ShowHelpException) {
         val writer = StringWriter()
         e.printUserMessage(writer, "langc", 80)

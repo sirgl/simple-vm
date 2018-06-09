@@ -16,9 +16,10 @@ enum class SymbolSourceType {
     Internal
 }
 
+// Misnaming, probably should be renamed
 interface FileSymbolSource : SymbolSource {
     fun getInputStream(): InputStream
-    override val path: Path
+    override val path: Path?
 }
 
 interface SourceFileSource : FileSymbolSource
@@ -35,6 +36,14 @@ class FsCompiledFileSource(override val path: Path) : CompiledFileSource {
     override val type = SymbolSourceType.Compiled
 
     override fun getInputStream(): InputStream = Files.newInputStream(path)
+}
+
+class InMemorySourceFileSource(val text: String) : SourceFileSource {
+    override val path: Path? = null
+
+    override fun getInputStream() = text.byteInputStream()
+
+    override val type: SymbolSourceType = SymbolSourceType.Source
 }
 
 object InternalSymbolSource : SymbolSource {
