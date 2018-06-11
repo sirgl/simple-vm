@@ -10,9 +10,11 @@ import sirgl.simple.vm.type.LangType
 class LocalVarSymbolImpl(
     override val name: String,
     override val type: LangType,
-    val element: AstNode
+    val element: AstNode,
+    varNode: LangVarDeclStmt
 ) : LocalVarSymbol {
+    override val offset: Int = varNode.startOffset
     override val symbolSource: SymbolSource by lazy { element.getSymbolSource() }
 }
 
-fun LangVarDeclStmt.toSymbol() : LocalVarSymbol = LocalVarSymbolImpl(name, type, this)
+fun LangVarDeclStmt.toSymbol(varNode: LangVarDeclStmt) : LocalVarSymbol = LocalVarSymbolImpl(name, type, this, varNode)

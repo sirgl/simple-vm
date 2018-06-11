@@ -47,6 +47,10 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) : LangInspe
             }
         }
 
+        override fun visitCallExpr(expr: LangCallExpr) {
+//            TODO
+        }
+
         override fun visitElementAccessExpr(expr: LangElementAccessExpr) {
             val arrayExpr = expr.arrayExpr
             val arrayExprType = arrayExpr.type

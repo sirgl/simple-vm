@@ -102,12 +102,6 @@ class SemanticAnalysisInspection(override val problemHolder: ProblemHolder) : La
 //            }
 //        }
 //
-//        override fun visitReferenceExpr(expr: LangReferenceExpr) {
-//            super.visitReferenceExpr(expr)
-//            if (expr.resolve() == null) {
-//                errorHolder.registerProblem(expr, "Unresolved reference $expr")
-//            }
-//        }
 //    }
 //
 //    fun expectI32OrPromote(expr: LangExpr) {

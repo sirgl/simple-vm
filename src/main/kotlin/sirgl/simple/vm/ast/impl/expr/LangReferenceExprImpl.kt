@@ -44,10 +44,10 @@ class LangReferenceExprImpl(
     private var resolvedSymbol: Symbol? = null
 
     private fun resolveWithoutCache(): Symbol? {
-        qualifier ?: return findParentOfClass<Scoped>()?.scope?.resolve(name)
+        qualifier ?: return findParentOfClass<Scoped>()?.scope?.resolve(name, startOffset)
         val qualifierType = qualifier.type
         return when (qualifierType) {
-            is ClassType -> qualifierType.classSymbol.resolve(name)
+            is ClassType -> qualifierType.classSymbol.resolve(name, startOffset)
             is ArrayType -> when (name) {
                 "length" -> LengthSymbolImpl
                 else -> null

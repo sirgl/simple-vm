@@ -16,7 +16,7 @@ class LangClassImpl(
     override val parentClassReferenceElement: LangReferenceElement?
 ) : AstNodeImpl(firstLexeme, endLexeme), LangClass {
     override lateinit var symbol: ClassSymbol
-    override lateinit var scope: Scope
+    override val scope: Scope by lazy { symbol }
     override lateinit var parent: LangFile
 
     fun setupSymbol(globalScope: GlobalScope) {

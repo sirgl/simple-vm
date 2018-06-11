@@ -8,7 +8,11 @@ import sirgl.simple.vm.type.LangType
 class ParameterSymbolImpl(
     override val name: String,
     override val symbolSource: SymbolSource,
-    override val type: LangType
-) : ParameterSymbol
+    override val type: LangType,
+    parameter: LangParameter
+) : ParameterSymbol {
+    override val offset: Int = parameter.startOffset
+}
 
-fun LangParameter.toSymbol() : ParameterSymbol = ParameterSymbolImpl(name, getSymbolSource(), type)
+fun LangParameter.toSymbol(): ParameterSymbol =
+    ParameterSymbolImpl(name, getSymbolSource(), type, this)

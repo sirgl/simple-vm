@@ -4,7 +4,7 @@ import sirgl.simple.vm.resolve.Scoped
 import sirgl.simple.vm.roots.SourceFileSource
 import sirgl.simple.vm.roots.SymbolSource
 
-interface LangFile : AstNode, Scoped {
+interface LangFile : AstNode {
     val classDecl: LangClass
     val packageDeclaration: LangPackageDecl?
     val symbolSource: SourceFileSource

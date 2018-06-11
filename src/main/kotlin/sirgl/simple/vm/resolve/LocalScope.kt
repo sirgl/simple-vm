@@ -2,6 +2,7 @@ package sirgl.simple.vm.resolve
 
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.ext.findParentOfClass
+import sirgl.simple.vm.resolve.symbols.LocalSymbol
 import sirgl.simple.vm.resolve.symbols.Symbol
 
 class LocalScope(var element: AstNode) : Scope {
@@ -11,13 +12,13 @@ class LocalScope(var element: AstNode) : Scope {
     private val multipleDeclaredNames by lazy { mutableMapOf<String, MutableSet<Symbol>>() }
     private var wasMultipleDefinitions = false
 
-    override fun resolve(name: String): Symbol? {
+    override fun resolve(name: String, referenceOffset: Int?): Symbol? {
         val symbol = localSymbols[name]
-        return if (symbol == null) {
+        return if (symbol == null || (referenceOffset != null && symbol is LocalSymbol && symbol.offset > referenceOffset)) {
             if (parentScope == null) {
                 parentScope = findParentScope()
             }
-            parentScope?.resolve(name)
+            parentScope?.resolve(name, referenceOffset)
         } else {
             symbol
         }

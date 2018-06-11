@@ -22,15 +22,14 @@ class ClassSymbolImpl(
 
     override var parentClassSymbol: ClassSymbol? = null
 
-    override fun resolve(name: String) = members[name]
-            ?: parentClassSymbol?.resolve(name)
-            ?: packageSymbol.resolve(name)
+    override fun resolve(name: String, referenceOffset: Int?) = members[name]
+            ?: parentClassSymbol?.resolve(name, referenceOffset)
+            ?: packageSymbol.resolve(name, referenceOffset)
 
     override fun register(symbol: Symbol, node: AstNode?) =
         throw UnsupportedOperationException("It should be done at the beginning")
 
-    override fun getMultipleDeclarations() =
-        throw UnsupportedOperationException("It should be done at the beginning")
+    override fun getMultipleDeclarations() = mutableMapOf<String, Set<Symbol>>()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

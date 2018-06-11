@@ -1,8 +1,6 @@
 package sirgl.simple.vm
 
-import sirgl.simple.vm.analysis.ProblemHolderImpl
-import sirgl.simple.vm.analysis.TypeCheckInspection
-import sirgl.simple.vm.analysis.SemanticAnalysisPass
+import sirgl.simple.vm.analysis.*
 import sirgl.simple.vm.ast.bypass.SimpleWalker
 import sirgl.simple.vm.codegen.CodegenPass
 import sirgl.simple.vm.common.CompilerContext
@@ -14,20 +12,28 @@ import sirgl.simple.vm.driver.phases.passes.SetupPass
 import sirgl.simple.vm.roots.FileSystemSymbolSourceProvider
 import java.nio.file.Paths
 
-fun buildDefaultPipeline(context: CompilerContext) : List<CompilerPhase<*>> = listOf(
-    AstBuildingPhase(),
-    MainPhase(
-        walker = SimpleWalker(),
-        passes = mutableListOf(
-            SetupPass(),
-            SemanticAnalysisPass(
-                inspections = mutableListOf(
-                    TypeCheckInspection(ProblemHolderImpl(context.errorSink))
-                )
-            ),
-            CodegenPass()
+fun buildDefaultPipeline(context: CompilerContext) : List<CompilerPhase<*>> {
+    val problemHolder = ProblemHolderImpl(context.errorSink)
+    val inspections = defaultInspections(problemHolder)
+    return listOf(
+        AstBuildingPhase(),
+        MainPhase(
+            walker = SimpleWalker(),
+            passes = mutableListOf(
+                SetupPass(),
+                SemanticAnalysisPass(
+                    inspections = inspections
+                ),
+                CodegenPass()
+            )
         )
     )
+}
+
+fun defaultInspections(problemHolder: ProblemHolderImpl): MutableList<LangInspection> = mutableListOf(
+    TypeCheckInspection(problemHolder),
+    ScopeInspection(problemHolder),
+    ResolveInspection(problemHolder)
 )
 
 class LangCompiler(

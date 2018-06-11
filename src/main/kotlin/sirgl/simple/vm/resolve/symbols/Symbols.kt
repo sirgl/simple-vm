@@ -1,5 +1,6 @@
 package sirgl.simple.vm.resolve.symbols
 
+import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.resolve.Scope
 import sirgl.simple.vm.resolve.Scoped
 import sirgl.simple.vm.roots.SymbolSource
@@ -8,6 +9,10 @@ import sirgl.simple.vm.type.LangType
 interface Symbol {
     val name: String
     val symbolSource: SymbolSource
+}
+
+interface LocalSymbol {
+    val offset: Int
 }
 
 interface VarSymbol : Symbol {
@@ -27,9 +32,9 @@ interface FieldSymbol : VarSymbol, MemberSymbol
 
 interface LengthSymbol : VarSymbol
 
-interface ParameterSymbol : VarSymbol
+interface ParameterSymbol : VarSymbol, LocalSymbol
 
-interface LocalVarSymbol : VarSymbol
+interface LocalVarSymbol : VarSymbol, LocalSymbol
 
 interface MethodSymbol : Symbol, MemberSymbol {
     val returnType: LangType

@@ -2,10 +2,7 @@ package sirgl.simple.vm.ast.impl
 
 import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.visitor.LangVisitor
-import sirgl.simple.vm.resolve.Scope
-import sirgl.simple.vm.resolve.Scoped
 import sirgl.simple.vm.roots.SourceFileSource
-import sirgl.simple.vm.roots.SymbolSource
 
 class LangFileImpl(
     override val packageDeclaration: LangPackageDecl?,
@@ -15,8 +12,7 @@ class LangFileImpl(
     packageDeclaration?.startOffset ?: classDecl.startOffset,
     classDecl.endOffset,
     packageDeclaration?.startLine ?: classDecl.startLine
-), LangFile, Scoped {
-    override lateinit var scope: Scope
+), LangFile {
     override lateinit var symbolSource: SourceFileSource
     override val parent: AstNode? = null
 

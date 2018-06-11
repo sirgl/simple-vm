@@ -32,7 +32,7 @@ class GlobalScope : Scope {
         val packageElements = fullPackageName.split(".")
         var currentNode: PackageSymbol = root
         for (packageElement in packageElements) {
-            val childPackage = currentNode.resolve(packageElement) as? PackageSymbol
+            val childPackage = currentNode.resolve(packageElement, null) as? PackageSymbol
             currentNode = if (childPackage == null) {
                 val packageSymbol = PackageSymbolImpl(packageElement, InternalSymbolSource)
                 currentNode.register(packageSymbol, null)
@@ -44,7 +44,7 @@ class GlobalScope : Scope {
         return currentNode
     }
 
-    override fun resolve(name: String) = symbols[name]
+    override fun resolve(name: String, referenceOffset: Int?) = symbols[name]
 
     override fun register(symbol: Symbol, node: AstNode?) {
         val name = symbol.name

@@ -14,7 +14,7 @@ class PackageSymbolImpl(
     val duplicatingDeclaration by lazy { mutableMapOf<String, MutableSet<Symbol>>() }
     var wasMultipleDefinitions = false
 
-    override fun resolve(name: String) = symbols[name]
+    override fun resolve(name: String, referenceOffset: Int?) = symbols[name]
 
     override fun register(symbol: Symbol, node: AstNode?) {
         val name = symbol.name

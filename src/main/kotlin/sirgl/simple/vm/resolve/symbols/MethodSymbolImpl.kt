@@ -1,7 +1,6 @@
 package sirgl.simple.vm.resolve.symbols
 
 import sirgl.simple.vm.ast.LangMethod
-import sirgl.simple.vm.ast.ext.getClass
 import sirgl.simple.vm.ast.ext.getSymbolSource
 import sirgl.simple.vm.roots.SymbolSource
 import sirgl.simple.vm.type.LangType

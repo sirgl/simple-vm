@@ -13,6 +13,7 @@ import sirgl.simple.vm.ast.impl.stmt.*
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
+import sirgl.simple.vm.resolve.LocalScope
 
 interface LangParser {
     fun parse(lexemes: List<Lexeme>): ParseResult<LangFileImpl>
