@@ -8,10 +8,9 @@ import sirgl.simple.vm.ast.impl.stmt.LangVarDeclStmtImpl
 import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.driver.phases.SingleVisitorAstPass
-import sirgl.simple.vm.resolve.symbols.LocalVarSymbolImpl
 import sirgl.simple.vm.resolve.symbols.toSymbol
 
-class SetupAstPass : SingleVisitorAstPass() {
+class SetupPass : SingleVisitorAstPass() {
     override val visitor: LangVisitor = object: LangVisitor() {
         override fun visitVarDeclStmt(stmt: LangVarDeclStmt) {
             super.visitVarDeclStmt(stmt)
@@ -33,7 +32,7 @@ class SetupAstPass : SingleVisitorAstPass() {
             super.visitReferenceExpr(expr)
             expr.resolve()
         }
-
-        // TODO resolve reference also
     }
+
+    override val name: String = "Setup"
 }

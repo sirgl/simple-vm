@@ -15,4 +15,6 @@ abstract class AstPass {
             }
         }
     }
+
+    abstract val name: String
 }

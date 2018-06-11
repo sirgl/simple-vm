@@ -38,6 +38,6 @@ fun runCompiler(context: CompilerContext, phases: List<CompilerPhase<*>>) {
             phase.run(context)
         }
         // TODO handle errors in every phase
-        println("Phase $phaseName finished in $timeMillis ms")
+        println("Phase '$phaseName' finished in $timeMillis ms")
     }
 }

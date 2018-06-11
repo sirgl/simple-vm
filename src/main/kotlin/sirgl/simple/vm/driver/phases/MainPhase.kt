@@ -16,8 +16,12 @@ class MainPhase(
 
     override fun run(context: CompilerContext) {
         for (source in context.astCache.getAllSources()) {
-            println("Processing file ${source.sourceFileSource.path}")
+            val path = source.sourceFileSource.path
+            if (path != null) {
+                println("Processing file $path")
+            }
             for (pass in passes) {
+                println("Running pass: ${pass.name}")
                 pass.doPass(source.file, walker)
             }
         }
@@ -25,5 +29,5 @@ class MainPhase(
 
     override val descriptor = Companion
 
-    companion object : PhaseDescriptor<MainPhase>("Main phase")
+    companion object : PhaseDescriptor<MainPhase>("AST passing phase")
 }
