@@ -1,7 +1,7 @@
 package sirgl.simple.vm
 
 import sirgl.simple.vm.analysis.ProblemHolderImpl
-import sirgl.simple.vm.analysis.SemanticAnalysisInspection2
+import sirgl.simple.vm.analysis.TypeCheckInspection
 import sirgl.simple.vm.analysis.SemanticAnalysisPass
 import sirgl.simple.vm.ast.bypass.SimpleWalker
 import sirgl.simple.vm.codegen.CodegenPass
@@ -22,7 +22,7 @@ fun buildDefaultPipeline(context: CompilerContext) : List<CompilerPhase<*>> = li
             SetupAstPass(),
             SemanticAnalysisPass(
                 inspections = mutableListOf(
-                    SemanticAnalysisInspection2(ProblemHolderImpl(context.errorSink))
+                    TypeCheckInspection(ProblemHolderImpl(context.errorSink))
                 )
             ),
             CodegenPass()

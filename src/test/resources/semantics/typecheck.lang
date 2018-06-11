@@ -10,5 +10,6 @@ class A {
         x[12] = 2;
         var nonarr: i32 = 44;
         nonarr[23] = 2;
+        12 as i32;
     }
 }

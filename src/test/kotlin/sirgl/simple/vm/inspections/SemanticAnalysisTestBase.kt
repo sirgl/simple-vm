@@ -2,7 +2,7 @@ package sirgl.simple.vm.inspections
 
 import sirgl.simple.vm.FileTestCase
 import sirgl.simple.vm.analysis.ProblemHolderImpl
-import sirgl.simple.vm.analysis.SemanticAnalysisInspection2
+import sirgl.simple.vm.analysis.TypeCheckInspection
 import sirgl.simple.vm.analysis.SemanticAnalysisPass
 import sirgl.simple.vm.ast.bypass.SimpleWalker
 import sirgl.simple.vm.codegen.CodegenPass
@@ -31,7 +31,7 @@ abstract class SemanticAnalysisTestBase : FileTestCase<String>() {
                         SetupAstPass(),
                         SemanticAnalysisPass(
                             inspections = mutableListOf(
-                                SemanticAnalysisInspection2(ProblemHolderImpl(it.errorSink))
+                                TypeCheckInspection(ProblemHolderImpl(it.errorSink))
                             )
                         ),
                         CodegenPass()
