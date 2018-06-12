@@ -1,5 +1,7 @@
-package sirgl.simple.vm.analysis
+package sirgl.simple.vm.analysis.inspections
 
+import sirgl.simple.vm.analysis.LangInspection
+import sirgl.simple.vm.analysis.ProblemHolder
 import sirgl.simple.vm.ast.BinaryOperatorType.*
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.expr.*
@@ -10,7 +12,8 @@ import sirgl.simple.vm.ast.support.LangVarDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.type.*
 
-class TypeCheckInspection(override val problemHolder: ProblemHolder) : LangInspection {
+class TypeCheckInspection(override val problemHolder: ProblemHolder) :
+    LangInspection {
     override val visitor: LangVisitor = object : LangVisitor() {
         override fun visitIfStmt(stmt: LangIfStmt) {
             stmt.condition.mustBeAssignableTo(BoolType)

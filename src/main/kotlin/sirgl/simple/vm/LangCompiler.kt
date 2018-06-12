@@ -1,6 +1,10 @@
 package sirgl.simple.vm
 
 import sirgl.simple.vm.analysis.*
+import sirgl.simple.vm.analysis.inspections.ResolveInspection
+import sirgl.simple.vm.analysis.inspections.ScopeInspection
+import sirgl.simple.vm.analysis.inspections.SemanticAnalysisInspection
+import sirgl.simple.vm.analysis.inspections.TypeCheckInspection
 import sirgl.simple.vm.ast.bypass.SimpleWalker
 import sirgl.simple.vm.codegen.CodegenPass
 import sirgl.simple.vm.common.CompilerContext
