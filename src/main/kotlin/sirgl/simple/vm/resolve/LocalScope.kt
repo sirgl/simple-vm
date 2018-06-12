@@ -32,6 +32,7 @@ class LocalScope(var element: AstNode) : Scope {
             val duplicatingList = multipleDeclaredNames[name] ?: mutableSetOf()
             duplicatingList.add(symbol)
             duplicatingList.add(previousValue)
+            multipleDeclaredNames[name] = duplicatingList
         }
     }
 

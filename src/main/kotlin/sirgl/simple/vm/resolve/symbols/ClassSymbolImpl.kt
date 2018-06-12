@@ -10,7 +10,8 @@ class ClassSymbolImpl(
     override val symbolSource: SymbolSource,
     override val members: Map<String, MemberSymbol>,
     override val packageSymbol: PackageSymbol,
-    override val imports: List<PackageSymbol>
+    override val imports: List<PackageSymbol>,
+    val membersMultidefs: MutableMap<String, MutableSet<Symbol>>
 ) : ClassSymbol {
     override val simpleName: String
         get() = name
@@ -29,7 +30,7 @@ class ClassSymbolImpl(
     override fun register(symbol: Symbol, node: AstNode?) =
         throw UnsupportedOperationException("It should be done at the beginning")
 
-    override fun getMultipleDeclarations() = mutableMapOf<String, Set<Symbol>>()
+    override fun getMultipleDeclarations() = membersMultidefs
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -56,13 +57,30 @@ fun LangClass.toSymbol(globalScope: GlobalScope) : ClassSymbol {
     val importSymbols = file.imports.map { it.toSymbol(globalScope) }
 
     val memberSymbols = mutableMapOf<String, MemberSymbol>()
+    val membersMultidefs = mutableMapOf<String, MutableSet<Symbol>>()
     for (method in methods) {
-        memberSymbols[method.name] = method.toSymbol()
+        val methodSymbol = method.toSymbol()
+        val methodName = method.name
+        val previous = memberSymbols.put(methodName, methodSymbol)
+        if (previous != null) {
+            val duplicatingSymbols = membersMultidefs[methodName] ?: mutableSetOf()
+            duplicatingSymbols.add(previous)
+            duplicatingSymbols.add(methodSymbol)
+            membersMultidefs[methodName] = duplicatingSymbols
+        }
     }
     for (field in fields) {
-        memberSymbols[field.name] = field.toSymbol()
+        val fieldSymbol = field.toSymbol()
+        val fieldName = field.name
+        val previous = memberSymbols.put(fieldName, fieldSymbol)
+        if (previous != null) {
+            val duplicatingSymbols = membersMultidefs[fieldName] ?: mutableSetOf()
+            duplicatingSymbols.add(previous)
+            duplicatingSymbols.add(fieldSymbol)
+            membersMultidefs[fieldName] = duplicatingSymbols
+        }
     }
-    val classSymbol = ClassSymbolImpl(simpleName, file.symbolSource, memberSymbols, packageSymbol, importSymbols)
+    val classSymbol = ClassSymbolImpl(simpleName, file.symbolSource, memberSymbols, packageSymbol, importSymbols, membersMultidefs)
     for (method in methods) {
         (memberSymbols[method.name] as MethodSymbolImpl).enclosingClass = classSymbol
     }
