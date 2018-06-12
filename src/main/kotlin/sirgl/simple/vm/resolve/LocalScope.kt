@@ -14,7 +14,7 @@ class LocalScope(var element: AstNode) : Scope {
 
     override fun resolve(name: String, referenceOffset: Int?): Symbol? {
         val symbol = localSymbols[name]
-        return if (symbol == null || (referenceOffset != null && symbol is LocalSymbol && symbol.offset > referenceOffset)) {
+        return if (symbol == null || (referenceOffset != null && symbol is LocalSymbol && symbol.offset - 1 > referenceOffset)) {
             if (parentScope == null) {
                 parentScope = findParentScope()
             }

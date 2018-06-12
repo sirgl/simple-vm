@@ -11,7 +11,7 @@ class ParameterSymbolImpl(
     override val type: LangType,
     parameter: LangParameter
 ) : ParameterSymbol {
-    override val offset: Int = parameter.startOffset
+    override val offset: Int = parameter.endOffset
 }
 
 fun LangParameter.toSymbol(): ParameterSymbol =

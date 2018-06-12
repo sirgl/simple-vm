@@ -13,7 +13,6 @@ import sirgl.simple.vm.ast.impl.stmt.*
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.lexer.LexemeKind
 import sirgl.simple.vm.lexer.LexemeKind.*
-import sirgl.simple.vm.resolve.LocalScope
 
 interface LangParser {
     fun parse(lexemes: List<Lexeme>): ParseResult<LangFileImpl>
@@ -409,15 +408,13 @@ private class ParserState(
         val identifier = expectThenAdvance(Identifier)
         expectThenAdvance(Colon)
         val typeElement = typeElement()
-        val typeLast = lexemes[position - 1]
         val initializer = if (matchThenAdvance(OpEq)) {
             expr()
         } else {
             null
         }
-        expectThenAdvance(Semicolon)
-        val last = if (initializer == null) typeLast else current
-        val localVar = LangVarDeclStmtImpl(identifier.text, varLexeme, last, initializer, typeElement)
+        val semicolon = expectThenAdvance(Semicolon)
+        val localVar = LangVarDeclStmtImpl(identifier.text, varLexeme, semicolon, initializer, typeElement)
         typeElement.parent = localVar
         initializer?.parent = localVar
         return localVar

@@ -35,9 +35,7 @@ class LangParameterImpl(
 
     private fun makeChildren(): List<AstNode> {
         val nodes = mutableListOf<AstNode>()
-        if (typeElement != null) {
-            nodes.add(typeElement)
-        }
+        nodes.add(typeElement)
         return nodes
     }
 }

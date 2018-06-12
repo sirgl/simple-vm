@@ -1,6 +1,5 @@
 package sirgl.simple.vm.resolve.symbols
 
-import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.resolve.Scope
 import sirgl.simple.vm.resolve.Scoped
 import sirgl.simple.vm.roots.SymbolSource

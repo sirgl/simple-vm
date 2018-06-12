@@ -1,2 +1,3 @@
-Error in (ReferenceExpr#2@[40, 41) name: x): Unresolved reference ReferenceExpr#2@[40, 41) name: x
-Error in (ReferenceExpr#6@[142, 143) name: z): Unresolved reference ReferenceExpr#6@[142, 143) name: z
+Error in (ReferenceExpr#2@[40, 41) name: x): Unresolved reference: x
+Error in (ReferenceExpr#6@[142, 143) name: z): Unresolved reference: z
+Error in (ReferenceExpr#6@[142, 143) name: z): Expected type i32, but found <unknown>
