@@ -33,7 +33,8 @@ fun buildDefaultPipeline(context: CompilerContext) : List<CompilerPhase<*>> {
 fun defaultInspections(problemHolder: ProblemHolderImpl): MutableList<LangInspection> = mutableListOf(
     TypeCheckInspection(problemHolder),
     ScopeInspection(problemHolder),
-    ResolveInspection(problemHolder)
+    ResolveInspection(problemHolder),
+    SemanticAnalysisInspection(problemHolder)
 )
 
 class LangCompiler(

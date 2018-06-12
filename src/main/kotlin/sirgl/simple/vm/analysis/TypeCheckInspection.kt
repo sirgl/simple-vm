@@ -47,6 +47,8 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) : LangInspe
             }
         }
 
+
+
         override fun visitCallExpr(expr: LangCallExpr) {
             super.visitCallExpr(expr)
             val callerType = expr.caller.type

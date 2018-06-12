@@ -1,2 +1,2 @@
-Error in (Method#1@[14, 50) name: bar, returnType: void): Method declared as native must have no body
-Error in (Method#5@[56, 65) name: foo, returnType: void): Only native methods can have no body
+Error in (Method#1@[14, 50) name: bar): Method declared as native must have no body
+Error in (Method#5@[56, 65) name: foo): Only native methods can have no body
