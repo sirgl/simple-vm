@@ -2,15 +2,13 @@ package sirgl.simple.vm.inspections
 
 import sirgl.simple.vm.FileTestCase
 import sirgl.simple.vm.analysis.ProblemHolderImpl
-import sirgl.simple.vm.analysis.TypeCheckInspection
 import sirgl.simple.vm.analysis.SemanticAnalysisPass
 import sirgl.simple.vm.ast.bypass.SimpleWalker
 import sirgl.simple.vm.codegen.CodegenPass
 import sirgl.simple.vm.defaultInspections
 import sirgl.simple.vm.driver.CompileJob
-import sirgl.simple.vm.driver.ErrorSink
 import sirgl.simple.vm.driver.phases.AstBuildingPhase
-import sirgl.simple.vm.driver.phases.MainPhase
+import sirgl.simple.vm.driver.phases.AstBypassesPhase
 import sirgl.simple.vm.driver.phases.passes.SetupPass
 import sirgl.simple.vm.roots.InMemorySourceFileSource
 import sirgl.simple.vm.roots.ListSymbolSourceProvider
@@ -27,7 +25,7 @@ abstract class SemanticAnalysisTestBase : FileTestCase<String>() {
         ), {
             listOf(
                 AstBuildingPhase(),
-                MainPhase(
+                AstBypassesPhase(
                     walker = SimpleWalker(),
                     passes = mutableListOf(
                         SetupPass(),

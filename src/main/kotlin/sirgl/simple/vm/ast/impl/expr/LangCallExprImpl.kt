@@ -6,14 +6,15 @@ import sirgl.simple.vm.ast.expr.LangCallExpr
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.LangType
+import sirgl.simple.vm.type.MethodReferenceType
+import sirgl.simple.vm.type.UnknownType
 
 class LangCallExprImpl(
     last: Lexeme,
     override val caller: LangExpr,
     override val arguments: List<LangExpr>
 ) : LangCallExpr, LangExprImpl(caller.startOffset, last.endOffset, caller.startLine) {
-    //    override val type: LangType by lazy { (caller.type as? ClassType)?.classSignature?.toType() ?: UnknownType }
-    override val type: LangType by lazy { TODO() }
+    override val type: LangType by lazy { (caller.type as? MethodReferenceType)?.methodSymbol?.returnType ?: UnknownType }
 
     override fun accept(visitor: LangVisitor) {
         visitor.visitCallExpr(this)

@@ -48,7 +48,36 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) : LangInspe
         }
 
         override fun visitCallExpr(expr: LangCallExpr) {
-//            TODO
+            super.visitCallExpr(expr)
+            val callerType = expr.caller.type
+            if (callerType !is MethodReferenceType) {
+                problemHolder.registerProblem(expr, "Expected method reference type but found type ${callerType.name}", expr.getSymbolSource())
+                return
+            }
+            val methodSymbol = callerType.methodSymbol
+            val arguments = expr.arguments
+            val parametersCount = methodSymbol.parameters.size
+            val argumentsCount = arguments.size
+            if (parametersCount != argumentsCount) {
+                val parameterTypes = methodSymbol.parameters.joinToString(", ") { "${it.name}: ${it.type.name}" }
+                val description = buildString {
+                    append("Method must have $parametersCount arguments ($parameterTypes), but found $argumentsCount")
+                    if (argumentsCount != 0) {
+                        append("(")
+                        append(arguments.joinToString(", ") { it.type.name })
+                        append(")")
+                    }
+                }
+                problemHolder.registerProblem(expr, description, expr.getSymbolSource())
+                return
+            }
+            for ((index, parameterSignature) in methodSymbol.parameters.withIndex()) {
+                val argument = arguments[index]
+                if (!argument.type.isAssignableTo(parameterSignature.type)) {
+                    val description = "Argument type expected to be ${parameterSignature.type.name} but was ${argument.type.name}"
+                    problemHolder.registerProblem(argument, description, expr.getSymbolSource())
+                }
+            }
         }
 
         override fun visitElementAccessExpr(expr: LangElementAccessExpr) {

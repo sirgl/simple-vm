@@ -5,10 +5,10 @@ import sirgl.simple.vm.common.CompilerContext
 import sirgl.simple.vm.common.CompilerPhase
 import sirgl.simple.vm.common.PhaseDescriptor
 
-class MainPhase(
+class AstBypassesPhase(
     val walker: AstWalker,
     private val passes: MutableList<AstPass> = mutableListOf()
-) : CompilerPhase<MainPhase>() {
+) : CompilerPhase<AstBypassesPhase>() {
 
     fun addPass(astPass: AstPass) {
         passes.add(astPass)
@@ -29,5 +29,5 @@ class MainPhase(
 
     override val descriptor = Companion
 
-    companion object : PhaseDescriptor<MainPhase>("AST passing phase")
+    companion object : PhaseDescriptor<AstBypassesPhase>("AST bypasses")
 }

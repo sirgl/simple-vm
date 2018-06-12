@@ -2,15 +2,19 @@ package sirgl.simple.vm.driver.phases.passes
 
 import sirgl.simple.vm.ast.LangField
 import sirgl.simple.vm.ast.LangParameter
+import sirgl.simple.vm.ast.expr.LangCallExpr
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.ext.getScope
 import sirgl.simple.vm.ast.impl.LangFieldImpl
 import sirgl.simple.vm.ast.impl.LangParameterImpl
+import sirgl.simple.vm.ast.impl.expr.LangCallExprImpl
 import sirgl.simple.vm.ast.impl.stmt.LangVarDeclStmtImpl
 import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.driver.phases.SingleVisitorAstPass
+import sirgl.simple.vm.resolve.symbols.MethodSymbol
 import sirgl.simple.vm.resolve.symbols.toSymbol
+import sirgl.simple.vm.type.MethodReferenceType
 
 class SetupPass : SingleVisitorAstPass() {
     override val visitor: LangVisitor = object: LangVisitor() {
@@ -29,13 +33,17 @@ class SetupPass : SingleVisitorAstPass() {
         override fun visitField(field: LangField) {
             super.visitField(field)
             (field as LangFieldImpl).symbol = field.toSymbol()
-//            field.getScope().register(field.symbol, field)
-            // Is it necessary???
         }
 
         override fun visitReferenceExpr(expr: LangReferenceExpr) {
             super.visitReferenceExpr(expr)
             expr.resolve()
+        }
+
+        override fun visitCallExpr(expr: LangCallExpr) {
+            val caller = expr.caller as? LangReferenceExpr ?: return // TODO make assertion and stop if error occurred in some pass
+            val symbol = caller.resolve() as? MethodSymbol ?: return // No return, make error
+            (caller.type as? MethodReferenceType)?.methodSymbol = symbol
         }
     }
 

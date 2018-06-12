@@ -6,8 +6,8 @@ File#0@[0, 102)
       Parameter#3@[39, 46) name: p1
         TypeElement#3@[43, 46) sort: I32
       Block#3@[48, 100)
-        VarDeclStmt#4@[58, 86) name: x
+        VarDeclStmt#4@[58, 74) name: x
           TypeElement#4@[65, 68) sort: I32
           IntLiteral#4@[71, 73) value: 12
-        VarDeclStmt#5@[83, 93) name: y
+        VarDeclStmt#5@[83, 94) name: y
           TypeElement#5@[90, 93) sort: I32

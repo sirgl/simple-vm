@@ -41,27 +41,7 @@ class SemanticAnalysisInspection(override val problemHolder: ProblemHolder) : La
 //            }
 //        }
 //
-//        override fun visitCallExpr(expr: LangCallExpr) {
-//            super.visitCallExpr(expr)
-//            val callerType = expr.caller.type
-//            if (callerType !is MethodReferenceType) {
-//                errorHolder.registerProblem(expr, "Expected method reference type but found type ${callerType.name}")
-//                return
-//            }
-//            val methodSignature = callerType.method
-//            val arguments = expr.arguments
-//            if (methodSignature.parameters.size != arguments.size) {
-//                errorHolder.registerProblem(expr, "Method has different count of arguments ($methodSignature)")
-//                return
-//            }
-//            for ((index, parameterSignature) in methodSignature.parameters.withIndex()) {
-//                val argument = arguments[index]
-//                if (argument.type != parameterSignature.type) { // TODO not only equals, but with promotion
-//                    val description = "Argument type expected to be ${parameterSignature.type.name} but was ${argument.type.name}"
-//                    errorHolder.registerProblem(argument, description)
-//                }
-//            }
-//        }
+
 //
 //        override fun visitCastExpr(expr: LangCastExpr) {
 //            super.visitCastExpr(expr)
