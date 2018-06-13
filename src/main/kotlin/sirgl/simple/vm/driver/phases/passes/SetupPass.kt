@@ -11,6 +11,7 @@ import sirgl.simple.vm.ast.impl.LangParameterImpl
 import sirgl.simple.vm.ast.impl.stmt.LangVarDeclStmtImpl
 import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
+import sirgl.simple.vm.common.CommonClassNames
 import sirgl.simple.vm.common.CommonClassTypes
 import sirgl.simple.vm.driver.phases.SingleVisitorAstPass
 import sirgl.simple.vm.resolve.symbols.ClassSymbol
@@ -54,11 +55,16 @@ class SetupPass : SingleVisitorAstPass() {
             val currentClassSymbol = cls.symbol
             val classSymbolImpl = currentClassSymbol as ClassSymbolImpl
             if (parentClassReferenceElement != null) {
+                if (parentClassReferenceElement.qualifier != null) {
+                    TODO()
+                }
                 val symbol = cls.symbol.packageSymbol.resolve(parentClassReferenceElement.name, null)
                 val parentClassSymbol = symbol as? ClassSymbol ?: return
                 classSymbolImpl.parentClassSymbol = parentClassSymbol
             } else {
-                classSymbolImpl.parentClassSymbol = CommonClassTypes.LANG_OBJECT.classSymbol
+                if (classSymbolImpl.qualifiedName != CommonClassNames.LANG_OBJECT) {
+                    classSymbolImpl.parentClassSymbol = CommonClassTypes.LANG_OBJECT.classSymbol
+                }
             }
         }
     }
