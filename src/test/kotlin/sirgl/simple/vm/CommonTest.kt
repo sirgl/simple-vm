@@ -34,25 +34,25 @@ abstract class FileBasedTestCaseBase<T> {
     }
 
     fun runSingle(name: String) {
-        val beforePath = directory.resolve(name + "." + defaultSourceFileExtension)
+        val beforePath = directory.resolve("$name.$defaultSourceFileExtension")
         val text = beforePath.toFile().readText()
         val actualResult = applyAction(text)
         check(beforePath, actualResult)
     }
 
-    fun filterBeforeName(name: String): Boolean {
+    private fun filterBeforeName(name: String): Boolean {
         return !name.contains("after") && name.endsWith(".$defaultSourceFileExtension")
     }
 
-    fun transformName(fileNameBefore: String): String {
-        return fileNameBefore + ".after"
+    private fun transformName(fileNameBefore: String): String {
+        return "$fileNameBefore.after"
     }
 
     open fun check(actual: T, expectedText: String) {
         Assert.assertEquals("Different content in file.", expectedText, actual)
     }
 
-    fun findResultPath(path: Path): Path {
+    private fun findResultPath(path: Path): Path {
         val fileName = path.fileName.toString()
         val nameOnly = fileName.substringBeforeLast('.')
         val ext = fileName.substringAfterLast('.')
