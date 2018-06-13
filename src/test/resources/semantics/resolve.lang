@@ -1,4 +1,4 @@
-class A {
+class A : UnknownSuper {
     fun localVars() {
         x; // unresolved
         var y: i32 = 12;
@@ -16,6 +16,4 @@ class A {
     }
 
     var forwardField: i32 = 2;
-
-
 }

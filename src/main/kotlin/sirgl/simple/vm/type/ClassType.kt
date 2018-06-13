@@ -20,8 +20,6 @@ class ClassType(override val name: String) : LangType {
         result = 31 * result + classSymbol.hashCode()
         return result
     }
-
-
 }
 
 //fun LangClass.toType(): ClassType {

@@ -18,7 +18,7 @@ class ClassSymbolImpl(
 
     override val qualifiedName: String by lazy {
         val packageName = packageSymbol.name
-        packageName
+        if (packageName == ".") name else "$packageName.$name"
     }
 
     override var parentClassSymbol: ClassSymbol? = null

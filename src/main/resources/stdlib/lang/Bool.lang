@@ -1,6 +1,6 @@
 package lang;
 
-class I8 {
+class Bool {
     constructor(v: bool) {
         value = v;
     }

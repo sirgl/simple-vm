@@ -7,7 +7,7 @@ import sirgl.simple.vm.roots.SymbolSourceProvider
 import kotlin.system.measureTimeMillis
 
 class CompileJob(
-    val sourceProviders: List<SymbolSourceProvider>,
+    val sourceProviders: MutableList<SymbolSourceProvider>,
     val buildPipeline: (context: CompilerContext) -> List<CompilerPhase<*>>
 ) {
     val astCache = AstCache()

@@ -27,13 +27,13 @@ fun LangType.subtypeStatus(another: LangType): SubtypeResult {
         }
         is BoolType -> when (this) {
             is BoolType -> SubtypeResult(true)
-            is ClassType -> classTypeToPrimitivePromotionCheck(CommonClassNames.LANG_BOOLEAN, BoolType)
+            is ClassType -> classTypeToPrimitivePromotionCheck(CommonClassNames.LANG_BOOL, BoolType)
             else -> SubtypeResult(false)
         }
         is ClassType -> when (this) {
             is I8Type -> primitiveToClassPromotionCheck(another, CommonClassNames.LANG_I8, CommonClassTypes.LANG_I8)
             is I32Type -> primitiveToClassPromotionCheck(another, CommonClassNames.LANG_I32, CommonClassTypes.LANG_I32)
-            is BoolType -> primitiveToClassPromotionCheck(another, CommonClassNames.LANG_BOOLEAN, CommonClassTypes.LANG_BOOLEAN)
+            is BoolType -> primitiveToClassPromotionCheck(another, CommonClassNames.LANG_BOOL, CommonClassTypes.LANG_BOOLEAN)
             is ClassType -> {
                 val qualifiedName = another.classSymbol.qualifiedName
                 if (classSymbol.findParentSymbol { it.qualifiedName == qualifiedName} != null) {

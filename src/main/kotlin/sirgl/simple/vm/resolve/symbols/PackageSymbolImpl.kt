@@ -24,6 +24,7 @@ class PackageSymbolImpl(
             val duplicatingList = duplicatingDeclaration[name] ?: mutableSetOf()
             duplicatingList.add(symbol)
             duplicatingList.add(previousValue)
+            duplicatingDeclaration[name] = duplicatingList
         }
     }
 

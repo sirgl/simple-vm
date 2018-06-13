@@ -12,6 +12,7 @@ import sirgl.simple.vm.common.CompilerPhase
 import sirgl.simple.vm.driver.CompileJob
 import sirgl.simple.vm.driver.phases.AstBuildingPhase
 import sirgl.simple.vm.driver.phases.AstBypassesPhase
+import sirgl.simple.vm.driver.phases.SymbolInjectionPhase
 import sirgl.simple.vm.driver.phases.passes.SetupPass
 import sirgl.simple.vm.roots.FileSystemSymbolSourceProvider
 import java.nio.file.Paths
@@ -20,7 +21,9 @@ fun buildDefaultPipeline(context: CompilerContext) : List<CompilerPhase<*>> {
     val problemHolder = ProblemHolderImpl(context.errorSink)
     val inspections = defaultInspections(problemHolder)
     return listOf(
+        // TODO stdlib
         AstBuildingPhase(),
+        SymbolInjectionPhase(),
         AstBypassesPhase(
             walker = SimpleWalker(),
             passes = mutableListOf(
@@ -48,7 +51,7 @@ class LangCompiler(
     // Would be nice to return some meaningful result
     fun run() {
         val sourceProvider = FileSystemSymbolSourceProvider(listOf(Paths.get(configuration.sourcePath)))
-        val compileJob = CompileJob(listOf(sourceProvider), buildPipeline)
+        val compileJob = CompileJob(mutableListOf(sourceProvider), buildPipeline)
         compileJob.run()
     }
 }
