@@ -106,7 +106,6 @@ class HandwrittenLangLexer : LangLexer {
 /**
  * One-off object. After tokenize() must not be used
  */
-@Suppress("LoopToCallChain")
 private class LexerState(
     private val text: String,
     private val skipWhitespace: Boolean = true,
@@ -246,9 +245,6 @@ private class LexerState(
             current++
         }
     }
-
-//    private fun tryCStyleComment() : Boolean {
-//}
 
     private fun tryWhitespace(): Boolean {
         var current = text[position]

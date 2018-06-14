@@ -10,6 +10,8 @@ import sirgl.simple.vm.ast.stmt.LangIfStmt
 import sirgl.simple.vm.ast.stmt.LangWhileStmt
 import sirgl.simple.vm.ast.support.LangVarDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
+import sirgl.simple.vm.resolve.symbols.MethodSymbol
+import sirgl.simple.vm.resolve.symbols.constructor
 import sirgl.simple.vm.type.*
 
 class TypeCheckInspection(override val problemHolder: ProblemHolder) :
@@ -46,42 +48,26 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
         override fun visitCastExpr(expr: LangCastExpr) {
             val type = expr.targetType
             if (type !is ClassType) {
-                problemHolder.registerProblem(expr, "Expected class type, but found type ${type.name}", expr.getSymbolSource())
+                problemHolder.registerProblem(
+                    expr,
+                    "Expected class type, but found type ${type.name}",
+                    expr.getSymbolSource()
+                )
             }
         }
-
 
 
         override fun visitCallExpr(expr: LangCallExpr) {
             super.visitCallExpr(expr)
             val callerType = expr.caller.type
-            if (callerType !is MethodReferenceType) {
-                problemHolder.registerProblem(expr, "Expected method reference type but found type ${callerType.name}", expr.getSymbolSource())
-                return
-            }
-            val methodSymbol = callerType.methodSymbol
-            val arguments = expr.arguments
-            val parametersCount = methodSymbol.parameters.size
-            val argumentsCount = arguments.size
-            if (parametersCount != argumentsCount) {
-                val parameterTypes = methodSymbol.parameters.joinToString(", ") { "${it.name}: ${it.type.name}" }
-                val description = buildString {
-                    append("Method must have $parametersCount arguments ($parameterTypes), but found $argumentsCount")
-                    if (argumentsCount != 0) {
-                        append("(")
-                        append(arguments.joinToString(", ") { it.type.name })
-                        append(")")
-                    }
-                }
-                problemHolder.registerProblem(expr, description, expr.getSymbolSource())
-                return
-            }
-            for ((index, parameterSignature) in methodSymbol.parameters.withIndex()) {
-                val argument = arguments[index]
-                if (!argument.type.isAssignableTo(parameterSignature.type)) {
-                    val description = "Argument type expected to be ${parameterSignature.type.name} but was ${argument.type.name}"
-                    problemHolder.registerProblem(argument, description, expr.getSymbolSource())
-                }
+            when (callerType) {
+                is MethodReferenceType -> checkMethodCall(callerType, expr)
+                is ClassType -> checkConstructorCall(callerType, expr)
+                else -> problemHolder.registerProblem(
+                    expr,
+                    "Expected method reference type but found type ${callerType.name}",
+                    expr.getSymbolSource()
+                )
             }
         }
 
@@ -89,7 +75,11 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
             val arrayExpr = expr.arrayExpr
             val arrayExprType = arrayExpr.type
             if (arrayExprType !is ArrayType) {
-                problemHolder.registerProblem(arrayExpr, "Expected array type, but found ${arrayExprType.name}", expr.getSymbolSource())
+                problemHolder.registerProblem(
+                    arrayExpr,
+                    "Expected array type, but found ${arrayExprType.name}",
+                    expr.getSymbolSource()
+                )
             }
             expr.indexExpr.mustBeAssignableTo(I32Type)
         }
@@ -107,8 +97,63 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
         private fun LangExpr.mustBeAssignableTo(type: LangType) {
             val exprType = this.type
             if (!exprType.isAssignableTo(type)) {
-                problemHolder.registerProblem(this, "Expected type ${type.name}, but found ${exprType.name}", getSymbolSource())
+                problemHolder.registerProblem(
+                    this,
+                    "Expected type ${type.name}, but found ${exprType.name}",
+                    getSymbolSource()
+                )
             }
         }
+    }
+
+    private fun checkMethodCall(callerType: MethodReferenceType, expr: LangCallExpr) {
+        val methodSymbol = callerType.methodSymbol
+        checkFunction(expr, methodSymbol)
+        return
+    }
+
+    private fun checkConstructorCall(callerType: ClassType, expr: LangCallExpr) {
+        val constructor = callerType.classSymbol.constructor
+        if (constructor == null) {
+            problemHolder.registerProblem(
+                expr,
+                "Class ${callerType.classSymbol.qualifiedName} has no constructor",
+                expr.getSymbolSource()
+            )
+        } else {
+            checkFunction(expr, constructor)
+        }
+    }
+
+
+    private fun checkFunction(
+        expr: LangCallExpr,
+        methodSymbol: MethodSymbol
+    ) {
+        val arguments = expr.arguments
+        val parametersCount = methodSymbol.parameters.size
+        val argumentsCount = arguments.size
+        if (parametersCount != argumentsCount) {
+            val parameterTypes = methodSymbol.parameters.joinToString(", ") { "${it.name}: ${it.type.name}" }
+            val description = buildString {
+                append("Method must have $parametersCount arguments ($parameterTypes), but found $argumentsCount")
+                if (argumentsCount != 0) {
+                    append("(")
+                    append(arguments.joinToString(", ") { it.type.name })
+                    append(")")
+                }
+            }
+            problemHolder.registerProblem(expr, description, expr.getSymbolSource())
+            return
+        }
+        for ((index, parameterSignature) in methodSymbol.parameters.withIndex()) {
+            val argument = arguments[index]
+            if (!argument.type.isAssignableTo(parameterSignature.type)) {
+                val description =
+                    "Argument type expected to be ${parameterSignature.type.name} but was ${argument.type.name}"
+                problemHolder.registerProblem(argument, description, expr.getSymbolSource())
+            }
+        }
+        return
     }
 }

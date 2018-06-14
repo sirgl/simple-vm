@@ -1,8 +1,10 @@
 package sirgl.simple.vm.resolve.symbols
 
+import sirgl.simple.vm.ast.constructorName
 import sirgl.simple.vm.resolve.Scope
 import sirgl.simple.vm.resolve.Scoped
 import sirgl.simple.vm.roots.SymbolSource
+import sirgl.simple.vm.type.ClassType
 import sirgl.simple.vm.type.LangType
 
 interface Symbol {
@@ -48,7 +50,12 @@ interface ClassSymbol : ScopedSymbol {
     // Null only for Object
     val parentClassSymbol: ClassSymbol?
     val qualifiedName: String
+
+    val type: ClassType
 }
+
+val ClassSymbol.constructor
+    get() = members[constructorName] as? MethodSymbol
 
 interface PackageSymbol : ScopedSymbol
 

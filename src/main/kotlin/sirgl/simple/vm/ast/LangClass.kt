@@ -12,8 +12,10 @@ interface LangClass : AstNode, Scoped {
     val members: List<LangMember>
 
     val fields: List<LangField>
-        get() = members.filter { it is LangField }.map { it as LangField }
+        get() = members.filterIsInstance<LangField>()
     val methods: List<LangMethod>
-        get() = members.filter { it is LangMethod }.map { it as LangMethod }
+        get() = members.filterIsInstance<LangMethod>()
+    val constructors: List<LangConstructor>
+        get() = members.filterIsInstance<LangConstructor>()
     val symbol: ClassSymbol
 }

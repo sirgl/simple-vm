@@ -8,6 +8,7 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.resolve.LocalScope
 import sirgl.simple.vm.resolve.Scope
+import sirgl.simple.vm.type.ClassType
 import sirgl.simple.vm.type.LangType
 
 class LangConstructorImpl(
@@ -19,7 +20,7 @@ class LangConstructorImpl(
 ) : LangMemberImpl(startLexeme, endLexeme), LangConstructor {
     override val scope: Scope = LocalScope(this)
 
-    override val returnType: LangType by lazy { TODO() }
+    override val returnType: LangType by lazy { ClassType(enclosingClass.simpleName) }
 
     override fun accept(visitor: LangVisitor) {
         visitor.visitConstructor(this)

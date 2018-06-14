@@ -36,10 +36,10 @@ fun LangType.subtypeStatus(another: LangType): SubtypeResult {
             is BoolType -> primitiveToClassPromotionCheck(another, CommonClassNames.LANG_BOOL, CommonClassTypes.LANG_BOOLEAN)
             is ClassType -> {
                 val qualifiedName = another.classSymbol.qualifiedName
-                if (classSymbol.findParentSymbol { it.qualifiedName == qualifiedName} != null) {
-                    SubtypeResult(true)
-                } else {
-                    SubtypeResult(false)
+                when {
+                    classSymbol == another.classSymbol -> SubtypeResult(true)
+                    classSymbol.findParentSymbol { it.qualifiedName == qualifiedName} != null -> SubtypeResult(true)
+                    else -> SubtypeResult(false)
                 }
             }
             else -> SubtypeResult(false)

@@ -26,6 +26,7 @@ class LangReferenceExprImpl(
         when (symbol) {
             is VarSymbol -> symbol.type
             is MethodSymbol -> MethodReferenceType(symbol.name)
+            is ClassSymbol -> symbol.type
             else -> UnknownType
         }
     }

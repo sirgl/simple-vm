@@ -1,9 +1,9 @@
 package sirgl.simple.vm.resolve.symbols
 
-import sirgl.simple.vm.ast.AstNode
-import sirgl.simple.vm.ast.LangClass
+import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.driver.GlobalScope
 import sirgl.simple.vm.roots.SymbolSource
+import sirgl.simple.vm.type.ClassType
 
 class ClassSymbolImpl(
     override val name: String,
@@ -13,6 +13,11 @@ class ClassSymbolImpl(
     override val imports: List<PackageSymbol>,
     val membersMultidefs: MutableMap<String, MutableSet<Symbol>>
 ) : ClassSymbol {
+    override val type: ClassType by lazy {
+        val classType = ClassType(simpleName)
+        classType.classSymbol = this
+        classType
+    }
     override val simpleName: String
         get() = name
 
@@ -61,24 +66,17 @@ fun LangClass.toSymbol(globalScope: GlobalScope) : ClassSymbol {
     for (method in methods) {
         val methodSymbol = method.toSymbol()
         val methodName = method.name
-        val previous = memberSymbols.put(methodName, methodSymbol)
-        if (previous != null) {
-            val duplicatingSymbols = membersMultidefs[methodName] ?: mutableSetOf()
-            duplicatingSymbols.add(previous)
-            duplicatingSymbols.add(methodSymbol)
-            membersMultidefs[methodName] = duplicatingSymbols
-        }
+        addHandlingProbableDuplication(memberSymbols, methodName, methodSymbol, membersMultidefs)
+    }
+    for (constructor: LangConstructor in constructors) {
+        val methodSymbol = constructor.toSymbol()
+        val methodName = constructorName
+        addHandlingProbableDuplication(memberSymbols, methodName, methodSymbol, membersMultidefs)
     }
     for (field in fields) {
         val fieldSymbol = field.toSymbol()
         val fieldName = field.name
-        val previous = memberSymbols.put(fieldName, fieldSymbol)
-        if (previous != null) {
-            val duplicatingSymbols = membersMultidefs[fieldName] ?: mutableSetOf()
-            duplicatingSymbols.add(previous)
-            duplicatingSymbols.add(fieldSymbol)
-            membersMultidefs[fieldName] = duplicatingSymbols
-        }
+        addHandlingProbableDuplication(memberSymbols, fieldName, fieldSymbol, membersMultidefs)
     }
     val classSymbol = ClassSymbolImpl(simpleName, file.symbolSource, memberSymbols, packageSymbol, importSymbols, membersMultidefs)
     for (method in methods) {
@@ -87,5 +85,26 @@ fun LangClass.toSymbol(globalScope: GlobalScope) : ClassSymbol {
     for (field in fields) {
         (memberSymbols[field.name] as FieldSymbolImpl).enclosingClass = classSymbol
     }
+    for (constructor in constructors) {
+        val methodSymbolImpl = memberSymbols[constructorName] as MethodSymbolImpl
+        (methodSymbolImpl.returnType as ClassType).classSymbol = classSymbol
+        methodSymbolImpl.enclosingClass = classSymbol
+
+    }
     return classSymbol
+}
+
+private fun addHandlingProbableDuplication(
+    memberSymbols: MutableMap<String, MemberSymbol>,
+    methodName: String,
+    methodSymbol: MemberSymbol,
+    membersMultidefs: MutableMap<String, MutableSet<Symbol>>
+) {
+    val previous = memberSymbols.put(methodName, methodSymbol)
+    if (previous != null) {
+        val duplicatingSymbols = membersMultidefs[methodName] ?: mutableSetOf()
+        duplicatingSymbols.add(previous)
+        duplicatingSymbols.add(methodSymbol)
+        membersMultidefs[methodName] = duplicatingSymbols
+    }
 }

@@ -8,5 +8,5 @@ abstract class LangMemberImpl(startLexeme: Lexeme, endLexeme: Lexeme) :
     AstNodeImpl(startLexeme, endLexeme), LangMember {
     override lateinit var parent: LangClass
 
-    override lateinit var enclosingClass: LangClass
+    override val enclosingClass: LangClass by lazy { parent }
 }
