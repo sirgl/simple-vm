@@ -1,0 +1,2 @@
+Error in (BreakStmt#2@[34, 39)): Break statement not allowed outside of while statement
+Error in (ContinueStmt#3@[49, 57)): Continue statement not allowed outside of while statement

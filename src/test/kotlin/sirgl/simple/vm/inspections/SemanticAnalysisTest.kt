@@ -24,4 +24,7 @@ class SemanticAnalysisTest : SemanticAnalysisTestBase() {
 
     @Test
     fun methods() = runSingle("methods")
+
+    @Test
+    fun breakContinue() = runSingle("breakContinue")
 }

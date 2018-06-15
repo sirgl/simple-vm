@@ -4,9 +4,13 @@ import sirgl.simple.vm.analysis.LangInspection
 import sirgl.simple.vm.analysis.ProblemHolder
 import sirgl.simple.vm.ast.BinaryOperatorType.*
 import sirgl.simple.vm.ast.LangExpr
+import sirgl.simple.vm.ast.LangMethod
 import sirgl.simple.vm.ast.expr.*
+import sirgl.simple.vm.ast.ext.getParentOfClass
 import sirgl.simple.vm.ast.ext.getSymbolSource
+import sirgl.simple.vm.ast.stmt.LangBreakStmt
 import sirgl.simple.vm.ast.stmt.LangIfStmt
+import sirgl.simple.vm.ast.stmt.LangReturnStmt
 import sirgl.simple.vm.ast.stmt.LangWhileStmt
 import sirgl.simple.vm.ast.support.LangVarDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
@@ -58,7 +62,6 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
 
 
         override fun visitCallExpr(expr: LangCallExpr) {
-            super.visitCallExpr(expr)
             val callerType = expr.caller.type
             when (callerType) {
                 is MethodReferenceType -> checkMethodCall(callerType, expr)
@@ -69,6 +72,11 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
                     expr.getSymbolSource()
                 )
             }
+        }
+
+        override fun visitReturnStmt(stmt: LangReturnStmt) {
+            val methodReturnType = stmt.getParentOfClass<LangMethod>().returnType
+            stmt.expression?.mustBeAssignableTo(methodReturnType)
         }
 
         override fun visitElementAccessExpr(expr: LangElementAccessExpr) {

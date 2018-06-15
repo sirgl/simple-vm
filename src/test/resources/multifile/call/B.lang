@@ -1,0 +1,8 @@
+class B {
+    fun test() {
+        var x: i32 = A().i;
+        var y: A = A();
+        var z: i32 = y.foo();
+        var ai: i32 = A().a.foo();
+    }
+}

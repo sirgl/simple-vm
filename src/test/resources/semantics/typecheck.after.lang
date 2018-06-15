@@ -6,3 +6,4 @@ Error in (IntLiteral#7@[138, 140) value: 12): Expected type bool, but found i32
 Error in (IntLiteral#8@[168, 170) value: 12): Expected type i32[], but found i32
 Error in (ReferenceExpr#11@[248, 254) name: nonarr): Expected array type, but found i32
 Error in (CastExpr#12@[272, 281) type: i32): Expected class type, but found type i32
+Error in (IntLiteral#13@[298, 300) value: 12): Expected type void, but found i32

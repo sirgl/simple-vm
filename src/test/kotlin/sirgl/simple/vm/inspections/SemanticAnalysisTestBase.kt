@@ -11,6 +11,7 @@ import sirgl.simple.vm.driver.phases.AstBypassesPhase
 import sirgl.simple.vm.driver.phases.CommonTypesSetupPhase
 import sirgl.simple.vm.driver.phases.StdLibInjectionPhase
 import sirgl.simple.vm.driver.phases.passes.SetupPass
+import sirgl.simple.vm.roots.FileSymbolSource
 import sirgl.simple.vm.roots.FileSystemSymbolSourceProvider
 import sirgl.simple.vm.roots.InMemorySourceFileSource
 import sirgl.simple.vm.roots.ListSymbolSourceProvider
@@ -27,7 +28,7 @@ abstract class SemanticAnalysisTestBase : FileTestCase<String>() {
     }
 }
 
-fun runCompilerJobAndGetErrors(sources: List<InMemorySourceFileSource>): String {
+fun runCompilerJobAndGetErrors(sources: List<FileSymbolSource>): String {
     val job = CompileJob(
         mutableListOf(
             ListSymbolSourceProvider(sources)

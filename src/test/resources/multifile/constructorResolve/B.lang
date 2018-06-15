@@ -1,5 +1,7 @@
 class B {
     fun test() {
         var x: A = A();
+        A(23, 44);
+        B();
     }
 }
