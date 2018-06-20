@@ -1,0 +1,10 @@
+package p2;
+
+import p1;
+
+class B {
+    fun test() {
+        var x: A = A();
+        A(23, 44);
+    }
+}

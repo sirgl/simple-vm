@@ -1,9 +1,8 @@
 package sirgl.simple.vm.inspections
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import sirgl.simple.vm.MultiFileProjectTest
 import sirgl.simple.vm.roots.FsSourceFileSource
-import sirgl.simple.vm.roots.InMemorySourceFileSource
 import java.nio.file.Path
 
 class MultiFileSemanticAnalysisTest : MultiFileProjectTest(MultiFileSemanticAnalysisTest::class.java.classLoader.getResource("multifile").file) {
@@ -22,4 +21,7 @@ class MultiFileSemanticAnalysisTest : MultiFileProjectTest(MultiFileSemanticAnal
 
     @Test
     fun `test string methods resolve`() = test("strings")
+
+    @Test
+    fun `test import`() = test("import")
 }

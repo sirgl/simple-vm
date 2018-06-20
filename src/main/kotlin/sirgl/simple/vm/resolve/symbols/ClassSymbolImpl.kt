@@ -31,6 +31,15 @@ class ClassSymbolImpl(
     override fun resolve(name: String, referenceOffset: Int?) = members[name]
             ?: parentClassSymbol?.resolve(name, referenceOffset)
             ?: packageSymbol.resolve(name, referenceOffset)
+            ?: resolveByImports(name, referenceOffset)
+
+    private fun resolveByImports(name: String, referenceOffset: Int?) : Symbol? {
+        for (import in imports) {
+            val symbol = import.resolve(name, referenceOffset)
+            if (symbol != null) return symbol
+        }
+        return null
+    }
 
     override fun register(symbol: Symbol, node: AstNode?) =
             throw UnsupportedOperationException("It should be done at the beginning")
@@ -59,7 +68,8 @@ class ClassSymbolImpl(
 fun LangClass.toSymbol(globalScope: GlobalScope): ClassSymbol {
     val file = this.parent
     val packageSymbol = file.packageDeclaration?.toSymbol(globalScope) ?: globalScope.root
-    val importSymbols = file.imports.map { it.toSymbol(globalScope) }
+    val importSymbols = file.imports.map { it.toSymbol(globalScope) }.toMutableList()
+    importSymbols.add(globalScope.findOrCreatePackageSymbol("lang"))
 
     val memberSymbols = mutableMapOf<String, MemberSymbol>()
     val membersMultidefs = mutableMapOf<String, MutableSet<Symbol>>()
