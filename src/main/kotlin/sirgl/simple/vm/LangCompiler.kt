@@ -1,6 +1,8 @@
 package sirgl.simple.vm
 
-import sirgl.simple.vm.analysis.*
+import sirgl.simple.vm.analysis.LangInspection
+import sirgl.simple.vm.analysis.ProblemHolderImpl
+import sirgl.simple.vm.analysis.SemanticAnalysisPass
 import sirgl.simple.vm.analysis.inspections.ResolveInspection
 import sirgl.simple.vm.analysis.inspections.ScopeInspection
 import sirgl.simple.vm.analysis.inspections.SemanticAnalysisInspection
@@ -17,36 +19,36 @@ import sirgl.simple.vm.driver.phases.passes.SetupPass
 import sirgl.simple.vm.roots.FileSystemSymbolSourceProvider
 import java.nio.file.Paths
 
-fun buildDefaultPipeline(context: CompilerContext) : List<CompilerPhase<*>> {
+fun buildDefaultPipeline(context: CompilerContext): List<CompilerPhase<*>> {
     val problemHolder = ProblemHolderImpl(context.errorSink)
     val inspections = defaultInspections(problemHolder)
     return listOf(
-        // TODO stdlib
-        AstBuildingPhase(),
-        CommonTypesSetupPhase(),
-        AstBypassesPhase(
-            walker = SimpleWalker(),
-            passes = mutableListOf(
-                SetupPass(),
-                SemanticAnalysisPass(
-                    inspections = inspections
-                ),
-                CodegenPass()
+            // TODO stdlib
+            AstBuildingPhase(),
+            CommonTypesSetupPhase(),
+            AstBypassesPhase(
+                    walker = SimpleWalker(),
+                    passes = mutableListOf(
+                            SetupPass(),
+                            SemanticAnalysisPass(
+                                    inspections = inspections
+                            ),
+                            CodegenPass()
+                    )
             )
-        )
     )
 }
 
 fun defaultInspections(problemHolder: ProblemHolderImpl): MutableList<LangInspection> = mutableListOf(
-    TypeCheckInspection(problemHolder),
-    ScopeInspection(problemHolder),
-    ResolveInspection(problemHolder),
-    SemanticAnalysisInspection(problemHolder)
+        TypeCheckInspection(problemHolder),
+        ScopeInspection(problemHolder),
+        ResolveInspection(problemHolder),
+        SemanticAnalysisInspection(problemHolder)
 )
 
 class LangCompiler(
-    val configuration: Configuration,
-    val buildPipeline: (context: CompilerContext) -> List<CompilerPhase<*>>
+        val configuration: Configuration,
+        val buildPipeline: (context: CompilerContext) -> List<CompilerPhase<*>>
 ) {
     // Would be nice to return some meaningful result
     fun run() {

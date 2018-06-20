@@ -12,11 +12,11 @@ import sirgl.simple.vm.type.ClassType
 import sirgl.simple.vm.type.LangType
 
 class LangConstructorImpl(
-    override val parameters: List<LangParameter>,
-    override val block: LangBlock,
-    startLexeme: Lexeme,
-    endLexeme: Lexeme,
-    override val isNative: Boolean
+        override val parameters: List<LangParameter>,
+        override val block: LangBlock,
+        startLexeme: Lexeme,
+        endLexeme: Lexeme,
+        override val isNative: Boolean
 ) : LangMemberImpl(startLexeme, endLexeme), LangConstructor {
     override val scope: Scope = LocalScope(this)
 

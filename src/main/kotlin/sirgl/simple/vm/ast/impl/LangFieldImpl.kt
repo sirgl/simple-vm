@@ -7,11 +7,11 @@ import sirgl.simple.vm.resolve.symbols.FieldSymbol
 import sirgl.simple.vm.type.LangType
 
 class LangFieldImpl(
-    override val name: String,
-    startLexeme: Lexeme,
-    endLexeme: Lexeme,
-    override val initializer: LangExpr?,
-    override val typeElement: LangTypeElement
+        override val name: String,
+        startLexeme: Lexeme,
+        endLexeme: Lexeme,
+        override val initializer: LangExpr?,
+        override val typeElement: LangTypeElement
 ) : LangMemberImpl(startLexeme, endLexeme), LangField {
     override lateinit var symbol: FieldSymbol
     override lateinit var parent: LangClass

@@ -7,4 +7,7 @@ class String {
     constructor(array: i8[]) {
         // TODO
     }
+
+    fun getChar(i: i32): i8 {
+    }
 }

@@ -9,9 +9,9 @@ import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.LangType
 
 class LangCastExprImpl(
-    last: Lexeme,
-    override val expr: LangExpr,
-    override val targetTypeElement: LangTypeElement
+        last: Lexeme,
+        override val expr: LangExpr,
+        override val targetTypeElement: LangTypeElement
 ) : LangCastExpr, LangExprImpl(expr.startOffset, last.endOffset, expr.startLine) {
     override val type: LangType = targetType
 

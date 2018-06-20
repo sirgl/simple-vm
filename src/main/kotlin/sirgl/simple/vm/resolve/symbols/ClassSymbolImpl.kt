@@ -6,12 +6,12 @@ import sirgl.simple.vm.roots.SymbolSource
 import sirgl.simple.vm.type.ClassType
 
 class ClassSymbolImpl(
-    override val name: String,
-    override val symbolSource: SymbolSource,
-    override val members: Map<String, MemberSymbol>,
-    override val packageSymbol: PackageSymbol,
-    override val imports: List<PackageSymbol>,
-    val membersMultidefs: MutableMap<String, MutableSet<Symbol>>
+        override val name: String,
+        override val symbolSource: SymbolSource,
+        override val members: Map<String, MemberSymbol>,
+        override val packageSymbol: PackageSymbol,
+        override val imports: List<PackageSymbol>,
+        val membersMultidefs: MutableMap<String, MutableSet<Symbol>>
 ) : ClassSymbol {
     override val type: ClassType by lazy {
         val classType = ClassType(simpleName)
@@ -33,7 +33,7 @@ class ClassSymbolImpl(
             ?: packageSymbol.resolve(name, referenceOffset)
 
     override fun register(symbol: Symbol, node: AstNode?) =
-        throw UnsupportedOperationException("It should be done at the beginning")
+            throw UnsupportedOperationException("It should be done at the beginning")
 
     override fun getMultipleDeclarations() = membersMultidefs
 
@@ -56,7 +56,7 @@ class ClassSymbolImpl(
 
 }
 
-fun LangClass.toSymbol(globalScope: GlobalScope) : ClassSymbol {
+fun LangClass.toSymbol(globalScope: GlobalScope): ClassSymbol {
     val file = this.parent
     val packageSymbol = file.packageDeclaration?.toSymbol(globalScope) ?: globalScope.root
     val importSymbols = file.imports.map { it.toSymbol(globalScope) }
@@ -95,10 +95,10 @@ fun LangClass.toSymbol(globalScope: GlobalScope) : ClassSymbol {
 }
 
 private fun addHandlingProbableDuplication(
-    memberSymbols: MutableMap<String, MemberSymbol>,
-    methodName: String,
-    methodSymbol: MemberSymbol,
-    membersMultidefs: MutableMap<String, MutableSet<Symbol>>
+        memberSymbols: MutableMap<String, MemberSymbol>,
+        methodName: String,
+        methodSymbol: MemberSymbol,
+        membersMultidefs: MutableMap<String, MutableSet<Symbol>>
 ) {
     val previous = memberSymbols.put(methodName, methodSymbol)
     if (previous != null) {

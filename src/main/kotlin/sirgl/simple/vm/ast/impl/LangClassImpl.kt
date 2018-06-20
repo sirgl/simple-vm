@@ -9,11 +9,11 @@ import sirgl.simple.vm.resolve.symbols.ClassSymbol
 import sirgl.simple.vm.resolve.symbols.toSymbol
 
 class LangClassImpl(
-    override val simpleName: String,
-    override val members: List<LangMember>,
-    firstLexeme: Lexeme,
-    endLexeme: Lexeme,
-    override val parentClassReferenceElement: LangReferenceElement?
+        override val simpleName: String,
+        override val members: List<LangMember>,
+        firstLexeme: Lexeme,
+        endLexeme: Lexeme,
+        override val parentClassReferenceElement: LangReferenceElement?
 ) : AstNodeImpl(firstLexeme, endLexeme), LangClass {
     override lateinit var symbol: ClassSymbol
     override val scope: Scope by lazy { symbol }
@@ -39,7 +39,7 @@ class LangClassImpl(
     override val debugName = "Class"
 
     override fun toString() =
-        super.toString() + " name: $simpleName" + if (parentClassName != null) ", parent: $parentClassName" else ""
+            super.toString() + " name: $simpleName" + if (parentClassName != null) ", parent: $parentClassName" else ""
 
     override val children: List<AstNode> = members
 }

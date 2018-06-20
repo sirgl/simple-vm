@@ -8,13 +8,13 @@ import kotlin.coroutines.experimental.buildSequence
 
 
 data class SourceFileComputable(
-    val sourceFile: SourceFileSource,
-    val astBuildingTask: AstBuildingTask
+        val sourceFile: SourceFileSource,
+        val astBuildingTask: AstBuildingTask
 )
 
 data class SourceFileInfo(
-    val sourceFileSource: SourceFileSource,
-    val file: LangFile
+        val sourceFileSource: SourceFileSource,
+        val file: LangFile
 )
 
 /**
@@ -34,7 +34,7 @@ class AstCache {
         fqnToSource[qualifiedName] = SourceFileComputable(sourceFileSource, astBuildingTask)
     }
 
-    fun getAllSources() : Sequence<SourceFileInfo> = buildSequence {
+    fun getAllSources(): Sequence<SourceFileInfo> = buildSequence {
         for ((fqn, fileReference) in fqnToAst) {
             val (sourceFileSource, astBuildingTask) = fqnToSource[fqn]!!
             val file = fileReference.get() ?: astBuildingTask.parse()!!

@@ -7,7 +7,7 @@ import sirgl.simple.vm.type.LangType
 import sirgl.simple.vm.type.NullType
 
 class LangNullExprImpl(
-    lexeme: Lexeme
+        lexeme: Lexeme
 ) : LangNullExpr, LangLeafExprImpl(lexeme) {
     override var type: LangType = NullType
 

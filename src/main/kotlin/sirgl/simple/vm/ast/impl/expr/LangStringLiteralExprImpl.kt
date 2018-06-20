@@ -7,8 +7,8 @@ import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.ClassType
 
 class LangStringLiteralExprImpl(
-    override val value: String,
-    lexeme: Lexeme
+        override val value: String,
+        lexeme: Lexeme
 ) : LangStringLiteralExpr, LangLeafExprImpl(lexeme) {
     override val type: ClassType
         get() = CommonClassTypes.LANG_STRING

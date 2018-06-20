@@ -8,7 +8,6 @@ import sirgl.simple.vm.ast.LangMethod
 import sirgl.simple.vm.ast.expr.*
 import sirgl.simple.vm.ast.ext.getParentOfClass
 import sirgl.simple.vm.ast.ext.getSymbolSource
-import sirgl.simple.vm.ast.stmt.LangBreakStmt
 import sirgl.simple.vm.ast.stmt.LangIfStmt
 import sirgl.simple.vm.ast.stmt.LangReturnStmt
 import sirgl.simple.vm.ast.stmt.LangWhileStmt
@@ -19,7 +18,7 @@ import sirgl.simple.vm.resolve.symbols.constructor
 import sirgl.simple.vm.type.*
 
 class TypeCheckInspection(override val problemHolder: ProblemHolder) :
-    LangInspection {
+        LangInspection {
     override val visitor: LangVisitor = object : LangVisitor() {
         override fun visitIfStmt(stmt: LangIfStmt) {
             stmt.condition.mustBeAssignableTo(BoolType)
@@ -53,9 +52,9 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
             val type = expr.targetType
             if (type !is ClassType) {
                 problemHolder.registerProblem(
-                    expr,
-                    "Expected class type, but found type ${type.name}",
-                    expr.getSymbolSource()
+                        expr,
+                        "Expected class type, but found type ${type.name}",
+                        expr.getSymbolSource()
                 )
             }
         }
@@ -67,9 +66,9 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
                 is MethodReferenceType -> checkMethodCall(callerType, expr)
                 is ClassType -> checkConstructorCall(callerType, expr)
                 else -> problemHolder.registerProblem(
-                    expr,
-                    "Expected method reference type but found type ${callerType.name}",
-                    expr.getSymbolSource()
+                        expr,
+                        "Expected method reference type but found type ${callerType.name}",
+                        expr.getSymbolSource()
                 )
             }
         }
@@ -84,9 +83,9 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
             val arrayExprType = arrayExpr.type
             if (arrayExprType !is ArrayType) {
                 problemHolder.registerProblem(
-                    arrayExpr,
-                    "Expected array type, but found ${arrayExprType.name}",
-                    expr.getSymbolSource()
+                        arrayExpr,
+                        "Expected array type, but found ${arrayExprType.name}",
+                        expr.getSymbolSource()
                 )
             }
             expr.indexExpr.mustBeAssignableTo(I32Type)
@@ -106,9 +105,9 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
             val exprType = this.type
             if (!exprType.isAssignableTo(type)) {
                 problemHolder.registerProblem(
-                    this,
-                    "Expected type ${type.name}, but found ${exprType.name}",
-                    getSymbolSource()
+                        this,
+                        "Expected type ${type.name}, but found ${exprType.name}",
+                        getSymbolSource()
                 )
             }
         }
@@ -124,9 +123,9 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
         val constructor = callerType.classSymbol.constructor
         if (constructor == null) {
             problemHolder.registerProblem(
-                expr,
-                "Class ${callerType.classSymbol.qualifiedName} has no constructor",
-                expr.getSymbolSource()
+                    expr,
+                    "Class ${callerType.classSymbol.qualifiedName} has no constructor",
+                    expr.getSymbolSource()
             )
         } else {
             checkFunction(expr, constructor)
@@ -135,8 +134,8 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
 
 
     private fun checkFunction(
-        expr: LangCallExpr,
-        methodSymbol: MethodSymbol
+            expr: LangCallExpr,
+            methodSymbol: MethodSymbol
     ) {
         val arguments = expr.arguments
         val parametersCount = methodSymbol.parameters.size
@@ -158,7 +157,7 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
             val argument = arguments[index]
             if (!argument.type.isAssignableTo(parameterSignature.type)) {
                 val description =
-                    "Argument type expected to be ${parameterSignature.type.name} but was ${argument.type.name}"
+                        "Argument type expected to be ${parameterSignature.type.name} but was ${argument.type.name}"
                 problemHolder.registerProblem(argument, description, expr.getSymbolSource())
             }
         }

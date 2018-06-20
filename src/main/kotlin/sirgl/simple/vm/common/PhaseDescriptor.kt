@@ -1,7 +1,7 @@
 package sirgl.simple.vm.common
 
 open class PhaseDescriptor<T>(val name: String) {
-    fun get() : T {
+    fun get(): T {
         TODO()
     }
 

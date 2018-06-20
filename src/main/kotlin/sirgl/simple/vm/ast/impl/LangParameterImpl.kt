@@ -10,10 +10,10 @@ import sirgl.simple.vm.resolve.symbols.ParameterSymbol
 import sirgl.simple.vm.type.LangType
 
 class LangParameterImpl(
-    override val name: String,
-    override val typeElement: LangTypeElement,
-    startLexeme: Lexeme,
-    endLexeme: Lexeme
+        override val name: String,
+        override val typeElement: LangTypeElement,
+        startLexeme: Lexeme,
+        endLexeme: Lexeme
 ) : AstNodeImpl(startLexeme, endLexeme), LangParameter {
     override lateinit var symbol: ParameterSymbol
 

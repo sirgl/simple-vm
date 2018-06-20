@@ -11,9 +11,9 @@ import sirgl.simple.vm.type.MethodReferenceType
 import sirgl.simple.vm.type.UnknownType
 
 class LangCallExprImpl(
-    last: Lexeme,
-    override val caller: LangExpr,
-    override val arguments: List<LangExpr>
+        last: Lexeme,
+        override val caller: LangExpr,
+        override val arguments: List<LangExpr>
 ) : LangCallExpr, LangExprImpl(caller.startOffset, last.endOffset, caller.startLine) {
     override val type: LangType by lazy {
         val callerType = caller.type

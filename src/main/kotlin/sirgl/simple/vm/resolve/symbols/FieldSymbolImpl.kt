@@ -6,11 +6,11 @@ import sirgl.simple.vm.roots.SymbolSource
 import sirgl.simple.vm.type.LangType
 
 class FieldSymbolImpl(
-    override val name: String,
-    override val symbolSource: SymbolSource,
-    override val type: LangType
+        override val name: String,
+        override val symbolSource: SymbolSource,
+        override val type: LangType
 ) : FieldSymbol {
     override lateinit var enclosingClass: ClassSymbol
 }
 
-fun LangField.toSymbol() : FieldSymbol = FieldSymbolImpl(name, getSymbolSource(), type)
+fun LangField.toSymbol(): FieldSymbol = FieldSymbolImpl(name, getSymbolSource(), type)

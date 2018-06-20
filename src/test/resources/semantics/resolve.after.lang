@@ -1,4 +1,4 @@
-Error in (ReferenceExpr#2@[55, 56) name: x): Unresolved reference: x
-Error in (ReferenceExpr#6@[157, 158) name: z): Unresolved reference: z
-Error in (ReferenceExpr#6@[157, 158) name: z): Expected type i32, but found <unknown>
 Error in (Reference#0@[10, 22) name: UnknownSuper): Unresolved reference: UnknownSuper
+Error in (ReferenceExpr#2@[55, 56) name: x): Unresolved reference: x
+Error in (ReferenceExpr#6@[157, 158) name: z): Expected type i32, but found <unknown>
+Error in (ReferenceExpr#6@[157, 158) name: z): Unresolved reference: z

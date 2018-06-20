@@ -10,11 +10,11 @@ import sirgl.simple.vm.resolve.symbols.LocalVarSymbol
 import sirgl.simple.vm.type.LangType
 
 class LangVarDeclStmtImpl(
-    override val name: String,
-    startLexeme: Lexeme,
-    endLexeme: Lexeme,
-    override val initializer: LangExpr?,
-    override val typeElement: LangTypeElement
+        override val name: String,
+        startLexeme: Lexeme,
+        endLexeme: Lexeme,
+        override val initializer: LangExpr?,
+        override val typeElement: LangTypeElement
 ) : LangStmtImpl(startLexeme, endLexeme), LangVarDeclStmt {
     override val type: LangType
         get() = typeElement.type

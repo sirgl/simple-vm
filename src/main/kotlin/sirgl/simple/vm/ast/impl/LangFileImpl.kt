@@ -5,13 +5,13 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.roots.SourceFileSource
 
 class LangFileImpl(
-    override val packageDeclaration: LangPackageDecl?,
-    override val classDecl: LangClass,
-    override val imports: List<LangImport>
+        override val packageDeclaration: LangPackageDecl?,
+        override val classDecl: LangClass,
+        override val imports: List<LangImport>
 ) : AstNodeImpl(
-    packageDeclaration?.startOffset ?: classDecl.startOffset,
-    classDecl.endOffset,
-    packageDeclaration?.startLine ?: classDecl.startLine
+        packageDeclaration?.startOffset ?: classDecl.startOffset,
+        classDecl.endOffset,
+        packageDeclaration?.startLine ?: classDecl.startLine
 ), LangFile {
     override lateinit var symbolSource: SourceFileSource
     override val parent: AstNode? = null

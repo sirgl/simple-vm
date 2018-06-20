@@ -6,9 +6,9 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangReturnStmtImpl(
-    startLexeme: Lexeme,
-    endLexeme: Lexeme,
-    override val expression: LangExpr? = null
+        startLexeme: Lexeme,
+        endLexeme: Lexeme,
+        override val expression: LangExpr? = null
 ) : LangStmtImpl(startLexeme, endLexeme), LangReturnStmt {
     override val debugName = "ReturnStmt"
 

@@ -25,7 +25,7 @@ object CommonClassTypes {
 
     // Needed in type injection phase to register all these types
 
-    private fun CommonClassTypes.register(classType: String) : ClassType {
+    private fun CommonClassTypes.register(classType: String): ClassType {
         val clsType = ClassType(classType)
         types.add(clsType)
         return clsType

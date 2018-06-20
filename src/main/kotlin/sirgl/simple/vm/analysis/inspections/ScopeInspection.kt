@@ -8,8 +8,8 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.resolve.Scoped
 
 class ScopeInspection(override val problemHolder: ProblemHolder) :
-    LangInspection {
-    override val visitor: LangVisitor = object: LangVisitor() {
+        LangInspection {
+    override val visitor: LangVisitor = object : LangVisitor() {
         override fun visitAstNode(element: AstNode) {
             if (element is Scoped) {
                 val scope = element.scope

@@ -7,10 +7,10 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangReferenceElementImpl(
-    override val qualifier: LangReferenceElement?,
-    override val name: String,
-    startLexeme: Lexeme,
-    endLexeme: Lexeme
+        override val qualifier: LangReferenceElement?,
+        override val name: String,
+        startLexeme: Lexeme,
+        endLexeme: Lexeme
 ) : AstNodeImpl(startLexeme, endLexeme), LangReferenceElement {
     override lateinit var parent: AstNode
 

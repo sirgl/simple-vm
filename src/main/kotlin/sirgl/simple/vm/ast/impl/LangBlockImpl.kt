@@ -9,9 +9,9 @@ import sirgl.simple.vm.resolve.LocalScope
 import sirgl.simple.vm.resolve.Scope
 
 class LangBlockImpl(
-    override val stmts: List<LangStmt>,
-    val lBrace: Lexeme,
-    val rBrace: Lexeme
+        override val stmts: List<LangStmt>,
+        val lBrace: Lexeme,
+        val rBrace: Lexeme
 ) : AstNodeImpl(lBrace, rBrace), LangBlock {
     override val scope: Scope = LocalScope(this)
 

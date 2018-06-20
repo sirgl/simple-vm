@@ -86,7 +86,7 @@ private fun binopToOpcode(operatorType: BinaryOperatorType) = when (operatorType
 }
 
 class BinopInstruction(binaryOperatorType: BinaryOperatorType) :
-    SingleByteInstruction(binopToOpcode(binaryOperatorType))
+        SingleByteInstruction(binopToOpcode(binaryOperatorType))
 
 
 private fun unopToOpcode(prefixOperatorType: PrefixOperatorType) = when (prefixOperatorType) {
@@ -96,15 +96,15 @@ private fun unopToOpcode(prefixOperatorType: PrefixOperatorType) = when (prefixO
 }
 
 class UnaryInstruction(
-    prefixOperatorType: PrefixOperatorType
+        prefixOperatorType: PrefixOperatorType
 ) : SingleByteInstruction(unopToOpcode(prefixOperatorType))
 
 class Label(val position: Int)
 
 
 abstract class ControlInstruction(
-    var label: Label?,
-    code: Int
+        var label: Label?,
+        code: Int
 ) : InlinedOperandInstruction(code, label?.position?.toShort() ?: 0)
 
 class GotoInstruction(label: Label?) : ControlInstruction(label, OP_GOTO)

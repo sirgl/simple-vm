@@ -1,7 +1,6 @@
 package sirgl.simple.vm.driver.phases.passes
 
 import sirgl.simple.vm.ast.LangClass
-import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangField
 import sirgl.simple.vm.ast.LangParameter
 import sirgl.simple.vm.ast.expr.LangCallExpr
@@ -11,7 +10,6 @@ import sirgl.simple.vm.ast.impl.LangFieldImpl
 import sirgl.simple.vm.ast.impl.LangParameterImpl
 import sirgl.simple.vm.ast.impl.stmt.LangVarDeclStmtImpl
 import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
-import sirgl.simple.vm.ast.support.LangVarDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.common.CommonClassNames
 import sirgl.simple.vm.common.CommonClassTypes
@@ -24,7 +22,7 @@ import sirgl.simple.vm.type.ClassType
 import sirgl.simple.vm.type.MethodReferenceType
 
 class SetupPass : SingleVisitorAstPass() {
-    override val visitor: LangVisitor = object: LangVisitor() {
+    override val visitor: LangVisitor = object : LangVisitor() {
         override fun visitVarDeclStmt(stmt: LangVarDeclStmt) {
             super.visitVarDeclStmt(stmt)
             (stmt as LangVarDeclStmtImpl).symbol = stmt.toSymbol(stmt)
@@ -58,7 +56,7 @@ class SetupPass : SingleVisitorAstPass() {
 
         override fun visitCallExpr(expr: LangCallExpr) {
             super.visitCallExpr(expr)
-            val caller = expr.caller as? LangReferenceExpr ?: return // TODO make assertion and stop if error occurred in some pass
+            val caller = expr.caller as? LangReferenceExpr ?: return
             val symbol = caller.resolve() as? MethodSymbol ?: return // No return, make error
             (caller.type as? MethodReferenceType)?.methodSymbol = symbol
         }

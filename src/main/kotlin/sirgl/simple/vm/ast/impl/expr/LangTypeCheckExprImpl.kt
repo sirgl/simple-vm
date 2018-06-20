@@ -10,9 +10,9 @@ import sirgl.simple.vm.type.BoolType
 import sirgl.simple.vm.type.LangType
 
 class LangTypeCheckExprImpl(
-    last: Lexeme,
-    override val expr: LangExpr,
-    override val targetTypeElement: LangTypeElement
+        last: Lexeme,
+        override val expr: LangExpr,
+        override val targetTypeElement: LangTypeElement
 ) : LangCastExpr, LangExprImpl(expr.startOffset, last.endOffset, expr.startLine) {
     override val type: BoolType
         get() = BoolType

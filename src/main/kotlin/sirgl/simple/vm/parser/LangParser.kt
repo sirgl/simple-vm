@@ -1,6 +1,9 @@
 package sirgl.simple.vm.parser
 
-import sirgl.simple.vm.ast.*
+import sirgl.simple.vm.ast.AstNode
+import sirgl.simple.vm.ast.LangExpr
+import sirgl.simple.vm.ast.LangFile
+import sirgl.simple.vm.ast.LangTypeElementSort
 import sirgl.simple.vm.ast.expr.LangElementAccessExpr
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
 import sirgl.simple.vm.ast.expr.PrefixOperatorType
@@ -21,14 +24,14 @@ interface LangParser {
 }
 
 class ParseResult<out T : AstNode>(
-    val ast: T?,
-    val fail: Fail? = null
+        val ast: T?,
+        val fail: Fail? = null
 )
 
 class Fail(
-    val lexeme: Lexeme,
-    val message: String?,
-    val parseException: ParseException? = null
+        val lexeme: Lexeme,
+        val message: String?,
+        val parseException: ParseException? = null
 ) {
     override fun toString(): String {
         return "Parser error #${lexeme.line}@[${lexeme.startOffset}, ${lexeme.endOffset}) : $message, " +
@@ -61,42 +64,42 @@ private val boolLiteralParser = BoolParser()
 private val referenceExprParser = ReferenceExprParser()
 
 private val prefixParsers = mapOf(
-    IntLiteral to IntLiteralParser(),
-    StringLiteral to StringLiteralParser(),
-    Identifier to referenceExprParser,
-    Super to referenceExprParser,
-    This to referenceExprParser,
-    OpPlus to opPrefixParser,
-    OpMinus to opPrefixParser,
-    OpExcl to opPrefixParser,
-    True to boolLiteralParser,
-    False to boolLiteralParser,
-    LParen to ParenExprParser(),
-    Null to NullParser(),
-    CharLiteral to CharLiteralParser()
+        IntLiteral to IntLiteralParser(),
+        StringLiteral to StringLiteralParser(),
+        Identifier to referenceExprParser,
+        Super to referenceExprParser,
+        This to referenceExprParser,
+        OpPlus to opPrefixParser,
+        OpMinus to opPrefixParser,
+        OpExcl to opPrefixParser,
+        True to boolLiteralParser,
+        False to boolLiteralParser,
+        LParen to ParenExprParser(),
+        Null to NullParser(),
+        CharLiteral to CharLiteralParser()
 )
 
 private class InfixOperatorInfo(
-    val opKind: LexemeKind,
-    val precedence: Int, // the more value, the lower precedence
-    val isLeft: Boolean
+        val opKind: LexemeKind,
+        val precedence: Int, // the more value, the lower precedence
+        val isLeft: Boolean
 )
 
 private val binOpInfo = arrayOf(
-    InfixOperatorInfo(OpAsterisk, 3, false),
-    InfixOperatorInfo(OpDiv, 3, false),
-    InfixOperatorInfo(OpPercent, 3, false),
-    InfixOperatorInfo(OpPlus, 4, false),
-    InfixOperatorInfo(OpMinus, 4, false),
-    InfixOperatorInfo(OpLt, 6, false),
-    InfixOperatorInfo(OpLtEq, 6, false),
-    InfixOperatorInfo(OpGt, 6, false),
-    InfixOperatorInfo(OpGtEq, 6, false),
-    InfixOperatorInfo(OpEqEq, 7, false),
-    InfixOperatorInfo(OpNotEq, 7, false),
-    InfixOperatorInfo(OpAndAnd, 8, false),
-    InfixOperatorInfo(OpOrOr, 9, false),
-    InfixOperatorInfo(OpEq, 10, true)
+        InfixOperatorInfo(OpAsterisk, 3, false),
+        InfixOperatorInfo(OpDiv, 3, false),
+        InfixOperatorInfo(OpPercent, 3, false),
+        InfixOperatorInfo(OpPlus, 4, false),
+        InfixOperatorInfo(OpMinus, 4, false),
+        InfixOperatorInfo(OpLt, 6, false),
+        InfixOperatorInfo(OpLtEq, 6, false),
+        InfixOperatorInfo(OpGt, 6, false),
+        InfixOperatorInfo(OpGtEq, 6, false),
+        InfixOperatorInfo(OpEqEq, 7, false),
+        InfixOperatorInfo(OpNotEq, 7, false),
+        InfixOperatorInfo(OpAndAnd, 8, false),
+        InfixOperatorInfo(OpOrOr, 9, false),
+        InfixOperatorInfo(OpEq, 10, true)
 )
 
 private val binOps = binOpInfo.associateBy({ it.opKind }) { BinaryExprParser(it.precedence, it.isLeft) }
@@ -122,9 +125,9 @@ class ParseException(val lexeme: Lexeme, message: String) : Exception(message)
  * No error recovery provided. Fails on first error.
  */
 private class ParserState(
-    val lexemes: List<Lexeme>,
-    private val prefixParsers: Map<LexemeKind, PrefixParser>,
-    private val infixParsers: Map<LexemeKind, InfixExprParser>
+        val lexemes: List<Lexeme>,
+        private val prefixParsers: Map<LexemeKind, PrefixParser>,
+        private val infixParsers: Map<LexemeKind, InfixExprParser>
 ) {
     private var position = 0
     val current: Lexeme
@@ -254,13 +257,13 @@ private class ParserState(
         val lastLexeme = previousLexeme
 
         val method = LangMethodImpl(
-            methodNameLexeme.text,
-            parameters,
-            block,
-            nativeLexeme ?: funLexeme,
-            lastLexeme,
-            nativeLexeme != null,
-            returnType
+                methodNameLexeme.text,
+                parameters,
+                block,
+                nativeLexeme ?: funLexeme,
+                lastLexeme,
+                nativeLexeme != null,
+                returnType
         )
         returnType?.parent = method
         for (parameter in parameters) {
@@ -280,11 +283,11 @@ private class ParserState(
         val parameters = parameters()
         val block = block()
         val constructor = LangConstructorImpl(
-            parameters,
-            block,
-            nativeLexeme ?: funLexeme,
-            block.rBrace,
-            nativeLexeme != null
+                parameters,
+                block,
+                nativeLexeme ?: funLexeme,
+                block.rBrace,
+                nativeLexeme != null
         )
         for (parameter in parameters) {
             parameter.parent = constructor
@@ -639,8 +642,8 @@ private class DotExprParser : InfixExprParser {
 }
 
 private class BinaryExprParser(
-    override val precedence: Int,
-    val isLeft: Boolean
+        override val precedence: Int,
+        val isLeft: Boolean
 ) : InfixExprParser {
     override fun parse(parser: ParserState, left: LangExprImpl, lexeme: Lexeme): LangExprImpl {
         parser.advance()

@@ -14,9 +14,9 @@ import sirgl.simple.vm.roots.SourceFileSource
 
 // TODO probably thread pool is not needed, I can just create threads that will take sourceFile from
 class AstBuilder(
-    private val globalScope: GlobalScope,
-    private val errorSink: ErrorSink,
-    private val astCache: AstCache
+        private val globalScope: GlobalScope,
+        private val errorSink: ErrorSink,
+        private val astCache: AstCache
 ) : AutoCloseable {
 //    private val threadPool = ThreadPoolExecutor(4, 4, 0, TimeUnit.MILLISECONDS, ArrayBlockingQueue(100))
 
@@ -33,12 +33,12 @@ class AstBuilder(
 }
 
 class AstBuildingTask(
-    private val sourceFileSource: SourceFileSource,
-    private val globalScope: GlobalScope,
-    private val astCache: AstCache,
-    private val lexer: LangLexer,
-    private val parser: LangParser,
-    private val errorSink: ErrorSink
+        private val sourceFileSource: SourceFileSource,
+        private val globalScope: GlobalScope,
+        private val astCache: AstCache,
+        private val lexer: LangLexer,
+        private val parser: LangParser,
+        private val errorSink: ErrorSink
 ) : Runnable {
 
     override fun run() {

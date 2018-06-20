@@ -7,8 +7,8 @@ import sirgl.simple.vm.roots.SymbolSourceProvider
 import kotlin.system.measureTimeMillis
 
 class CompileJob(
-    val sourceProviders: MutableList<SymbolSourceProvider>,
-    val buildPipeline: (context: CompilerContext) -> List<CompilerPhase<*>>
+        val sourceProviders: MutableList<SymbolSourceProvider>,
+        val buildPipeline: (context: CompilerContext) -> List<CompilerPhase<*>>
 ) {
     val astCache = AstCache()
     val errorSink = ErrorSink()
@@ -17,11 +17,11 @@ class CompileJob(
     // Would be nice to return some meaningful result
     fun run() {
         val context = CompilerContext(
-            AstBuilder(globalScope, errorSink, astCache),
-            astCache,
-            globalScope,
-            errorSink,
-            sourceProviders
+                AstBuilder(globalScope, errorSink, astCache),
+                astCache,
+                globalScope,
+                errorSink,
+                sourceProviders
         )
         val phases = buildPipeline(context)
         run(context, phases)
@@ -39,5 +39,9 @@ fun runCompiler(context: CompilerContext, phases: List<CompilerPhase<*>>) {
         }
         // TODO handle errors in every phase
         println("Phase '$phaseName' finished in $timeMillis ms")
+        if (context.errorSink.hasErrors) {
+            println("Aborting, due to errors")
+            return
+        }
     }
 }

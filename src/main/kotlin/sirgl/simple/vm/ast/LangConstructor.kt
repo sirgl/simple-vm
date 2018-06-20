@@ -8,7 +8,7 @@ import sirgl.simple.vm.resolve.symbols.toSymbol
 interface LangConstructor : LangMember, LangFunction
 
 
-val constructorName =  "__init__"
+val constructorName = "__init__"
 
 fun LangConstructor.toSymbol() =
-    MethodSymbolImpl(constructorName, getSymbolSource(), returnType, parameters.map { it.toSymbol() })
+        MethodSymbolImpl(constructorName, getSymbolSource(), returnType, parameters.map { it.toSymbol() })

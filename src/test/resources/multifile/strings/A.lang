@@ -1,0 +1,5 @@
+class A {
+    fun foo() : i32 {
+        var x: i8 = "string".getChar(3);
+    }
+}

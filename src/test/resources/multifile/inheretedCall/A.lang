@@ -1,0 +1,13 @@
+class A {
+    constructor() {
+
+    }
+
+    fun foo() : i32 {
+        return 42;
+    }
+
+    var a: A = A();
+
+    var i : i32 = 23;
+}

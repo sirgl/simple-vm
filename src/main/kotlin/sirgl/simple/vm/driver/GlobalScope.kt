@@ -3,7 +3,9 @@ package sirgl.simple.vm.driver
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangFile
 import sirgl.simple.vm.resolve.Scope
-import sirgl.simple.vm.resolve.symbols.*
+import sirgl.simple.vm.resolve.symbols.PackageSymbol
+import sirgl.simple.vm.resolve.symbols.PackageSymbolImpl
+import sirgl.simple.vm.resolve.symbols.Symbol
 import sirgl.simple.vm.roots.InternalSymbolSource
 
 /**

@@ -8,8 +8,8 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangBinaryOperatorImpl(
-    private val operatorText: String,
-    lexeme: Lexeme
+        private val operatorText: String,
+        lexeme: Lexeme
 ) : LangBinaryOperator, AstNodeImpl(lexeme, lexeme) {
     override lateinit var parent: AstNode
 

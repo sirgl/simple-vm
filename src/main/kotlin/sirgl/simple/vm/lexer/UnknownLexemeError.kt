@@ -5,8 +5,8 @@ import sirgl.simple.vm.roots.FileSymbolSource
 
 
 class UnknownLexemeError(
-    val lexeme: Lexeme,
-    override val symbolSource: FileSymbolSource
+        val lexeme: Lexeme,
+        override val symbolSource: FileSymbolSource
 ) : CompilationError {
     override val text = "Unknown lexeme: $lexeme"
 }

@@ -38,7 +38,7 @@ fun LangType.subtypeStatus(another: LangType): SubtypeResult {
                 val qualifiedName = another.classSymbol.qualifiedName
                 when {
                     classSymbol == another.classSymbol -> SubtypeResult(true)
-                    classSymbol.findParentSymbol { it.qualifiedName == qualifiedName} != null -> SubtypeResult(true)
+                    classSymbol.findParentSymbol { it.qualifiedName == qualifiedName } != null -> SubtypeResult(true)
                     else -> SubtypeResult(false)
                 }
             }
@@ -49,9 +49,9 @@ fun LangType.subtypeStatus(another: LangType): SubtypeResult {
 }
 
 private fun primitiveToClassPromotionCheck(
-    another: ClassType,
-    anotherTypeName: String,
-    typeToPromotion: ClassType
+        another: ClassType,
+        anotherTypeName: String,
+        typeToPromotion: ClassType
 ) = if (another.classSymbol.qualifiedName == anotherTypeName) {
     SubtypeResult(true, typeToPromotion)
 } else {
@@ -64,8 +64,8 @@ private fun ClassType.classTypeToPrimitivePromotionCheck(name: String, promoteTo
 }
 
 class SubtypeResult(
-    val isSubtype: Boolean,
-    val promoteTo: LangType? = null // is null when isSubtype == false
+        val isSubtype: Boolean,
+        val promoteTo: LangType? = null // is null when isSubtype == false
 )
 
 // One type is subtype: any type is subtype of NullType or any class type is subtype of lang.Object

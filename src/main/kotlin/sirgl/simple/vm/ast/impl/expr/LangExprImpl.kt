@@ -7,11 +7,11 @@ import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.LangType
 
 abstract class LangExprImpl(startOffset: Int, endOffset: Int, line: Int) : LangExpr,
-    AstNodeImpl(startOffset, endOffset, line) {
+        AstNodeImpl(startOffset, endOffset, line) {
     constructor(startLexeme: Lexeme, endLexeme: Lexeme) : this(
-        startLexeme.startOffset,
-        endLexeme.endOffset,
-        startLexeme.line
+            startLexeme.startOffset,
+            endLexeme.endOffset,
+            startLexeme.line
     )
 
     override lateinit var parent: AstNode

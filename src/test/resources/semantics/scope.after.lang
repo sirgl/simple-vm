@@ -1,4 +1,4 @@
-Error in (Block#1@[24, 98)): Multiple definitions of y name
-Error in (Method#13@[199, 244) name: duplicatingParams): Multiple definitions of x name
 Error in (Class#0@[0, 297) name: A): Multiple definitions of foo name
 Error in (Class#0@[0, 297) name: A): Multiple definitions of field name
+Error in (Block#1@[24, 98)): Multiple definitions of y name
+Error in (Method#13@[199, 244) name: duplicatingParams): Multiple definitions of x name

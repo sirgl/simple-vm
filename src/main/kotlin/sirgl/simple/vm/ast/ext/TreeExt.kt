@@ -3,7 +3,6 @@ package sirgl.simple.vm.ast.ext
 import sirgl.simple.vm.ast.AstNode
 import sirgl.simple.vm.ast.LangClass
 import sirgl.simple.vm.ast.LangFile
-import sirgl.simple.vm.resolve.Scope
 import sirgl.simple.vm.resolve.Scoped
 import java.lang.IllegalStateException
 

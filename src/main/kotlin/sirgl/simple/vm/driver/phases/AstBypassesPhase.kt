@@ -6,8 +6,8 @@ import sirgl.simple.vm.common.CompilerPhase
 import sirgl.simple.vm.common.PhaseDescriptor
 
 class AstBypassesPhase(
-    val walker: AstWalker,
-    private val passes: MutableList<AstPass> = mutableListOf()
+        val walker: AstWalker,
+        private val passes: MutableList<AstPass> = mutableListOf()
 ) : CompilerPhase<AstBypassesPhase>() {
 
     fun addPass(astPass: AstPass) {

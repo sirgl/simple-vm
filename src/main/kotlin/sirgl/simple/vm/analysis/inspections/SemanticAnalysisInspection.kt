@@ -4,7 +4,6 @@ import sirgl.simple.vm.analysis.LangInspection
 import sirgl.simple.vm.analysis.ProblemHolder
 import sirgl.simple.vm.ast.LangMethod
 import sirgl.simple.vm.ast.ext.findParentOfClass
-import sirgl.simple.vm.ast.ext.getParentOfClass
 import sirgl.simple.vm.ast.ext.getSymbolSource
 import sirgl.simple.vm.ast.stmt.LangBreakStmt
 import sirgl.simple.vm.ast.stmt.LangContinueStmt
@@ -12,8 +11,8 @@ import sirgl.simple.vm.ast.stmt.LangWhileStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 
 class SemanticAnalysisInspection(override val problemHolder: ProblemHolder) :
-    LangInspection {
-    override val visitor: LangVisitor = object: LangVisitor() {
+        LangInspection {
+    override val visitor: LangVisitor = object : LangVisitor() {
         override fun visitMethod(method: LangMethod) {
             super.visitMethod(method)
             if (method.isNative && method.block != null) {

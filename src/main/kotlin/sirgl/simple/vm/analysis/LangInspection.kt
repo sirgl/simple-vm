@@ -17,7 +17,7 @@ interface ProblemHolder {
 }
 
 class ProblemHolderImpl(
-    private val errorSink: ErrorSink
+        private val errorSink: ErrorSink
 ) : ProblemHolder {
     override fun registerProblem(node: AstNode, description: String, sourceFile: SourceFileSource) {
         errorSink.submitError(SemanticError(node, description, sourceFile))
@@ -25,9 +25,9 @@ class ProblemHolderImpl(
 }
 
 class SemanticError(
-    private val node: AstNode,
-    private val comment: String,
-    override val symbolSource: SymbolSource?
+        private val node: AstNode,
+        private val comment: String,
+        override val symbolSource: SymbolSource?
 ) : CompilationError {
     override val text: String
         get() = "Error in ($node): $comment"

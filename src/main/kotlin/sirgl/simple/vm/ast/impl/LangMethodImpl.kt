@@ -9,13 +9,13 @@ import sirgl.simple.vm.type.LangType
 import sirgl.simple.vm.type.VoidType
 
 class LangMethodImpl(
-    override val name: String,
-    override val parameters: List<LangParameter>,
-    override val block: LangBlock?,
-    startLexeme: Lexeme,
-    endLexeme: Lexeme,
-    override val isNative: Boolean,
-    override val returnTypeElement: LangTypeElement?
+        override val name: String,
+        override val parameters: List<LangParameter>,
+        override val block: LangBlock?,
+        startLexeme: Lexeme,
+        endLexeme: Lexeme,
+        override val isNative: Boolean,
+        override val returnTypeElement: LangTypeElement?
 ) : LangMemberImpl(startLexeme, endLexeme), LangMethod {
     override lateinit var symbol: MethodSymbol
     override val scope = LocalScope(this)

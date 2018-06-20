@@ -6,11 +6,11 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.type.LangType
 
 class LangAssignExprImpl(
-    startOffset: Int,
-    endOffset: Int,
-    line: Int,
-    override val leftRef: LangExpr,
-    override val rightValue: LangExpr
+        startOffset: Int,
+        endOffset: Int,
+        line: Int,
+        override val leftRef: LangExpr,
+        override val rightValue: LangExpr
 ) : LangAssignExpr, LangExprImpl(startOffset, endOffset, line) {
     override val type: LangType by lazy { rightValue.type }
 

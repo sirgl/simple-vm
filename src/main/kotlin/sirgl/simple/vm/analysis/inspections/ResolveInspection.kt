@@ -9,8 +9,8 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.common.CommonClassNames
 
 class ResolveInspection(override val problemHolder: ProblemHolder) :
-    LangInspection {
-    override val visitor: LangVisitor = object: LangVisitor() {
+        LangInspection {
+    override val visitor: LangVisitor = object : LangVisitor() {
         override fun visitReferenceExpr(expr: LangReferenceExpr) {
             if (expr.resolve() == null) {
                 problemHolder.registerProblem(expr, "Unresolved reference: ${expr.name}", expr.getSymbolSource())
@@ -25,9 +25,9 @@ class ResolveInspection(override val problemHolder: ProblemHolder) :
                 }
                 if (cls.scope.resolve(parentClassReferenceElement.name, null) == null) {
                     problemHolder.registerProblem(
-                        parentClassReferenceElement,
-                        "Unresolved reference: ${parentClassReferenceElement.name}",
-                        parentClassReferenceElement.getSymbolSource()
+                            parentClassReferenceElement,
+                            "Unresolved reference: ${parentClassReferenceElement.name}",
+                            parentClassReferenceElement.getSymbolSource()
                     )
                 }
             }

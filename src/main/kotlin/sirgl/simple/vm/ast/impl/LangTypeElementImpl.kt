@@ -11,44 +11,44 @@ import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.type.*
 
 class LangTypeElementImpl(
-    startOffset: Int,
-    endOffset: Int,
-    startLine: Int,
-    override val reference: LangReferenceElement?,
-    override val coreType: LangTypeElement?,
-    override val sort: LangTypeElementSort
+        startOffset: Int,
+        endOffset: Int,
+        startLine: Int,
+        override val reference: LangReferenceElement?,
+        override val coreType: LangTypeElement?,
+        override val sort: LangTypeElementSort
 ) : AstNodeImpl(
-    startOffset,
-    endOffset,
-    startLine
+        startOffset,
+        endOffset,
+        startLine
 ), LangTypeElement {
 
 
     constructor(referenceElement: LangReferenceElement) : this(
-        referenceElement.startOffset,
-        referenceElement.endOffset,
-        referenceElement.startLine,
-        referenceElement,
-        null,
-        Reference
+            referenceElement.startOffset,
+            referenceElement.endOffset,
+            referenceElement.startLine,
+            referenceElement,
+            null,
+            Reference
     )
 
     constructor(baseTypeLexeme: Lexeme, sort: LangTypeElementSort) : this(
-        baseTypeLexeme.startOffset,
-        baseTypeLexeme.endOffset,
-        baseTypeLexeme.line,
-        null,
-        null,
-        sort
+            baseTypeLexeme.startOffset,
+            baseTypeLexeme.endOffset,
+            baseTypeLexeme.line,
+            null,
+            null,
+            sort
     )
 
     constructor(baseTypeElementImpl: LangTypeElementImpl, rBracket: Lexeme) : this(
-        baseTypeElementImpl.startOffset,
-        rBracket.endOffset,
-        baseTypeElementImpl.startLine,
-        null,
-        baseTypeElementImpl,
-        Array
+            baseTypeElementImpl.startOffset,
+            rBracket.endOffset,
+            baseTypeElementImpl.startLine,
+            null,
+            baseTypeElementImpl,
+            Array
     )
 
     override val children: List<AstNode> = makeChildren()

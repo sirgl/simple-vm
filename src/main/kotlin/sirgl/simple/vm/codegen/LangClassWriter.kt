@@ -13,11 +13,11 @@ val LANG_BYTECODE_VERSION: Short = 0
 val MAGIC_VALUE: Int = 0x0B1B2B3B
 
 class LangClassWriter(
-    val className: String,
-    val parentClassName: String,
-    val compilationUnitName: String,
-    val constantPool: ConstantPool,
-    val version: Short = LANG_BYTECODE_VERSION
+        val className: String,
+        val parentClassName: String,
+        val compilationUnitName: String,
+        val constantPool: ConstantPool,
+        val version: Short = LANG_BYTECODE_VERSION
 ) {
     val localMethodData = mutableListOf<LocalMethodData>()
 
@@ -103,10 +103,10 @@ class ConstantPool { // High level pool, not using indices
     }
 
     fun addMethodReference(
-        methodName: String,
-        className: String,
-        parameters: List<ParameterInfo>,
-        returnType: LangType
+            methodName: String,
+            className: String,
+            parameters: List<ParameterInfo>,
+            returnType: LangType
     ): Int {
         classRefs.add(className)
         addClassTypeIfMissing(returnType)
@@ -226,21 +226,21 @@ class ConstantPool { // High level pool, not using indices
 }
 
 class MethodBaseInfo(
-    val methodName: String,
-    val parameters: List<ParameterInfo>,
-    val className: String
+        val methodName: String,
+        val parameters: List<ParameterInfo>,
+        val className: String
 )
 
 class ParameterInfo(
-    val name: String,
-    val type: LangType
+        val name: String,
+        val type: LangType
 )
 
 class LocalMethodData(
-    val name: String,
-    val parameters: List<ParameterInfo>,
-    val maxStack: Int,
-    val bytecode: ByteArray
+        val name: String,
+        val parameters: List<ParameterInfo>,
+        val maxStack: Int,
+        val bytecode: ByteArray
 ) {
     fun serialize(out: DataOutputStream) {
         out.writeShort(name.length)

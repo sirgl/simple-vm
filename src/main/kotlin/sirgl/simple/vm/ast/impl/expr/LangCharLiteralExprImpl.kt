@@ -7,8 +7,8 @@ import sirgl.simple.vm.type.I8Type
 import sirgl.simple.vm.type.LangType
 
 class LangCharLiteralExprImpl(
-    override val value: Byte,
-    lexeme: Lexeme
+        override val value: Byte,
+        lexeme: Lexeme
 ) : LangCharLiteralExpr, LangLeafExprImpl(lexeme) {
     override val type: LangType = I8Type
 

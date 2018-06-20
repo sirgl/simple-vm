@@ -7,9 +7,9 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 
 class LangPackageDeclImpl(
-    override val referenceElement: LangReferenceElement,
-    startLexeme: Lexeme,
-    endLexeme: Lexeme
+        override val referenceElement: LangReferenceElement,
+        startLexeme: Lexeme,
+        endLexeme: Lexeme
 ) : AstNodeImpl(startLexeme, endLexeme), LangPackageDecl {
 
     override lateinit var parent: LangFile

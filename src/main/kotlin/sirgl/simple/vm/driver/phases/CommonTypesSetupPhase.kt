@@ -25,5 +25,6 @@ class CommonTypesSetupPhase : CompilerPhase<CommonTypesSetupPhase>() {
     }
 
     override val descriptor: PhaseDescriptor<CommonTypesSetupPhase> = Companion
+
     companion object : PhaseDescriptor<CommonTypesSetupPhase>("Common types setup")
 }

@@ -18,16 +18,16 @@ class CodegenVisitor : LangVisitor() {
         super.visitMethod(method)
         val mw = MethodWriter()
         val methodContext =
-            MethodContext() // TODO it will not from zero if parameters present (always, considering this and absence of )
+                MethodContext() // TODO it will not from zero if parameters present (always, considering this and absence of )
         val block = method.block ?: return
         generateBlockCode(block, mw, pool, methodContext)
     }
 
     private fun generateBlockCode(
-        block: LangBlock,
-        mw: MethodWriter,
-        pool: ConstantPool,
-        methodContext: MethodContext
+            block: LangBlock,
+            mw: MethodWriter,
+            pool: ConstantPool,
+            methodContext: MethodContext
     ) {
         for (stmt in block.stmts) {
             when (stmt) {
@@ -107,5 +107,5 @@ class CodegenVisitor : LangVisitor() {
 }
 
 class MethodContext(
-    var slot: Short = 0
+        var slot: Short = 0
 )

@@ -16,4 +16,10 @@ class MultiFileSemanticAnalysisTest : MultiFileProjectTest(MultiFileSemanticAnal
 
     @Test
     fun `test call to other class method`() = test("call")
+
+    @Test
+    fun `test inhereted call`() = test("inheretedCall")
+
+    @Test
+    fun `test string methods resolve`() = test("strings")
 }

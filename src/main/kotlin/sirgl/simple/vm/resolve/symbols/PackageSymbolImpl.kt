@@ -7,8 +7,8 @@ import sirgl.simple.vm.driver.GlobalScope
 import sirgl.simple.vm.roots.SymbolSource
 
 class PackageSymbolImpl(
-    override val name: String,
-    override val symbolSource: SymbolSource
+        override val name: String,
+        override val symbolSource: SymbolSource
 ) : PackageSymbol {
     val symbols = mutableMapOf<String, Symbol>()
     val duplicatingDeclaration by lazy { mutableMapOf<String, MutableSet<Symbol>>() }
@@ -36,7 +36,7 @@ class PackageSymbolImpl(
 }
 
 fun LangPackageDecl.toSymbol(globalScope: GlobalScope): PackageSymbol =
-    globalScope.findOrCreatePackageSymbol(referenceElement.fullName)
+        globalScope.findOrCreatePackageSymbol(referenceElement.fullName)
 
 fun LangImport.toSymbol(globalScope: GlobalScope): PackageSymbol =
-    globalScope.findOrCreatePackageSymbol(referenceElement.fullName)
+        globalScope.findOrCreatePackageSymbol(referenceElement.fullName)

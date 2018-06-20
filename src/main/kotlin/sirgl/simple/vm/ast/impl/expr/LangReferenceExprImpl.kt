@@ -11,15 +11,15 @@ import sirgl.simple.vm.resolve.symbols.*
 import sirgl.simple.vm.type.*
 
 class LangReferenceExprImpl(
-    nameLexeme: Lexeme,
-    override val name: String,
-    override val qualifier: LangExpr? = null,
-    override val isSuper: Boolean,
-    override val isThis: Boolean
+        nameLexeme: Lexeme,
+        override val name: String,
+        override val qualifier: LangExpr? = null,
+        override val isSuper: Boolean,
+        override val isThis: Boolean
 ) : LangReferenceExpr, LangExprImpl(
-    nameLexeme.startOffset,
-    qualifier?.endOffset ?: nameLexeme.endOffset,
-    nameLexeme.line
+        nameLexeme.startOffset,
+        qualifier?.endOffset ?: nameLexeme.endOffset,
+        nameLexeme.line
 ) {
     override val type: LangType by lazy {
         val symbol = resolve() ?: return@lazy UnknownType
