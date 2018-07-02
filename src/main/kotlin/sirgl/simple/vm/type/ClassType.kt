@@ -4,6 +4,8 @@ import sirgl.simple.vm.resolve.symbols.ClassSymbol
 
 
 class ClassType(override val name: String) : LangType {
+    override val signature: String
+        get() = name
     lateinit var classSymbol: ClassSymbol
 
     override fun equals(other: Any?): Boolean {

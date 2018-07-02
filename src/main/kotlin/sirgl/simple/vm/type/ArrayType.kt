@@ -1,6 +1,7 @@
 package sirgl.simple.vm.type
 
 class ArrayType(val elementType: LangType) : LangType {
+    override val signature: String = "[${elementType.signature}]"
     override val name: String = "${elementType.name}[]"
 
     override fun equals(other: Any?): Boolean {
