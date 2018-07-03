@@ -2,9 +2,7 @@ package sirgl.simple.vm.codegen
 
 import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.expr.*
-import sirgl.simple.vm.ast.stmt.LangExprStmt
-import sirgl.simple.vm.ast.stmt.LangIfStmt
-import sirgl.simple.vm.ast.stmt.LangReturnStmt
+import sirgl.simple.vm.ast.stmt.*
 import sirgl.simple.vm.ast.support.LangVarDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.codegen.assembler.*
@@ -67,7 +65,7 @@ class CodegenPass : SingleVisitorAstPass() {
                     val elseBlock = stmt.elseBlock
                     val jumpToAfterElse: GotoInstruction?
                     if (elseBlock != null) {
-                        jumpToAfterElse = GotoInstruction(null) // TODO set label and if
+                        jumpToAfterElse = GotoInstruction(null)
                         methodWriter.emit(jumpToAfterElse)
                     } else {
                         jumpToAfterElse = null
@@ -77,6 +75,31 @@ class CodegenPass : SingleVisitorAstPass() {
                         generateBlock(methodWriter, elseBlock)
                         jumpToAfterElse!!.label = methodWriter.labelCurrent()
                     }
+                }
+                is LangWhileStmt -> {
+                    val goToCondition = GotoInstruction(null)
+                    methodWriter.emit(goToCondition)
+                    val bodyStart = methodWriter.labelNext()
+                    generateBlock(methodWriter, stmt.block)
+                    val conditionStart = methodWriter.labelNext()
+                    goToCondition.label = conditionStart
+                    for (continueGoto in methodWriter.continueGotos) {
+                        continueGoto.label = conditionStart
+                    }
+                    methodWriter.continueGotos.clear()
+                    generateExpr(methodWriter, stmt.condition)
+                    methodWriter.emit(IfTrueInstruction(bodyStart))
+                    val afterLoop = methodWriter.labelCurrent()
+                    for (breakGoto in methodWriter.breakGotos) {
+                        breakGoto.label = afterLoop
+                    }
+                    methodWriter.breakGotos.clear()
+                }
+                is LangBreakStmt -> {
+                    methodWriter.breakGotos.add(GotoInstruction(null))
+                }
+                is LangContinueStmt -> {
+                    methodWriter.continueGotos.add(GotoInstruction(null))
                 }
                 is LangExprStmt -> {
                     generateExpr(methodWriter, stmt.expr)

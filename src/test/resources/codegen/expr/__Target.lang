@@ -15,6 +15,32 @@ class A {
         }
     }
 
+    fun loop() {
+        while (12 > 44 - 3) {
+          12;
+        }
+    }
+
+    fun emptyLoop() {
+        while(true) {}
+    }
+
+    fun contLoop() {
+        while(true) {
+            if (false) {
+                continue;
+            }
+        }
+    }
+
+    fun brLoop() {
+        while(true) {
+            if (false) {
+                break;
+            }
+        }
+    }
+
 
 
     var a: A = A();

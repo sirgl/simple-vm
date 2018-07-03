@@ -30,10 +30,7 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
 
         override fun visitBinaryExpr(expr: LangBinaryExpr) {
             when (expr.opTypeBinary) {
-                Eq, Lt, Le, Gt, Ge -> {
-                    expr.left.mustBeAssignableTo(BoolType)
-                    expr.right.mustBeAssignableTo(BoolType)
-                }
+                Eq -> {}
                 else -> {
                     expr.left.mustBeAssignableTo(I32Type)
                     expr.right.mustBeAssignableTo(I32Type)

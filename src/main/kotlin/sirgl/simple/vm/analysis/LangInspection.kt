@@ -32,4 +32,5 @@ class SemanticError(
     override val text: String
         get() = "Error in ($node): $comment"
 
+    override fun toString() = text
 }

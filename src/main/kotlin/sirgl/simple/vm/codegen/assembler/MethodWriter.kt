@@ -8,6 +8,9 @@ import sirgl.simple.vm.codegen.BytecodeBuffer
 class MethodWriter(val classWriter: ClassWriter) {
     private val instructions = mutableListOf<Instruction>()
     private var position = 0
+    val breakGotos = mutableListOf<GotoInstruction>()
+    val continueGotos = mutableListOf<GotoInstruction>()
+
 
     fun emit(insn: Instruction) {
         instructions.add(insn)
@@ -34,7 +37,7 @@ class MethodWriter(val classWriter: ClassWriter) {
         return buffer.finish()
     }
 
-//    companion object {
+    companion object {
         private val buffer = BytecodeBuffer()
-//    }
+    }
 }
