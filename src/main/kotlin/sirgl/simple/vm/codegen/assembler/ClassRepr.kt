@@ -94,8 +94,29 @@ class ClassRepr(
         append(")")
     }
 
+    fun createInstructionIndex(bytecode: ByteArray): IntArray {
+        val size = bytecode.size
+        val indices = IntArray(size)
+        var currentInstruction = 0
+        var i = 0
+        while (i < size) {
+            val b = bytecode[i]
+            val opcode = Opcode.values()[b.toInt()]
+            indices[i] = currentInstruction
+            if (opcode.hasInlineOperand) {
+                indices[i + 1] = currentInstruction
+                indices[i + 2] = currentInstruction
+                i += 2
+            }
+            i++
+            currentInstruction++
+        }
+        return indices
+    }
+
     fun StringBuilder.appendMethodBody(method: MethodWithBytecode) {
         val bytecode = method.bytecode
+        val instructionIndex = createInstructionIndex(bytecode)
         var i = 0
         val bytecodeLength = bytecode.size
         var currentInstructionNumber = 0
@@ -105,12 +126,12 @@ class ClassRepr(
             append(currentInstructionNumber).append("\t").append(opcode)
             if (opcode.hasInlineOperand) {
                 append(" ")
-                val descr = (bytecode[i + 1].toInt() or (bytecode[i + 2].toInt() shl 8)).toShort()
+                val operand = (bytecode[i + 1].toInt() or (bytecode[i + 2].toInt() shl 8)).toShort()
                 i += 2
                 when (opcode.inlineOerandType) {
                     InlineOperandType.NoInlineOperand -> throw IllegalStateException()
-                    InlineOperandType.ConstantPoolEntry -> append(constantPool.resolveDescr(descr))
-                    InlineOperandType.Label, InlineOperandType.VariableSlot -> append(opcode.ordinal)
+                    InlineOperandType.ConstantPoolEntry -> append(constantPool.resolveDescr(operand))
+                    InlineOperandType.Label, InlineOperandType.VariableSlot -> append(instructionIndex[operand.toInt()])
                 }
             }
             append("\n")

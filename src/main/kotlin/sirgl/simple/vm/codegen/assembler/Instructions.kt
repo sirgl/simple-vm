@@ -22,11 +22,13 @@ open class SingleByteInstruction(val opcode: Opcode) : Instruction() {
         get() = opcode.ordinal.toByte()
 }
 
-open class InlinedOperandInstruction(val opcode: Opcode, val inlineOp: Short) : Instruction() {
+abstract class InlinedOperandInstruction(val opcode: Opcode) : Instruction() {
     override fun serialize(buffer: ByteBuffer) {
         buffer.put(opcode.ordinal.toByte())
         buffer.putShort(inlineOp)
     }
+
+    abstract val inlineOp: Short
 
     override val size: Int = 3
 
@@ -67,7 +69,10 @@ class Label(val position: Int)
 abstract class ControlInstruction(
         var label: Label?,
         code: Opcode
-) : InlinedOperandInstruction(code, label?.position?.toShort() ?: 0)
+) : InlinedOperandInstruction(code) {
+    override val inlineOp: Short
+        get() = label?.position?.toShort() ?: 0
+}
 
 class GotoInstruction(label: Label?) : ControlInstruction(label, Opcode.GOTO)
 class IfTrueInstruction(label: Label?) : ControlInstruction(label, Opcode.IF_TRUE)
@@ -75,7 +80,10 @@ class IfFalseInstruction(label: Label?) : ControlInstruction(label, Opcode.IF_FA
 class IfNullInstruction(label: Label?) : ControlInstruction(label, Opcode.IF_NULL)
 class IfNotNullInstruction(label: Label?) : ControlInstruction(label, Opcode.IF_NOT_NULL)
 
-class IloadConstInstruction(index: Short) : InlinedOperandInstruction(Opcode.ILOAD_CONST, index)
+class IloadConstInstruction(val index: Short) : InlinedOperandInstruction(Opcode.ILOAD_CONST) {
+    override val inlineOp: Short
+        get() = index
+}
 class LoadTrueInstruction : SingleByteInstruction(Opcode.LOAD_TRUE)
 class LoadFalseInstruction : SingleByteInstruction(Opcode.LOAD_FALSE)
 class LoadNullInstruction : SingleByteInstruction(Opcode.LOAD_NULL)
@@ -83,13 +91,30 @@ class LoadNullInstruction : SingleByteInstruction(Opcode.LOAD_NULL)
 class ConvertCharToIntInstruction : SingleByteInstruction(Opcode.C2I)
 class ConvertIntToCharInstruction : SingleByteInstruction(Opcode.I2C)
 
-class StoreIntInstruction(slot: Short) : InlinedOperandInstruction(Opcode.ISTORE, slot)
-class StoreCharInstruction(slot: Short) : InlinedOperandInstruction(Opcode.CSTORE, slot)
-class StoreBoolInstruction(slot: Short) : InlinedOperandInstruction(Opcode.BSTORE, slot)
-class StoreReferenceInstruction(slot: Short) : InlinedOperandInstruction(Opcode.RSTORE, slot)
+class StoreIntInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.ISTORE) {
+    override val inlineOp: Short
+        get() = slot
+}
+
+class StoreCharInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.CSTORE) {
+    override val inlineOp: Short
+        get() = slot
+}
+class StoreBoolInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.BSTORE) {
+    override val inlineOp: Short
+        get() = slot
+}
+class StoreReferenceInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.RSTORE) {
+    override val inlineOp: Short
+        get() = slot
+}
 
 class PopInstruction() : SingleByteInstruction(Opcode.POP)
 
-class TypecheckInstruction(cpEntry: Short) : InlinedOperandInstruction(Opcode.TYPECHECK, cpEntry)
+class TypecheckInstruction(val cpEntry: Short) : InlinedOperandInstruction(Opcode.TYPECHECK) {
+    override val inlineOp: Short
+        get() = cpEntry
+}
 
 class ReturnInstruction : SingleByteInstruction(Opcode.RETURN)
+class NoopInstruction : SingleByteInstruction(Opcode.NOOP)

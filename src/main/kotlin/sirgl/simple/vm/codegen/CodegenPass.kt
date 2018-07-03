@@ -32,6 +32,7 @@ class CodegenPass : SingleVisitorAstPass() {
             } else {
                 generateBlock(methodWriter, block)
             }
+            methodWriter.emit(NoopInstruction())
             val bytecode = methodWriter.getBytecode()
 
             val returnTypeDescr = constantPool.addType(method.returnType)
@@ -63,12 +64,18 @@ class CodegenPass : SingleVisitorAstPass() {
                     val goToElse = IfFalseInstruction(null)
                     methodWriter.emit(goToElse)
                     generateBlock(methodWriter, stmt.thenBlock)
-                    val jumpToAfterElse = GotoInstruction(null) // TODO set label and if
-                    methodWriter.emit(jumpToAfterElse)
-                    goToElse.label = methodWriter.labelNext()
                     val elseBlock = stmt.elseBlock
+                    val jumpToAfterElse: GotoInstruction?
+                    if (elseBlock != null) {
+                        jumpToAfterElse = GotoInstruction(null) // TODO set label and if
+                        methodWriter.emit(jumpToAfterElse)
+                    } else {
+                        jumpToAfterElse = null
+                    }
+                    goToElse.label = methodWriter.labelNext()
                     if (elseBlock != null) {
                         generateBlock(methodWriter, elseBlock)
+                        jumpToAfterElse!!.label = methodWriter.labelCurrent()
                     }
                 }
                 is LangExprStmt -> {
