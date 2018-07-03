@@ -1,0 +1,23 @@
+class A {
+    constructor() {
+
+    }
+
+    fun exprResultDiscarded() : i32 {
+        12 + 33;
+    }
+
+    fun condStmt(x: i32) : i32 {
+        if (true) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+
+
+    var a: A = A();
+
+    var i : i32 = 23;
+}

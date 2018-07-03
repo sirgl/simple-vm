@@ -30,7 +30,7 @@ class BytecodeBuffer {
         buffer[position] = instruction
         buffer[position + 1] = (inlineOperand and 0xff).toByte()
         buffer[position + 2] = (inlineOperand.toInt() shr 8 and 0xff).toByte()
-        position += 2
+        position += 3
     }
 
     fun clear() {

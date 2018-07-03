@@ -4,32 +4,30 @@ import sirgl.simple.vm.ast.bypass.SimpleWalker
 import sirgl.simple.vm.common.CompilerContext
 import sirgl.simple.vm.common.CompilerPhase
 import sirgl.simple.vm.common.PhaseDescriptor
-import sirgl.simple.vm.common.defaultCompiledFileExtension
 import java.io.DataOutputStream
-import java.nio.file.Files
-import java.nio.file.Paths
 
 class CodegenPhase : CompilerPhase<CodegenPhase>() {
     override fun run(context: CompilerContext) {
         val walker = SimpleWalker()
+        val codegenOutputStrategy = context.codegenOutputStrategy
         for (source in context.astCache.getAllSources()) {
-            val path = source.sourceFileSource.path
-            if (path != null) {
-                println("Codegen for file $path")
-            }
-            if (path == null) {
-                println("Failed to generate code for file, no path supplied")
-                return
+            val outputStream = codegenOutputStrategy.getOutputStream(source.sourceFileSource)
+            if (outputStream == null) {
+                println("Skipping file ${source.sourceFileSource.path} due to codegen strategy")
+                continue
             }
             val pass = CodegenPass()
             pass.doPass(source.file, walker)
             val classRepr = pass.classWriter.build()
-            val outputFile = stripExtension(path.toString()) + "." + defaultCompiledFileExtension
-            val file = Files.createFile(Paths.get(outputFile))
-            val os = file.toFile().outputStream()
-            val dos = DataOutputStream(os)
-            classRepr.write(dos)
-            println("Successful codegen, output file: $file")
+            when (codegenOutputStrategy.getOutputType()) {
+                OutputType.BINARY -> {
+                    val dos = DataOutputStream(outputStream)
+                    classRepr.write(dos)
+                }
+                OutputType.TEXT -> {
+                    outputStream.bufferedWriter().use { it.write(classRepr.toString()) }
+                }
+            }
         }
     }
 
@@ -40,7 +38,3 @@ class CodegenPhase : CompilerPhase<CodegenPhase>() {
 }
 
 
-fun stripExtension(str: String): String {
-    val pos = str.lastIndexOf(".")
-    return if (pos == -1) str else str.substring(0, pos)
-}

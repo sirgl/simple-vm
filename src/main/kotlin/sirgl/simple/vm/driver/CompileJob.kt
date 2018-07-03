@@ -1,5 +1,7 @@
 package sirgl.simple.vm.driver
 
+import sirgl.simple.vm.codegen.CodegenOutputStrategy
+import sirgl.simple.vm.codegen.DefaultCodegenStrategy
 import sirgl.simple.vm.common.AstCache
 import sirgl.simple.vm.common.CompilerContext
 import sirgl.simple.vm.common.CompilerPhase
@@ -8,7 +10,8 @@ import kotlin.system.measureTimeMillis
 
 class CompileJob(
         val sourceProviders: MutableList<SymbolSourceProvider>,
-        val buildPipeline: (context: CompilerContext) -> List<CompilerPhase<*>>
+        val buildPipeline: (context: CompilerContext) -> List<CompilerPhase<*>>,
+        val codegenOutputStrategy: CodegenOutputStrategy = DefaultCodegenStrategy()
 ) {
     val astCache = AstCache()
     val errorSink = ErrorSink()
@@ -21,7 +24,8 @@ class CompileJob(
                 astCache,
                 globalScope,
                 errorSink,
-                sourceProviders
+                sourceProviders,
+                codegenOutputStrategy
         )
         val phases = buildPipeline(context)
         run(context, phases)
@@ -40,7 +44,8 @@ fun runCompiler(context: CompilerContext, phases: List<CompilerPhase<*>>) {
         // TODO handle errors in every phase
         println("Phase '$phaseName' finished in $timeMillis ms")
         if (context.errorSink.hasErrors) {
-            println("Aborting, due to errors")
+            println("Aborting, due to errors:")
+            System.err.println(context.errorSink.errors.joinToString("\n"))
             return
         }
     }

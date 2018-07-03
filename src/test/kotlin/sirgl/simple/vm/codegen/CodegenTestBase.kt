@@ -1,6 +1,5 @@
-package sirgl.simple.vm.inspections
+package sirgl.simple.vm.codegen
 
-import sirgl.simple.vm.FileTestCase
 import sirgl.simple.vm.analysis.ProblemHolderImpl
 import sirgl.simple.vm.analysis.SemanticAnalysisPass
 import sirgl.simple.vm.ast.bypass.SimpleWalker
@@ -11,24 +10,27 @@ import sirgl.simple.vm.driver.phases.AstBypassesPhase
 import sirgl.simple.vm.driver.phases.CommonTypesSetupPhase
 import sirgl.simple.vm.driver.phases.StdLibInjectionPhase
 import sirgl.simple.vm.driver.phases.passes.SetupPass
-import sirgl.simple.vm.roots.FileSymbolSource
-import sirgl.simple.vm.roots.FileSystemSymbolSourceProvider
-import sirgl.simple.vm.roots.InMemorySourceFileSource
-import sirgl.simple.vm.roots.ListSymbolSourceProvider
+import sirgl.simple.vm.roots.*
+import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import java.nio.file.Paths
 
 
-abstract class SemanticAnalysisTestBase : FileTestCase<String>() {
-    override fun applyAction(text: String): String {
-        return runCompilerJobAndGetErrors(
-            listOf(
-                InMemorySourceFileSource(text)
-            )
-        )
+class TestCodegenOutputStrategy : CodegenOutputStrategy {
+    val stream = ByteArrayOutputStream()
+
+    override fun getOutputType() = OutputType.TEXT
+
+    override fun getOutputStream(sourceFileSource: SourceFileSource): OutputStream? {
+        val path  = sourceFileSource.path ?: return null
+        if (!path.last().toString().contains("__Target")) return null
+        return stream
     }
+
 }
 
 fun runCompilerJobAndGetErrors(sources: List<FileSymbolSource>): String {
+    val strategy = TestCodegenOutputStrategy()
     val job = CompileJob(
             mutableListOf(
                     ListSymbolSourceProvider(sources)
@@ -56,10 +58,13 @@ fun runCompilerJobAndGetErrors(sources: List<FileSymbolSource>): String {
                                                 inspections = defaultInspections(ProblemHolderImpl(it.errorSink))
                                         )
                                 )
-                        )
+                        ),
+                        CodegenPhase()
 
                 )
-            })
+            },
+            strategy
+        )
     job.run()
-    return job.errorSink.errors.joinToString("\n") { it.text }
+    return strategy.stream.toString()
 }

@@ -9,65 +9,6 @@ abstract class Instruction {
     abstract val size: Int
 }
 
-enum class Opcode(val hasInlineOperand: Boolean) {
-    // integer arithmetic
-    ADD(false),
-    MUL(false),
-    SUB(false),
-    DIV(false),
-    REM(false),
-
-    // integer comparison
-    ILT(false),
-    ILE(false),
-    IGT(false),
-    IGE(false),
-    IEQ(false),
-
-    // noop
-    NOOP(false),
-
-    // integer unary
-    NEG(false),
-    INV(false),
-
-    // control flow
-    GOTO(true),
-    IF_TRUE(true),
-    IF_FALSE(true),
-    IF_NULL(true),
-    IF_NOT_NULL(true),
-
-    // constant loading
-    ILOAD_CONST(true), // int
-    CLOAD_CONST(true), // char
-    SLOAD_CONST(true), // string
-    LOAD_TRUE(false),
-    LOAD_FALSE(false),
-    LOAD_ONE(false),
-    LOAD_ZERO(false),
-    LOAD_NULL(false),
-
-    // discarding method result in ExprStmt
-    POP(false),
-
-    // conversion
-    I2C(false),
-    C2I(false),
-
-    // store
-    ISTORE(true), // int
-    CSTORE(true), // char
-    BSTORE(true), // boolean
-    RSTORE(true), // reference
-
-    // typecheck
-    TYPECHECK(true)
-
-    // TODO calls
-    // TODO Array operations
-}
-
 val byteToOpcode: Array<Opcode> = Opcode.values()
 
 open class SingleByteInstruction(val opcode: Opcode) : Instruction() {
@@ -150,3 +91,5 @@ class StoreReferenceInstruction(slot: Short) : InlinedOperandInstruction(Opcode.
 class PopInstruction() : SingleByteInstruction(Opcode.POP)
 
 class TypecheckInstruction(cpEntry: Short) : InlinedOperandInstruction(Opcode.TYPECHECK, cpEntry)
+
+class ReturnInstruction : SingleByteInstruction(Opcode.RETURN)

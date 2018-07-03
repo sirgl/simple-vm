@@ -9,31 +9,26 @@ val MAGIC_VALUE: Int = 0x0B1B2B3B
 class ClassWriter(val classSymbol: ClassSymbol) {
     private val methods = mutableListOf<MethodWithBytecode>()
     private val fields = mutableListOf<CPDescriptor>()
-    val cp = ConstantPool()
+    val constantPool = ConstantPool()
 
-    var parentPackageDescriptor: CPDescriptor = 0
     var parentClassDescriptor: CPDescriptor = 0
     var classDescriptor: CPDescriptor = 0
-    var packageDescriptor: CPDescriptor = 0
 
     init {
         val parentClassSymbol = classSymbol.parentClassSymbol
         if (parentClassSymbol == null) {
             // TODO handle lang.Object
         } else {
-            val parentPackage = parentClassSymbol.packageSymbol
-            parentPackageDescriptor = cp.addPackage(parentPackage.name)
-            parentClassDescriptor = cp.addClass(parentPackageDescriptor, parentPackage.name)
+            parentClassDescriptor = constantPool.addClass(parentClassSymbol.packageSymbol.name, parentClassSymbol.simpleName)
         }
-        packageDescriptor = cp.addPackage(classSymbol.packageSymbol.name)
-        classDescriptor = cp.addClass(packageDescriptor, classSymbol.simpleName)
+        classDescriptor = constantPool.addClass(classSymbol.packageSymbol.name, classSymbol.simpleName)
     }
 
     fun build() = ClassRepr(
             LANG_BYTECODE_VERSION,
             parentClassDescriptor,
             classDescriptor,
-            cp,
+            constantPool,
             methods,
             fields
     )

@@ -6,4 +6,6 @@ import sirgl.simple.vm.roots.SymbolSource
 class ParseError(
         override val text: String,
         override val symbolSource: SymbolSource?
-) : CompilationError
+) : CompilationError {
+    override fun toString() = text
+}

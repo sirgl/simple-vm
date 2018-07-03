@@ -75,7 +75,7 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
 
         override fun visitReturnStmt(stmt: LangReturnStmt) {
             val methodReturnType = stmt.getParentOfClass<LangMethod>().returnType
-            stmt.expression?.mustBeAssignableTo(methodReturnType)
+            stmt.expr?.mustBeAssignableTo(methodReturnType)
         }
 
         override fun visitElementAccessExpr(expr: LangElementAccessExpr) {

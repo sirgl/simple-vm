@@ -1,0 +1,22 @@
+Bytecode version: 0
+Parent class: lang.Object
+Current class: ..A
+Fields:
+	a : A
+	i : i
+Methods:
+exprResultDiscarded() -> i
+0	ILOAD_CONST 12
+1	ILOAD_CONST 33
+2	ADD
+3	POP
+
+condStmt(x : i) -> i
+0	LOAD_TRUE
+1	IF_FALSE 15
+2	ILOAD_CONST 0
+3	RETURN
+4	GOTO 13
+5	ILOAD_CONST 1
+6	RETURN
+

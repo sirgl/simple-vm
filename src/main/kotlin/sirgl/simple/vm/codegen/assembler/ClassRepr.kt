@@ -40,74 +40,82 @@ class ClassRepr(
         writeShort(desc.toInt())
     }
 
-    override fun toString(): String {
-        return buildString {
-            append("Bytecode version: ")
-            append(bytecodeVersion.toInt())
-            append("\n")
+    override fun toString() = buildString {
+        append("Bytecode version: ")
+        append(bytecodeVersion.toInt())
+        append("\n")
 
-            append("Parent class: ")
-            append(getQualifiedClassName(parentClassDescriptor))
-            append("\n")
-            append("Current class: ")
-            append(getQualifiedClassName(classDescriptor))
-            append("\n")
+        append("Parent class: ")
+        append(getQualifiedClassName(parentClassDescriptor))
+        append("\n")
+        append("Current class: ")
+        append(getQualifiedClassName(classDescriptor))
+        append("\n")
 
-            if (fields.isNotEmpty()) {
-                append("Fields:\n")
-                for (field in fields) {
-                    append("\t")
-                    append(getVarStr(field))
-                    append("\n")
+        if (fields.isNotEmpty()) {
+            append("Fields:\n")
+            for (field in fields) {
+                append("\t")
+                append(getVarStr(field))
+                append("\n")
+            }
+        }
+
+        if (methods.isNotEmpty()) {
+            append("Methods:\n")
+            for (method in methods) {
+                appendMethod(method)
+                append("\n")
+            }
+        }
+    }
+
+    private fun StringBuilder.appendMethod(method: MethodWithBytecode) {
+        val methodInfo = constantPool.resolveDescr(method.descr) as MethodInfo
+        append(methodInfo.name)
+        appendParameters(methodInfo)
+        append(" -> ")
+        val returnTypeStr = constantPool.resolveDescr(methodInfo.returnTypeDescr) as String
+        append(returnTypeStr)
+        append("\n")
+        appendMethodBody(method)
+    }
+
+    private fun StringBuilder.appendParameters(methodInfo: MethodInfo) {
+        append("(")
+        var first = true
+        for (parameterVarDescriptor in methodInfo.parameterVarDescriptors) {
+            if (!first) {
+                append(", ")
+                first = false
+            }
+            append(getVarStr(parameterVarDescriptor))
+        }
+        append(")")
+    }
+
+    fun StringBuilder.appendMethodBody(method: MethodWithBytecode) {
+        val bytecode = method.bytecode
+        var i = 0
+        val bytecodeLength = bytecode.size
+        var currentInstructionNumber = 0
+        while (i < bytecodeLength) {
+            val b = bytecode[i]
+            val opcode = Opcode.values()[b.toInt()]
+            append(currentInstructionNumber).append("\t").append(opcode)
+            if (opcode.hasInlineOperand) {
+                append(" ")
+                val descr = (bytecode[i + 1].toInt() or (bytecode[i + 2].toInt() shl 8)).toShort()
+                i += 2
+                when (opcode.inlineOerandType) {
+                    InlineOperandType.NoInlineOperand -> throw IllegalStateException()
+                    InlineOperandType.ConstantPoolEntry -> append(constantPool.resolveDescr(descr))
+                    InlineOperandType.Label, InlineOperandType.VariableSlot -> append(opcode.ordinal)
                 }
             }
-
-            if (methods.isNotEmpty()) {
-                append("Methods:\n")
-                for (method in methods) {
-                    val methodInfo = constantPool.resolveDescr(method.descr) as MethodInfo
-                    append(methodInfo.name)
-                    append(" : ")
-                    val returnTypeStr = constantPool.resolveDescr(methodInfo.returnTypeDescr) as String
-                    append(returnTypeStr)
-                    append("(")
-                    var first = true
-                    for (parameterVarDescriptor in methodInfo.parameterVarDescriptors) {
-                        if (!first) {
-                            append(", ")
-                            first = false
-                        }
-                        append(getVarStr(parameterVarDescriptor))
-                    }
-                    append(")")
-                    var inlineOperandBytesLeft = 0
-                    var inlineOperandBuilder = 0
-                    var inlineOperandReady = false
-                    for (byte in method.bytecode) {
-                        if (inlineOperandBytesLeft > 0) {
-                            inlineOperandBuilder = (inlineOperandBuilder shr 8) and byte.toInt()
-                            inlineOperandBytesLeft--
-                            if (inlineOperandBytesLeft == 0) {
-                                inlineOperandReady = true
-                            }
-                            continue
-                        }
-                        append("\t")
-                        if (inlineOperandReady) {
-                            val opcode = byteToOpcode[byte.toInt()]
-                            val inlineOperand = inlineOperandBuilder.toShort()
-                            append(opcode.ordinal)
-                            append(" ")
-                            append(inlineOperand)
-                        } else {
-                            val opcode = byteToOpcode[byte.toInt()]
-                            append(opcode.ordinal)
-                        }
-                        append("\n")
-                    }
-                }
-            }
-
+            append("\n")
+            i++
+            currentInstructionNumber++
         }
     }
 
@@ -123,4 +131,6 @@ class ClassRepr(
         val packageStr = constantPool.resolveDescr(classInfo.packageDescriptor) as String
         return packageStr + "." + classInfo.name
     }
+
+
 }

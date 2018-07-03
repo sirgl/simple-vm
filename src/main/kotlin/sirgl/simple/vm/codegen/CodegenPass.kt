@@ -4,6 +4,7 @@ import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.expr.*
 import sirgl.simple.vm.ast.stmt.LangExprStmt
 import sirgl.simple.vm.ast.stmt.LangIfStmt
+import sirgl.simple.vm.ast.stmt.LangReturnStmt
 import sirgl.simple.vm.ast.support.LangVarDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.codegen.assembler.*
@@ -33,9 +34,9 @@ class CodegenPass : SingleVisitorAstPass() {
             }
             val bytecode = methodWriter.getBytecode()
 
-            val returnTypeDescr = cpBuilder.addType(method.returnType)
+            val returnTypeDescr = constantPool.addType(method.returnType)
             val parameterDescriptors = method.parameters.map { getVarDescr(it) }
-            val methodDescr = cpBuilder.addMethod(name, returnTypeDescr, parameterDescriptors)
+            val methodDescr = constantPool.addMethod(method.name, returnTypeDescr, parameterDescriptors)
             classWriter.addMethodInfo(MethodWithBytecode(methodDescr, bytecode))
         }
 
@@ -44,9 +45,9 @@ class CodegenPass : SingleVisitorAstPass() {
         }
 
         private fun getVarDescr(variable: LangVarDecl): CPDescriptor {
-            val typeDescr = cpBuilder.addType(variable.type)
-            val nameDescr = cpBuilder.addString(variable.name)
-            return cpBuilder.addVar(typeDescr, nameDescr)
+            val typeDescr = constantPool.addType(variable.type)
+            val nameDescr = constantPool.addString(variable.name)
+            return constantPool.addVar(typeDescr, nameDescr)
         }
 
         private fun generateBlock(methodWriter: MethodWriter, block: LangBlock) {
@@ -71,8 +72,15 @@ class CodegenPass : SingleVisitorAstPass() {
                     }
                 }
                 is LangExprStmt -> {
-                    generateStmt(methodWriter, stmt)
+                    generateExpr(methodWriter, stmt.expr)
                     methodWriter.emit(PopInstruction()) // Discarding operation result
+                }
+                is LangReturnStmt -> {
+                    val expr = stmt.expr
+                    if (expr != null) {
+                        generateExpr(methodWriter, expr)
+                    }
+                    methodWriter.emit(ReturnInstruction())
                 }
             }
         }
@@ -85,7 +93,7 @@ class CodegenPass : SingleVisitorAstPass() {
                     methodWriter.emit(BinopInstruction(expr.opTypeBinary)) // TODO short circuit operations
                 }
                 is LangTypeCheckExpr -> {
-                    val builder = cpBuilder
+                    val builder = constantPool
                     val classSymbol = (expr.targetType as ClassType).classSymbol
                     val classEntry = builder.addClass(classSymbol.packageSymbol.name, classSymbol.simpleName)
                     methodWriter.emit(TypecheckInstruction(classEntry))
@@ -111,15 +119,15 @@ class CodegenPass : SingleVisitorAstPass() {
                     // TODO
                 }
                 is LangCharLiteralExpr -> {
-                    val cpDescriptor = cpBuilder.addChar(expr.value)
+                    val cpDescriptor = constantPool.addChar(expr.value)
                     methodWriter.emit(IloadConstInstruction(cpDescriptor))
                 }
                 is LangIntLiteralExpr -> {
-                    val cpDescriptor = cpBuilder.addInt(expr.value)
+                    val cpDescriptor = constantPool.addInt(expr.value)
                     methodWriter.emit(IloadConstInstruction(cpDescriptor))
                 }
                 is LangStringLiteralExpr -> {
-                    val cpDescriptor = cpBuilder.addString(expr.value)
+                    val cpDescriptor = constantPool.addString(expr.value)
                     methodWriter.emit(IloadConstInstruction(cpDescriptor))
                 }
                 is LangBoolLiteralExpr -> {
@@ -142,6 +150,6 @@ class CodegenPass : SingleVisitorAstPass() {
             }
         }
 
-        private val cpBuilder get() = classWriter.cp
+        private val constantPool get() = classWriter.constantPool
     }
 }

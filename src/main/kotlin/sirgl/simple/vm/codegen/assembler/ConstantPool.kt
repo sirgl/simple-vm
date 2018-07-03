@@ -40,10 +40,9 @@ class ConstantPool(
 
     private var currentDescriptor: CPDescriptor = 0
 
-    fun addPackage(packageName: String) = getDescrOrAddValue(packageName, strings)
-
     fun addClass(packageName: String, name: String): CPDescriptor {
-        return addClass(addPackage(packageName), name)
+        val packageDescriptor = addString(packageName)
+        return addClass(packageDescriptor, name)
     }
 
     fun addClass(packageDescriptor: CPDescriptor, name: String): CPDescriptor {
@@ -58,7 +57,7 @@ class ConstantPool(
             orderList.add(value)
             map[value] = numDescr
             currentDescriptor++
-            currentDescriptor
+            numDescr
         }
     }
 
