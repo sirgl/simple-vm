@@ -41,7 +41,11 @@ class A {
         }
     }
 
+    fun fnTest() {
+        myFn(12);
+    }
 
+    fun myFn(i: i32) {}
 
     var a: A = A();
 

@@ -11,6 +11,7 @@ import sirgl.simple.vm.driver.phases.SingleVisitorAstPass
 import sirgl.simple.vm.type.ClassType
 import sirgl.simple.vm.type.I32Type
 import sirgl.simple.vm.type.I8Type
+import sirgl.simple.vm.type.MethodReferenceType
 
 class CodegenPass : SingleVisitorAstPass() {
     override val name: String = "Codegen"
@@ -172,7 +173,22 @@ class CodegenPass : SingleVisitorAstPass() {
                     // TODO
                 }
                 is LangCallExpr -> {
-                    // TODO
+                    // TODO load this if not qualified
+
+
+                    for (argument in expr.arguments) {
+                        generateExpr(methodWriter, argument)
+                    }
+                    val caller = expr.caller
+                    val methodReferenceType = caller.type as MethodReferenceType
+                    val methodSymbol = methodReferenceType.methodSymbol
+                    val returnTypeDescr = constantPool.addType(methodSymbol.returnType)
+                    val parametersDescr = methodSymbol.parameters.map {
+                        constantPool.addVar(constantPool.addType(it.type), constantPool.addString(it.name))
+                    }
+                    val methodDescr = constantPool.addMethod(name, returnTypeDescr, parametersDescr)
+
+                    methodWriter.emit(CallVirtualInstruction(methodDescr))
                 }
                 is LangReferenceExpr -> {
                     // TODO

@@ -116,5 +116,10 @@ class TypecheckInstruction(val cpEntry: Short) : InlinedOperandInstruction(Opcod
         get() = cpEntry
 }
 
+class CallVirtualInstruction(val cpEntry: Short) : InlinedOperandInstruction(Opcode.CALL_VIRTUAL) {
+    override val inlineOp: Short
+        get() = cpEntry
+}
+
 class ReturnInstruction : SingleByteInstruction(Opcode.RETURN)
 class NoopInstruction : SingleByteInstruction(Opcode.NOOP)

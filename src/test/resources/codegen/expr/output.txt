@@ -56,3 +56,12 @@ brLoop() -> V
 4	IF_TRUE 2
 5	NOOP
 
+fnTest() -> V
+0	ILOAD_CONST 12
+1	CALL_VIRTUAL MethodInfo(name=Codegen, returnTypeDescr=15, parameterVarDescriptors=[20])
+2	POP
+3	NOOP
+
+myFn(i : i) -> V
+0	NOOP
+
