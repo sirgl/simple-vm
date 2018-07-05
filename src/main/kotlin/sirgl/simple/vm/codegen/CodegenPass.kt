@@ -8,6 +8,7 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.codegen.assembler.*
 import sirgl.simple.vm.codegen.assembler.MethodWriter
 import sirgl.simple.vm.driver.phases.SingleVisitorAstPass
+import sirgl.simple.vm.resolve.symbols.ClassSymbol
 import sirgl.simple.vm.type.ClassType
 import sirgl.simple.vm.type.I32Type
 import sirgl.simple.vm.type.I8Type
@@ -36,9 +37,14 @@ class CodegenPass : SingleVisitorAstPass() {
 
             val returnTypeDescr = constantPool.addType(method.returnType)
             val parameterDescriptors = method.parameters.map { getVarDescr(it) }
-            val methodDescr = constantPool.addMethod(method.name, returnTypeDescr, parameterDescriptors)
+            val classDescriptor = getDescriptorByClassSymbol(method.enclosingClass.symbol)
+            val methodNameDescriptor = constantPool.addString(method.name)
+            val methodDescr = constantPool.addMethod(classDescriptor, methodNameDescriptor, returnTypeDescr, parameterDescriptors)
             classWriter.addMethodInfo(MethodWithBytecode(methodDescr, bytecode))
         }
+
+        private fun getDescriptorByClassSymbol(classSymbol: ClassSymbol) =
+                constantPool.addClass(classSymbol.packageSymbol.name, classSymbol.simpleName)
 
         override fun visitField(field: LangField) {
             classWriter.addField(getVarDescr(field))
@@ -186,7 +192,9 @@ class CodegenPass : SingleVisitorAstPass() {
                     val parametersDescr = methodSymbol.parameters.map {
                         constantPool.addVar(constantPool.addType(it.type), constantPool.addString(it.name))
                     }
-                    val methodDescr = constantPool.addMethod(name, returnTypeDescr, parametersDescr)
+                    val methodNameDescriptor = constantPool.addString(methodSymbol.name)
+                    val classDescriptor = getDescriptorByClassSymbol(methodSymbol.enclosingClass)
+                    val methodDescr = constantPool.addMethod(classDescriptor,methodNameDescriptor, returnTypeDescr, parametersDescr)
 
                     methodWriter.emit(CallVirtualInstruction(methodDescr))
                 }

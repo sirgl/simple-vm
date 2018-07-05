@@ -56,7 +56,7 @@ class ClassRepr(
             append("Fields:\n")
             for (field in fields) {
                 append("\t")
-                append(getVarStr(field))
+                append((constantPool.resolve(field) as? VariableCPEntry)?.getPresentableContent(constantPool) ?: "Unknown field")
                 append("\n")
             }
         }
@@ -71,27 +71,10 @@ class ClassRepr(
     }
 
     private fun StringBuilder.appendMethod(method: MethodWithBytecode) {
-        val methodInfo = constantPool.resolveDescr(method.descr) as MethodInfo
-        append(methodInfo.name)
-        appendParameters(methodInfo)
-        append(" -> ")
-        val returnTypeStr = constantPool.resolveDescr(methodInfo.returnTypeDescr) as String
-        append(returnTypeStr)
+        val methodHeader = (constantPool.resolve(method.descr) as? MethodCPEntry)?.toStringWithoutPackage(constantPool) ?: "<Unknown method>"
+        append(methodHeader)
         append("\n")
         appendMethodBody(method)
-    }
-
-    private fun StringBuilder.appendParameters(methodInfo: MethodInfo) {
-        append("(")
-        var first = true
-        for (parameterVarDescriptor in methodInfo.parameterVarDescriptors) {
-            if (!first) {
-                append(", ")
-                first = false
-            }
-            append(getVarStr(parameterVarDescriptor))
-        }
-        append(")")
     }
 
     fun createInstructionIndex(bytecode: ByteArray): IntArray {
@@ -130,7 +113,10 @@ class ClassRepr(
                 i += 2
                 when (opcode.inlineOerandType) {
                     InlineOperandType.NoInlineOperand -> throw IllegalStateException()
-                    InlineOperandType.ConstantPoolEntry -> append(constantPool.resolveDescr(operand))
+                    InlineOperandType.ConstantPoolEntry -> {
+                        append("#$operand ->  ")
+                        append(constantPool.resolve(operand)?.getPresentableContent(constantPool) ?: "<Unknown constant>")
+                    }
                     InlineOperandType.Label, InlineOperandType.VariableSlot -> append(instructionIndex[operand.toInt()])
                 }
             }
@@ -140,18 +126,7 @@ class ClassRepr(
         }
     }
 
-    private fun getVarStr(varDescr: CPDescriptor) : String {
-        val varInfo = constantPool.resolveDescr(varDescr) as VarInfo
-        val name = constantPool.resolveDescr(varInfo.nameDescriptor) as String
-        val typeStr = constantPool.resolveDescr(varInfo.typeDescriptor) as String
-        return "$name : $typeStr"
-    }
-
     private fun getQualifiedClassName(descr: CPDescriptor): String {
-        val classInfo = constantPool.resolveDescr(descr) as ClassInfo
-        val packageStr = constantPool.resolveDescr(classInfo.packageDescriptor) as String
-        return packageStr + "." + classInfo.name
+        return (constantPool.resolve(descr) as? ClassCPEntry)?.getPresentableContent(constantPool) ?: "<Unknown class>"
     }
-
-
 }

@@ -3,32 +3,32 @@ Parent class: lang.Object
 Current class: ..A
 Fields:
 	a : A
-	i : i
+	i : I
 Methods:
-exprResultDiscarded() -> i
-0	ILOAD_CONST 12
-1	ILOAD_CONST 33
+exprResultDiscarded() -> I
+0	ILOAD_CONST #6 ->  12
+1	ILOAD_CONST #7 ->  33
 2	ADD
 3	POP
 4	NOOP
 
-condStmt(x : i) -> i
+condStmt(x : I) -> I
 0	LOAD_TRUE
 1	IF_FALSE 5
-2	ILOAD_CONST 0
+2	ILOAD_CONST #11 ->  0
 3	RETURN
 4	GOTO 7
-5	ILOAD_CONST 1
+5	ILOAD_CONST #12 ->  1
 6	RETURN
 7	NOOP
 
 loop() -> V
 0	GOTO 3
-1	ILOAD_CONST 12
+1	ILOAD_CONST #6 ->  12
 2	POP
-3	ILOAD_CONST 12
-4	ILOAD_CONST 44
-5	ILOAD_CONST 3
+3	ILOAD_CONST #6 ->  12
+4	ILOAD_CONST #17 ->  44
+5	ILOAD_CONST #18 ->  3
 6	SUB
 7	IGT
 8	IF_TRUE 1
@@ -57,11 +57,11 @@ brLoop() -> V
 5	NOOP
 
 fnTest() -> V
-0	ILOAD_CONST 12
-1	CALL_VIRTUAL MethodInfo(name=Codegen, returnTypeDescr=15, parameterVarDescriptors=[20])
+0	ILOAD_CONST #6 ->  12
+1	CALL_VIRTUAL #31 ->  ..A.myFn(i : I) -> V
 2	POP
 3	NOOP
 
-myFn(i : i) -> V
+myFn(i : I) -> V
 0	NOOP
 
