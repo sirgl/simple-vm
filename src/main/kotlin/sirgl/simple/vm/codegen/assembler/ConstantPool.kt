@@ -14,19 +14,13 @@ data class VarInfo(val typeDescriptor: CPDescriptor, val nameDescriptor: CPDescr
 data class MethodInfo(val name: String, val returnTypeDescr: CPDescriptor, val parameterVarDescriptors: List<CPDescriptor>)
 
 
-// Pretty inefficient thing
-// It would be good if all entities from CP could be represented in Generalized Key -> CPDescriptor
-// Using it we could avoid many hash maps and order list
 class ConstantPool {
-    private val entries = mutableMapOf<ConstantPoolEntry, CPDescriptor>()
+    // Pretty inefficient thing
+    private val entries = hashMapOf<ConstantPoolEntry, CPDescriptor>()
     private val orderList = mutableListOf<ConstantPoolEntry>()
 
 
     private var currentDescriptor: CPDescriptor = 0
-
-    override fun toString(): String {
-        return super.toString()
-    }
 
     fun addClass(packageName: String, simpleName: String): CPDescriptor {
         val packageDescriptor = addString(packageName)
