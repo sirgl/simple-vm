@@ -9,10 +9,6 @@ import java.io.DataOutputStream
  */
 typealias CPDescriptor = Short
 
-data class ClassInfo(val packageDescriptor: CPDescriptor, val name: String)
-data class VarInfo(val typeDescriptor: CPDescriptor, val nameDescriptor: CPDescriptor)
-data class MethodInfo(val name: String, val returnTypeDescr: CPDescriptor, val parameterVarDescriptors: List<CPDescriptor>)
-
 
 class ConstantPool {
     // Pretty inefficient thing

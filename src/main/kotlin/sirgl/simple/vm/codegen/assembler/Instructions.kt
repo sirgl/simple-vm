@@ -9,8 +9,6 @@ abstract class Instruction {
     abstract val size: Int
 }
 
-val byteToOpcode: Array<Opcode> = Opcode.values()
-
 open class SingleByteInstruction(val opcode: Opcode) : Instruction() {
     override fun serialize(buffer: ByteBuffer) {
         buffer.put(opcode.ordinal.toByte())
@@ -112,7 +110,7 @@ class StoreReferenceInstruction(val slot: Short) : InlinedOperandInstruction(Opc
         get() = slot
 }
 
-class PopInstruction() : SingleByteInstruction(Opcode.POP)
+class PopInstruction : SingleByteInstruction(Opcode.POP)
 
 class TypecheckInstruction(val cpEntry: Short) : InlinedOperandInstruction(Opcode.TYPECHECK) {
     override val inlineOp: Short
