@@ -1,12 +1,12 @@
-File#0@[0, 626)
+File#0@[0, 647)
   Package#0@[0, 10)
     Reference#0@[8, 9) name: p
-  Class#2@[12, 626) name: A
-    Method#3@[26, 624) name: foo
+  Class#2@[12, 647) name: A
+    Method#3@[26, 645) name: foo
       Parameter#3@[34, 41) name: p1
         TypeElement#3@[38, 41) sort: Reference
           Reference#3@[38, 41) name: I32
-      Block#3@[43, 624)
+      Block#3@[43, 645)
         ExprStmt#4@[53, 63)
           BinaryExpr#4@[53, 62)
             IntLiteral#4@[53, 54) value: 1
@@ -114,3 +114,8 @@ File#0@[0, 626)
             CharLiteral#22@[607, 610) value: 120
             BinaryOperator#22@[611, 612) type: +
             CharLiteral#22@[613, 617) value: 9
+        ExprStmt#23@[633, 639)
+          CallExpr#23@[633, 638)
+            ReferenceExpr#23@[633, 632) name: bar
+              CallExpr#23@[627, 632)
+                ReferenceExpr#23@[627, 630) name: foo
