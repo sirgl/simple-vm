@@ -84,6 +84,7 @@ class IloadConstInstruction(val index: Short) : InlinedOperandInstruction(Opcode
     override val inlineOp: Short
         get() = index
 }
+
 class LoadTrueInstruction : SingleByteInstruction(Opcode.LOAD_TRUE)
 class LoadFalseInstruction : SingleByteInstruction(Opcode.LOAD_FALSE)
 class LoadNullInstruction : SingleByteInstruction(Opcode.LOAD_NULL)
@@ -100,10 +101,12 @@ class StoreCharInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.C
     override val inlineOp: Short
         get() = slot
 }
+
 class StoreBoolInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.BSTORE) {
     override val inlineOp: Short
         get() = slot
 }
+
 class StoreReferenceInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.RSTORE) {
     override val inlineOp: Short
         get() = slot

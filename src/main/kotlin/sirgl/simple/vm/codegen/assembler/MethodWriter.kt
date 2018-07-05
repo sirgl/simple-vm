@@ -26,7 +26,7 @@ class MethodWriter(val classWriter: ClassWriter) {
     // Always available as last instruction is NOOP always
     fun labelNext() = Label(position + 1)
 
-    fun getBytecode() : ByteArray {
+    fun getBytecode(): ByteArray {
         for (insn in instructions) {
             when (insn) {
                 is SingleByteInstruction -> buffer.emit(insn.opByte)

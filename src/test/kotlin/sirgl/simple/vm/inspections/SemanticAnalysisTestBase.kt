@@ -21,9 +21,9 @@ import java.nio.file.Paths
 abstract class SemanticAnalysisTestBase : FileTestCase<String>() {
     override fun applyAction(text: String): String {
         return runCompilerJobAndGetErrors(
-            listOf(
-                InMemorySourceFileSource(text)
-            )
+                listOf(
+                        InMemorySourceFileSource(text)
+                )
         )
     }
 }

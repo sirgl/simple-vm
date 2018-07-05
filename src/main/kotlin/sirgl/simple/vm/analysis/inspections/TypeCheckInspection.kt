@@ -2,7 +2,7 @@ package sirgl.simple.vm.analysis.inspections
 
 import sirgl.simple.vm.analysis.LangInspection
 import sirgl.simple.vm.analysis.ProblemHolder
-import sirgl.simple.vm.ast.BinaryOperatorType.*
+import sirgl.simple.vm.ast.BinaryOperatorType.Eq
 import sirgl.simple.vm.ast.LangExpr
 import sirgl.simple.vm.ast.LangMethod
 import sirgl.simple.vm.ast.expr.*
@@ -30,7 +30,8 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
 
         override fun visitBinaryExpr(expr: LangBinaryExpr) {
             when (expr.opTypeBinary) {
-                Eq -> {}
+                Eq -> {
+                }
                 else -> {
                     expr.left.mustBeAssignableTo(I32Type)
                     expr.right.mustBeAssignableTo(I32Type)

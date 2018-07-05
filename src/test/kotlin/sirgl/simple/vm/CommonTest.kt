@@ -18,13 +18,13 @@ abstract class FileBasedTestCaseBase<T> {
 
     fun getAllTests(): Stream<DynamicTest> {
         return findBeforeTestFiles(directory)
-            .filter { filterBeforeName(it.fileName.toString()) }
-            .map { Case(it, applyAction(Files.newBufferedReader(it).readText())) }
-            .map { case ->
-                DynamicTest.dynamicTest(case.path.fileName.toString().substringBeforeLast('.')) {
-                    check(case.path, case.valueAfter)
+                .filter { filterBeforeName(it.fileName.toString()) }
+                .map { Case(it, applyAction(Files.newBufferedReader(it).readText())) }
+                .map { case ->
+                    DynamicTest.dynamicTest(case.path.fileName.toString().substringBeforeLast('.')) {
+                        check(case.path, case.valueAfter)
+                    }
                 }
-            }
     }
 
     private fun check(beforePath: Path, actualValue: T) {
@@ -58,10 +58,10 @@ abstract class FileBasedTestCaseBase<T> {
         val ext = fileName.substringAfterLast('.')
         // TODO black path magic here
         return Paths.get(
-            "/" + path.subpath(
-                0,
-                path.nameCount - 1
-            ).resolve(transformName(nameOnly) + "." + ext).toString()
+                "/" + path.subpath(
+                        0,
+                        path.nameCount - 1
+                ).resolve(transformName(nameOnly) + "." + ext).toString()
         )
     }
 

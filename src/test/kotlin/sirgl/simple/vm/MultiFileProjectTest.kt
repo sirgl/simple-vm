@@ -14,11 +14,11 @@ abstract class MultiFileProjectTest(val basePath: String) {
         val folderPath = "$basePath/$folderName"
         val path = Paths.get(folderPath)
         val sourcePaths = Files.list(path)
-            .filter { child -> child.extension() == defaultSourceFileExtension }
-            .toList()
+                .filter { child -> child.extension() == defaultSourceFileExtension }
+                .toList()
         val expectedOutput = File("$folderPath/output.txt").readText()
         Assert.assertEquals(expectedOutput, apply(sourcePaths))
     }
 
-    abstract fun apply(sourcePaths: List<Path>) : String
+    abstract fun apply(sourcePaths: List<Path>): String
 }

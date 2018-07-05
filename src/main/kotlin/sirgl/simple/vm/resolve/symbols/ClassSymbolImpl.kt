@@ -33,7 +33,7 @@ class ClassSymbolImpl(
             ?: packageSymbol.resolve(name, referenceOffset)
             ?: resolveByImports(name, referenceOffset)
 
-    private fun resolveByImports(name: String, referenceOffset: Int?) : Symbol? {
+    private fun resolveByImports(name: String, referenceOffset: Int?): Symbol? {
         for (import in imports) {
             val symbol = import.resolve(name, referenceOffset)
             if (symbol != null) return symbol

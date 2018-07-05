@@ -22,7 +22,7 @@ class TestCodegenOutputStrategy : CodegenOutputStrategy {
     override fun getOutputType() = OutputType.TEXT
 
     override fun getOutputStream(sourceFileSource: SourceFileSource): OutputStream? {
-        val path  = sourceFileSource.path ?: return null
+        val path = sourceFileSource.path ?: return null
         if (!path.last().toString().contains("__Target")) return null
         return stream
     }
@@ -64,7 +64,7 @@ fun runCompilerJobAndGetErrors(sources: List<FileSymbolSource>): String {
                 )
             },
             strategy
-        )
+    )
     job.run()
     return strategy.stream.toString()
 }

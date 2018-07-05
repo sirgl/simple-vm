@@ -9,7 +9,7 @@ class BytecodeBuffer {
     private val buffer = ByteArray(BUFFER_SIZE)
     var position = 0
 
-    fun finish() : ByteArray {
+    fun finish(): ByteArray {
         val bytes = buffer.copyOf(position)
         clear()
         return bytes

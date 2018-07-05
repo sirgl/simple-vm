@@ -7,12 +7,12 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 interface CodegenOutputStrategy {
-    fun getOutputType() : OutputType
+    fun getOutputType(): OutputType
 
     /**
      * Returns null if generation for file is not necessary
      */
-    fun getOutputStream(sourceFileSource: SourceFileSource) : OutputStream?
+    fun getOutputStream(sourceFileSource: SourceFileSource): OutputStream?
 }
 
 enum class OutputType {
@@ -20,7 +20,7 @@ enum class OutputType {
     TEXT
 }
 
-class DefaultCodegenStrategy: CodegenOutputStrategy {
+class DefaultCodegenStrategy : CodegenOutputStrategy {
     override fun getOutputType() = OutputType.BINARY
 
     override fun getOutputStream(sourceFileSource: SourceFileSource): OutputStream? {

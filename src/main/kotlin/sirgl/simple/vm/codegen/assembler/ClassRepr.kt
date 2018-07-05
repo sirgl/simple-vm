@@ -56,7 +56,8 @@ class ClassRepr(
             append("Fields:\n")
             for (field in fields) {
                 append("\t")
-                append((constantPool.resolve(field) as? VariableCPEntry)?.getPresentableContent(constantPool) ?: "Unknown field")
+                append((constantPool.resolve(field) as? VariableCPEntry)?.getPresentableContent(constantPool)
+                        ?: "Unknown field")
                 append("\n")
             }
         }
@@ -71,7 +72,8 @@ class ClassRepr(
     }
 
     private fun StringBuilder.appendMethod(method: MethodWithBytecode) {
-        val methodHeader = (constantPool.resolve(method.descr) as? MethodCPEntry)?.toStringWithoutPackage(constantPool) ?: "<Unknown method>"
+        val methodHeader = (constantPool.resolve(method.descr) as? MethodCPEntry)?.toStringWithoutPackage(constantPool)
+                ?: "<Unknown method>"
         append(methodHeader)
         append("\n")
         appendMethodBody(method)
@@ -115,7 +117,8 @@ class ClassRepr(
                     InlineOperandType.NoInlineOperand -> throw IllegalStateException()
                     InlineOperandType.ConstantPoolEntry -> {
                         append("#$operand ->  ")
-                        append(constantPool.resolve(operand)?.getPresentableContent(constantPool) ?: "<Unknown constant>")
+                        append(constantPool.resolve(operand)?.getPresentableContent(constantPool)
+                                ?: "<Unknown constant>")
                     }
                     InlineOperandType.Label, InlineOperandType.VariableSlot -> append(instructionIndex[operand.toInt()])
                 }

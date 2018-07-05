@@ -194,7 +194,7 @@ class CodegenPass : SingleVisitorAstPass() {
                     }
                     val methodNameDescriptor = constantPool.addString(methodSymbol.name)
                     val classDescriptor = getDescriptorByClassSymbol(methodSymbol.enclosingClass)
-                    val methodDescr = constantPool.addMethod(classDescriptor,methodNameDescriptor, returnTypeDescr, parametersDescr)
+                    val methodDescr = constantPool.addMethod(classDescriptor, methodNameDescriptor, returnTypeDescr, parametersDescr)
 
                     methodWriter.emit(CallVirtualInstruction(methodDescr))
                 }
