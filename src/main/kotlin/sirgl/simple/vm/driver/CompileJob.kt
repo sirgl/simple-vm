@@ -45,7 +45,7 @@ fun runCompiler(context: CompilerContext, phases: List<CompilerPhase<*>>) {
         println("Phase '$phaseName' finished in $timeMillis ms")
         if (context.errorSink.hasErrors) {
             println("Aborting, due to errors:")
-            System.err.println(context.errorSink.errors.joinToString("\n"))
+            println(context.errorSink.errors.joinToString("\n"))
             return
         }
     }
