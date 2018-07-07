@@ -1,3 +1,3 @@
-Error in (CallExpr#8@[131, 134)): Expected method reference type but found type i32
+Error in (CallExpr#8@[131, 134)): Expected method reference type but found type <unknown>
 Error in (CallExpr#9@[144, 158)): Method must have 2 arguments (p1: i32, p2: i32), but found 0
 Error in (BoolLiteral#10@[185, 190) value: false): Argument type expected to be i32 but was bool

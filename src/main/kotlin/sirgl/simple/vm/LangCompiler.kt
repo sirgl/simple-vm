@@ -12,10 +12,8 @@ import sirgl.simple.vm.codegen.CodegenPass
 import sirgl.simple.vm.common.CompilerContext
 import sirgl.simple.vm.common.CompilerPhase
 import sirgl.simple.vm.driver.CompileJob
-import sirgl.simple.vm.driver.phases.AstBuildingPhase
-import sirgl.simple.vm.driver.phases.AstBypassesPhase
-import sirgl.simple.vm.driver.phases.CommonTypesSetupPhase
-import sirgl.simple.vm.driver.phases.passes.SetupPass
+import sirgl.simple.vm.driver.phases.*
+import sirgl.simple.vm.driver.phases.passes.SetupReferencesPass
 import sirgl.simple.vm.roots.FileSystemSymbolSourceProvider
 import java.nio.file.Paths
 
@@ -26,10 +24,12 @@ fun buildDefaultPipeline(context: CompilerContext): List<CompilerPhase<*>> {
             // TODO stdlib
             AstBuildingPhase(),
             CommonTypesSetupPhase(),
+            SetupTopLevelPhase(),
+            SetupMethodRefernecesSymbolsPhase(),
             AstBypassesPhase(
                     walker = SimpleWalker(),
                     passes = mutableListOf(
-                            SetupPass(),
+                            SetupReferencesPass(),
                             SemanticAnalysisPass(
                                     inspections = inspections
                             ),

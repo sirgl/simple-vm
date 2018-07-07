@@ -77,6 +77,10 @@ class A {
         return 'c';
     }
 
+    fun constuctCallChain() {
+        var result: i32 = B().a().retConversion();
+    }
+
     fun myFn(i: i32) {}
 
     var a: A = A();

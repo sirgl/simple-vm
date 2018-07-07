@@ -1,5 +1,8 @@
-package p;
 
 class B {
+    constructor(){}
 
+    fun a() : A {
+        return A();
+    }
 }

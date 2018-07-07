@@ -1,17 +1,11 @@
 package sirgl.simple.vm.driver.phases.passes
 
-import sirgl.simple.vm.ast.LangClass
-import sirgl.simple.vm.ast.LangField
-import sirgl.simple.vm.ast.LangMethod
-import sirgl.simple.vm.ast.LangParameter
+import sirgl.simple.vm.ast.*
 import sirgl.simple.vm.ast.expr.LangCallExpr
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
-import sirgl.simple.vm.ast.ext.getParentOfClass
 import sirgl.simple.vm.ast.ext.getScope
+import sirgl.simple.vm.ast.impl.LangConstructorImpl
 import sirgl.simple.vm.ast.impl.LangFieldImpl
-import sirgl.simple.vm.ast.impl.LangParameterImpl
-import sirgl.simple.vm.ast.impl.stmt.LangVarDeclStmtImpl
-import sirgl.simple.vm.ast.stmt.LangVarDeclStmt
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.common.CommonClassNames
 import sirgl.simple.vm.common.CommonClassTypes
@@ -23,23 +17,8 @@ import sirgl.simple.vm.resolve.symbols.toSymbol
 import sirgl.simple.vm.type.ClassType
 import sirgl.simple.vm.type.MethodReferenceType
 
-class SetupPass : SingleVisitorAstPass() {
-    override val visitor: LangVisitor = object : LangVisitor() {
-        override fun visitVarDeclStmt(stmt: LangVarDeclStmt) {
-            super.visitVarDeclStmt(stmt)
-            (stmt as LangVarDeclStmtImpl).symbol = stmt.toSymbol(stmt)
-            stmt.getScope().register(stmt.symbol, stmt)
-            val classType = stmt.type as? ClassType ?: return
-            val referenceElement = stmt.typeElement.reference ?: return
-            val classSymbol = stmt.getScope().resolve(referenceElement.name, null) as? ClassSymbol ?: return
-            classType.classSymbol = classSymbol // TODO generic way to resolve reference element
-        }
-
-        override fun visitParameter(parameter: LangParameter) {
-            super.visitParameter(parameter)
-            parameter.getScope().register(parameter.symbol, parameter)
-        }
-
+class SetupTopLevelPass : SingleVisitorAstPass() {
+    override val visitor: LangVisitor = object: LangVisitor() {
         override fun visitField(field: LangField) {
             super.visitField(field)
             (field as LangFieldImpl).symbol = field.toSymbol()
@@ -49,17 +28,9 @@ class SetupPass : SingleVisitorAstPass() {
             classType.classSymbol = classSymbol // TODO generic way to resolve reference element
         }
 
-        override fun visitReferenceExpr(expr: LangReferenceExpr) {
-            super.visitReferenceExpr(expr)
-            val symbol = expr.resolve() as? ClassSymbol ?: return
-            symbol.type.classSymbol = symbol
-        }
-
-        override fun visitCallExpr(expr: LangCallExpr) {
-            super.visitCallExpr(expr)
-            val caller = expr.caller as? LangReferenceExpr ?: return
-            val symbol = caller.resolve() as? MethodSymbol ?: return // No return, make error
-            (caller.type as? MethodReferenceType)?.methodSymbol = symbol
+        override fun visitConstructor(constructor: LangConstructor) {
+            super.visitConstructor(constructor)
+            (constructor as LangConstructorImpl).symbol = constructor.toSymbol()
         }
 
         override fun visitClass(cls: LangClass) {
@@ -80,7 +51,26 @@ class SetupPass : SingleVisitorAstPass() {
                 }
             }
         }
+
+        override fun visitMethod(method: LangMethod) {
+            val classType = method.returnType as? ClassType ?: return
+            val symbol = method.scope.resolve(classType.name, null)
+            classType.classSymbol = symbol as? ClassSymbol ?: return
+        }
+
+        //        override fun visitExpr(expr: LangExpr) {
+//            super.visitExpr(expr)
+//            if (expr.parent !is LangCallExpr) return
+//            expr as? LangReferenceExpr ?: return
+//            val symbol = expr.resolve() as? MethodSymbol ?: return
+//            val methodReferenceType = expr.type as? MethodReferenceType
+//            if (methodReferenceType != null) {
+//                methodReferenceType.methodSymbol = symbol
+//            } else {
+//                throw UnsupportedOperationException()
+//            }
+//        }
     }
 
-    override val name: String = "Setup"
+    override val name: String = "Top level setup"
 }

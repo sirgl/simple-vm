@@ -65,20 +65,22 @@ brLoop() -> V
 5	NOOP
 
 fnTest() -> V
-0	ILOAD_CONST #14 ->  12
-1	CALL_VIRTUAL #36 ->  ..A.myFn(i : I) -> V
-2	POP
-3	NOOP
+0	RLOAD_SLOT 0
+1	ILOAD_CONST #14 ->  12
+2	CALL_VIRTUAL #36 ->  ..A.myFn(i : I) -> V
+3	POP
+4	NOOP
 
 vTest() -> V
 0	ILOAD_CONST #39 ->  2
 1	ISTORE_SLOT 1
 2	ILOAD_CONST #14 ->  12
-3	CALL_VIRTUAL #41 ->  ..A.myIntFunc() -> I
-4	ADD
-5	ISTORE_SLOT 1
-6	POP
-7	NOOP
+3	RLOAD_SLOT 0
+4	CALL_VIRTUAL #41 ->  ..A.myIntFunc() -> I
+5	ADD
+6	ISTORE_SLOT 1
+7	POP
+8	NOOP
 
 paramTest(x : I) -> I
 0	ILOAD_SLOT 1
@@ -121,6 +123,13 @@ retConversion() -> I
 1	C2I
 2	RETURN
 3	NOOP
+
+constuctCallChain() -> V
+0	CALL_CONSTRUCTOR #59 ->  ..B.__init__() -> B
+1	CALL_VIRTUAL #60 ->  ..B.a() -> A
+2	CALL_VIRTUAL #56 ->  ..A.retConversion() -> I
+3	ISTORE_SLOT 1
+4	NOOP
 
 myFn(i : I) -> V
 0	NOOP

@@ -227,15 +227,17 @@ class CodegenPass : SingleVisitorAstPass() {
                     // TODO
                 }
                 is LangCallExpr -> {
-                    // TODO load this if not qualified
-
-
+                    val caller = expr.caller
+                    val callerType = caller.type
+                    if (caller is LangReferenceExpr && !caller.isQualified && callerType !is ClassType) {
+                        emitLoadThis(methodWriter)
+                    } else {
+                        generateExpr(methodWriter, caller)
+                    }
                     for (argument in expr.arguments) {
                         generateExpr(methodWriter, argument)
                     }
-                    val caller = expr.caller
                     // TODO handle here constructors
-                    val callerType = caller.type
                     val methodSymbol = when (callerType) {
                         is MethodReferenceType -> callerType.methodSymbol
                         is ClassType -> callerType.classSymbol.constructor!!

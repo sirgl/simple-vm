@@ -5,11 +5,9 @@ import sirgl.simple.vm.analysis.SemanticAnalysisPass
 import sirgl.simple.vm.ast.bypass.SimpleWalker
 import sirgl.simple.vm.defaultInspections
 import sirgl.simple.vm.driver.CompileJob
-import sirgl.simple.vm.driver.phases.AstBuildingPhase
-import sirgl.simple.vm.driver.phases.AstBypassesPhase
-import sirgl.simple.vm.driver.phases.CommonTypesSetupPhase
-import sirgl.simple.vm.driver.phases.StdLibInjectionPhase
-import sirgl.simple.vm.driver.phases.passes.SetupPass
+import sirgl.simple.vm.driver.phases.*
+import sirgl.simple.vm.driver.phases.passes.SetupReferencesPass
+import sirgl.simple.vm.driver.phases.passes.SetupTopLevelPass
 import sirgl.simple.vm.roots.*
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
@@ -50,10 +48,12 @@ fun runCompilerJobAndGetErrors(sources: List<FileSymbolSource>): String {
                         ),
                         AstBuildingPhase(),
                         CommonTypesSetupPhase(),
+                        SetupTopLevelPhase(),
+                        SetupMethodRefernecesSymbolsPhase(),
                         AstBypassesPhase(
                                 walker = SimpleWalker(),
                                 passes = mutableListOf(
-                                        SetupPass(),
+                                        SetupReferencesPass(),
                                         SemanticAnalysisPass(
                                                 inspections = defaultInspections(ProblemHolderImpl(it.errorSink))
                                         )
