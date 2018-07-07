@@ -117,3 +117,5 @@ retConversion() -> I
 myFn(i : I) -> V
 0	NOOP
 
+natFn() -> V
+
