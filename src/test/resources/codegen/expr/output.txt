@@ -5,9 +5,17 @@ Fields:
 	a : A
 	i : I
 Methods:
+__init__() -> A
+0	CALL_CONSTRUCTOR #7 ->  ..A.__init__() -> A
+1	RLOAD_SLOT 0
+2	RSTORE_FIELD #9 ->  a : A
+3	ILOAD_CONST #10 ->  23
+4	RLOAD_SLOT 0
+5	ISTORE_FIELD #13 ->  i : I
+
 exprResultDiscarded() -> I
-0	ILOAD_CONST #6 ->  12
-1	ILOAD_CONST #7 ->  33
+0	ILOAD_CONST #14 ->  12
+1	ILOAD_CONST #15 ->  33
 2	ADD
 3	POP
 4	NOOP
@@ -15,20 +23,20 @@ exprResultDiscarded() -> I
 condStmt(x : I) -> I
 0	LOAD_TRUE
 1	IF_FALSE 5
-2	ILOAD_CONST #11 ->  0
+2	ILOAD_CONST #18 ->  0
 3	RETURN
 4	GOTO 7
-5	ILOAD_CONST #12 ->  1
+5	ILOAD_CONST #19 ->  1
 6	RETURN
 7	NOOP
 
 loop() -> V
 0	GOTO 3
-1	ILOAD_CONST #6 ->  12
+1	ILOAD_CONST #14 ->  12
 2	POP
-3	ILOAD_CONST #6 ->  12
-4	ILOAD_CONST #17 ->  44
-5	ILOAD_CONST #18 ->  3
+3	ILOAD_CONST #14 ->  12
+4	ILOAD_CONST #24 ->  44
+5	ILOAD_CONST #25 ->  3
 6	SUB
 7	IGT
 8	IF_TRUE 1
@@ -57,16 +65,16 @@ brLoop() -> V
 5	NOOP
 
 fnTest() -> V
-0	ILOAD_CONST #6 ->  12
-1	CALL_VIRTUAL #31 ->  ..A.myFn(i : I) -> V
+0	ILOAD_CONST #14 ->  12
+1	CALL_VIRTUAL #36 ->  ..A.myFn(i : I) -> V
 2	POP
 3	NOOP
 
 vTest() -> V
-0	ILOAD_CONST #34 ->  2
+0	ILOAD_CONST #39 ->  2
 1	ISTORE_SLOT 1
-2	ILOAD_CONST #6 ->  12
-3	CALL_VIRTUAL #36 ->  ..A.myIntFunc() -> I
+2	ILOAD_CONST #14 ->  12
+3	CALL_VIRTUAL #41 ->  ..A.myIntFunc() -> I
 4	ADD
 5	ISTORE_SLOT 1
 6	POP
@@ -79,27 +87,27 @@ paramTest(x : I) -> I
 
 myFieldFunc() -> I
 0	RLOAD_SLOT 0
-1	ILOAD_FIELD #29 ->  i : I
+1	ILOAD_FIELD #13 ->  i : I
 2	RETURN
 3	NOOP
 
 myFieldStore() -> V
-0	ILOAD_CONST #43 ->  22
+0	ILOAD_CONST #48 ->  22
 1	RLOAD_SLOT 0
-2	ISTORE_FIELD #29 ->  i : I
+2	ISTORE_FIELD #13 ->  i : I
 3	POP
 4	NOOP
 
 myIntFunc() -> I
-0	ILOAD_CONST #18 ->  3
+0	ILOAD_CONST #25 ->  3
 1	RETURN
 2	NOOP
 
 typePromotion() -> V
-0	ILOAD_CONST #46 ->  97
+0	ILOAD_CONST #51 ->  97
 1	C2I
 2	ISTORE_SLOT 1
-3	ILOAD_CONST #47 ->  99
+3	ILOAD_CONST #52 ->  99
 4	C2I
 5	ISTORE_SLOT 2
 6	ILOAD_SLOT 2
@@ -109,7 +117,7 @@ typePromotion() -> V
 10	NOOP
 
 retConversion() -> I
-0	ILOAD_CONST #47 ->  99
+0	ILOAD_CONST #52 ->  99
 1	C2I
 2	RETURN
 3	NOOP

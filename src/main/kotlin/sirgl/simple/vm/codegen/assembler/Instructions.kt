@@ -161,6 +161,10 @@ class CallVirtualInstruction(val cpEntry: Short) : InlinedOperandInstruction(Opc
     override val inlineOp: Short
         get() = cpEntry
 }
+class CallConstructorInstruction(val cpEntry: Short) : InlinedOperandInstruction(Opcode.CALL_CONSTRUCTOR) {
+    override val inlineOp: Short
+        get() = cpEntry
+}
 
 class ReturnInstruction : SingleByteInstruction(Opcode.RETURN)
 class NoopInstruction : SingleByteInstruction(Opcode.NOOP)

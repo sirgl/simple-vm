@@ -74,6 +74,7 @@ enum class Opcode(val inlineOerandType: InlineOperandType) {
     TYPECHECK(InlineOperandType.ConstantPoolEntry),
 
     CALL_VIRTUAL(InlineOperandType.ConstantPoolEntry),
+    CALL_CONSTRUCTOR(InlineOperandType.ConstantPoolEntry),
     CALL_STATIC(InlineOperandType.ConstantPoolEntry),
     RETURN(InlineOperandType.NoInlineOperand),
     ;

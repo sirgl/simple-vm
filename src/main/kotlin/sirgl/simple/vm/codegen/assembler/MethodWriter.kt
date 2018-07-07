@@ -13,8 +13,8 @@ class MethodWriter(val classWriter: ClassWriter, isInstanceMethod: Boolean) {
     private var position = 0
     val breakGotos = mutableListOf<GotoInstruction>()
     val continueGotos = mutableListOf<GotoInstruction>()
-    var currentSlot: Short = if (isInstanceMethod) 1 else 0
-    val variables = mutableMapOf<VarSymbol, Short>()
+    private var currentSlot: Short = if (isInstanceMethod) 1 else 0
+    private val variables = mutableMapOf<VarSymbol, Short>()
 
     fun addParameter(parameterSymbol: ParameterSymbol) {
         variables.computeIfAbsent(parameterSymbol) {

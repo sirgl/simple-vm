@@ -19,6 +19,33 @@ class CodegenPass : SingleVisitorAstPass() {
 
         override fun visitClass(cls: LangClass) {
             classWriter = ClassWriter(cls.symbol)
+            val constructor = cls.constructors.firstOrNull()
+            val methodWriter = MethodWriter(classWriter, true)
+            for (field in cls.fields) {
+                val fieldInitializer = field.initializer
+                if (fieldInitializer != null) {
+                    generateExpr(methodWriter, fieldInitializer)
+                    emitLoadThis(methodWriter)
+                    val fieldDescr = getVarDescr(field)
+                    val type = field.type
+                    storeToFieldByType(methodWriter, type, fieldDescr)
+                }
+            }
+            val classType = cls.symbol.type
+            val returnTypeDescr = constantPool.addType(classType)
+            val classDescriptor = classWriter.classDescriptor
+            val parameterDescriptors: List<CPDescriptor>  = if (constructor != null) {
+                // no constructors without body
+                val block = constructor.block!!
+                generateBlock(methodWriter, block)
+                constructor.parameters.map { getVarDescr(it) }
+            } else {
+                emptyList()
+            }
+            val methodNameDescriptor = constantPool.addString("__init__")
+            val constructorDescr = constantPool.addMethod(classDescriptor, methodNameDescriptor, returnTypeDescr, parameterDescriptors)
+            classWriter.addMethodInfo(MethodWithBytecode(constructorDescr, methodWriter.getBytecode(), true))
+
         }
 
         override fun visitMethod(method: LangMethod) {
@@ -207,8 +234,13 @@ class CodegenPass : SingleVisitorAstPass() {
                         generateExpr(methodWriter, argument)
                     }
                     val caller = expr.caller
-                    val methodReferenceType = caller.type as MethodReferenceType
-                    val methodSymbol = methodReferenceType.methodSymbol
+                    // TODO handle here constructors
+                    val callerType = caller.type
+                    val methodSymbol = when (callerType) {
+                        is MethodReferenceType -> callerType.methodSymbol
+                        is ClassType -> callerType.classSymbol.constructor!!
+                        else -> throw UnsupportedOperationException()
+                    }
                     val returnTypeDescr = constantPool.addType(methodSymbol.returnType)
                     val parametersDescr = methodSymbol.parameters.map {
                         constantPool.addVar(constantPool.addType(it.type), constantPool.addString(it.name))
@@ -216,8 +248,10 @@ class CodegenPass : SingleVisitorAstPass() {
                     val methodNameDescriptor = constantPool.addString(methodSymbol.name)
                     val classDescriptor = getDescriptorByClassSymbol(methodSymbol.enclosingClass)
                     val methodDescr = constantPool.addMethod(classDescriptor, methodNameDescriptor, returnTypeDescr, parametersDescr)
-
-                    methodWriter.emit(CallVirtualInstruction(methodDescr))
+                    when (callerType) {
+                        is MethodReferenceType -> methodWriter.emit(CallVirtualInstruction(methodDescr))
+                        is ClassType -> methodWriter.emit(CallConstructorInstruction(methodDescr))
+                    }
                 }
                 is LangReferenceExpr -> {
                     expr.qualifier?.let { generateExpr(methodWriter, it) }
@@ -303,8 +337,8 @@ class CodegenPass : SingleVisitorAstPass() {
         }
 
 
-        private fun storeToFieldByType(methodWriter: MethodWriter, leftRefType: LangType, fieldDescr: CPDescriptor) {
-            methodWriter.emit(when (leftRefType) {
+        private fun storeToFieldByType(methodWriter: MethodWriter, type: LangType, fieldDescr: CPDescriptor) {
+            methodWriter.emit(when (type) {
                 is ClassType, is ArrayType -> StoreFieldReferenceInstruction(fieldDescr)
                 is I32Type -> StoreFieldIntInstruction(fieldDescr)
                 is BoolType -> StoreFieldBoolInstruction(fieldDescr)
