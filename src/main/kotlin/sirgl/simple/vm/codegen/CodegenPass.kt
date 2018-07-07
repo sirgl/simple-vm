@@ -227,6 +227,14 @@ class CodegenPass : SingleVisitorAstPass() {
                             val slot = methodWriter.getVariableSlot(symbol)
                             loadFromSlotByType(methodWriter, type, slot)
                         }
+                        is FieldSymbol -> {
+                            val fieldType = symbol.type
+                            if (!expr.isQualified) {
+                                emitLoadThis(methodWriter)
+                            }
+                            val fieldDescr = getVarDescr(symbol)
+                            loadFromFieldByType(methodWriter, fieldType, fieldDescr)
+                        }
                     }
                 }
             }
@@ -244,12 +252,15 @@ class CodegenPass : SingleVisitorAstPass() {
                     val leftRefSymbol = leftRef.resolve()
                     when (leftRefSymbol) {
                         is FieldSymbol -> {
-                            if (!leftRef.isQualified) {
+                            val leftRefQualifier = leftRef.qualifier
+                            if (leftRefQualifier != null) {
+                                generateExpr(methodWriter, leftRefQualifier)
+                            } else {
                                 emitLoadThis(methodWriter)
                             }
                             val fieldType = leftRefSymbol.type
                             val fieldDescr = getVarDescr(leftRefSymbol)
-
+                            storeToFieldByType(methodWriter, fieldType, fieldDescr)
                         }
                         is ParameterSymbol, is LocalVarSymbol -> {
                             leftRefSymbol as VarSymbol
@@ -269,6 +280,17 @@ class CodegenPass : SingleVisitorAstPass() {
             methodWriter.emit(when (leftRefType) {
                 is ClassType, is ArrayType -> StoreReferenceInstruction(slot)
                 is I32Type -> StoreIntInstruction(slot)
+                is BoolType -> StoreBoolInstruction(slot)
+                else -> throw UnsupportedOperationException()
+            })
+        }
+
+
+        private fun storeToFieldByType(methodWriter: MethodWriter, leftRefType: LangType, fieldDescr: CPDescriptor) {
+            methodWriter.emit(when (leftRefType) {
+                is ClassType, is ArrayType -> StoreFieldReferenceInstruction(fieldDescr)
+                is I32Type -> StoreFieldIntInstruction(fieldDescr)
+                is BoolType -> StoreFieldBoolInstruction(fieldDescr)
                 else -> throw UnsupportedOperationException()
             })
         }
@@ -277,6 +299,16 @@ class CodegenPass : SingleVisitorAstPass() {
             methodWriter.emit(when (leftRefType) {
                 is ClassType, is ArrayType -> LoadReferenceInstruction(slot)
                 is I32Type -> LoadIntInstruction(slot)
+                is BoolType -> LoadBoolInstruction(slot)
+                else -> throw UnsupportedOperationException()
+            })
+        }
+
+        private fun loadFromFieldByType(methodWriter: MethodWriter, leftRefType: LangType, fieldDescr: CPDescriptor) {
+            methodWriter.emit(when (leftRefType) {
+                is ClassType, is ArrayType -> LoadFieldReferenceInstruction(fieldDescr)
+                is I32Type -> LoadFieldIntInstruction(fieldDescr)
+                is BoolType -> LoadFieldBoolInstruction(fieldDescr)
                 else -> throw UnsupportedOperationException()
             })
         }

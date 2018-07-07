@@ -120,7 +120,8 @@ class ClassRepr(
                         append(constantPool.resolve(operand)?.getPresentableContent(constantPool)
                                 ?: "<Unknown constant>")
                     }
-                    InlineOperandType.Label, InlineOperandType.VariableSlot -> append(instructionIndex[operand.toInt()])
+                    InlineOperandType.Label -> append(instructionIndex[operand.toInt()])
+                    InlineOperandType.VariableSlot -> append(operand.toInt())
                 }
             }
             append("\n")

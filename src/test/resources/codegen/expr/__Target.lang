@@ -54,6 +54,15 @@ class A {
         return x;
     }
 
+
+    fun myFieldFunc() : i32 {
+        return i;
+    }
+
+    fun myFieldStore() {
+        i = 22;
+    }
+
     fun myIntFunc() : i32 {
         return 3;
     }

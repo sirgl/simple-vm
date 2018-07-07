@@ -95,11 +95,6 @@ class StoreIntInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.IS
         get() = slot
 }
 
-class StoreCharInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.CSTORE_SLOT) {
-    override val inlineOp: Short
-        get() = slot
-}
-
 class StoreBoolInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.BSTORE_SLOT) {
     override val inlineOp: Short
         get() = slot
@@ -115,11 +110,6 @@ class LoadIntInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.ILO
         get() = slot
 }
 
-class LoadCharInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.CLOAD_SLOT) {
-    override val inlineOp: Short
-        get() = slot
-}
-
 class LoadBoolInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.BLOAD_SLOT) {
     override val inlineOp: Short
         get() = slot
@@ -128,6 +118,36 @@ class LoadBoolInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.BL
 class LoadReferenceInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.RLOAD_SLOT) {
     override val inlineOp: Short
         get() = slot
+}
+
+class StoreFieldIntInstruction(val descriptor: CPDescriptor) : InlinedOperandInstruction(Opcode.ISTORE_FIELD) {
+    override val inlineOp: CPDescriptor
+        get() = descriptor
+}
+
+class StoreFieldBoolInstruction(val descriptor: CPDescriptor) : InlinedOperandInstruction(Opcode.BSTORE_FIELD) {
+    override val inlineOp: CPDescriptor
+        get() = descriptor
+}
+
+class StoreFieldReferenceInstruction(val descriptor: CPDescriptor) : InlinedOperandInstruction(Opcode.RSTORE_FIELD) {
+    override val inlineOp: CPDescriptor
+        get() = descriptor
+}
+
+class LoadFieldIntInstruction(val descriptor: CPDescriptor) : InlinedOperandInstruction(Opcode.ILOAD_FIELD) {
+    override val inlineOp: CPDescriptor
+        get() = descriptor
+}
+
+class LoadFieldBoolInstruction(val descriptor: CPDescriptor) : InlinedOperandInstruction(Opcode.BLOAD_FIELD) {
+    override val inlineOp: CPDescriptor
+        get() = descriptor
+}
+
+class LoadFieldReferenceInstruction(val descriptor: CPDescriptor) : InlinedOperandInstruction(Opcode.RLOAD_FIELD) {
+    override val inlineOp: CPDescriptor
+        get() = descriptor
 }
 
 class PopInstruction : SingleByteInstruction(Opcode.POP)

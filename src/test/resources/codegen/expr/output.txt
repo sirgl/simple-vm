@@ -64,18 +64,31 @@ fnTest() -> V
 
 vTest() -> V
 0	ILOAD_CONST #34 ->  2
-1	ISTORE_SLOT 0
+1	ISTORE_SLOT 1
 2	ILOAD_CONST #6 ->  12
 3	CALL_VIRTUAL #36 ->  ..A.myIntFunc() -> I
 4	ADD
-5	ISTORE_SLOT 0
+5	ISTORE_SLOT 1
 6	POP
 7	NOOP
 
 paramTest(x : I) -> I
-0	ILOAD_SLOT 0
+0	ILOAD_SLOT 1
 1	RETURN
 2	NOOP
+
+myFieldFunc() -> I
+0	RLOAD_SLOT 0
+1	ILOAD_FIELD #29 ->  i : I
+2	RETURN
+3	NOOP
+
+myFieldStore() -> V
+0	ILOAD_CONST #43 ->  22
+1	RLOAD_SLOT 0
+2	ISTORE_FIELD #29 ->  i : I
+3	POP
+4	NOOP
 
 myIntFunc() -> I
 0	ILOAD_CONST #18 ->  3

@@ -46,17 +46,29 @@ enum class Opcode(val inlineOerandType: InlineOperandType) {
     I2C(InlineOperandType.NoInlineOperand),
     C2I(InlineOperandType.NoInlineOperand),
 
-    // store
+    // store value to slot
     ISTORE_SLOT(InlineOperandType.VariableSlot), // int
     CSTORE_SLOT(InlineOperandType.VariableSlot), // char
     BSTORE_SLOT(InlineOperandType.VariableSlot), // boolean
     RSTORE_SLOT(InlineOperandType.VariableSlot), // reference
 
-    // load
+    // load value from slot
     ILOAD_SLOT(InlineOperandType.VariableSlot), // int
     CLOAD_SLOT(InlineOperandType.VariableSlot), // char
     BLOAD_SLOT(InlineOperandType.VariableSlot), // boolean
     RLOAD_SLOT(InlineOperandType.VariableSlot), // reference
+
+    // store value to field
+    ISTORE_FIELD(InlineOperandType.ConstantPoolEntry), // int
+    CSTORE_FIELD(InlineOperandType.ConstantPoolEntry), // char
+    BSTORE_FIELD(InlineOperandType.ConstantPoolEntry), // boolean
+    RSTORE_FIELD(InlineOperandType.ConstantPoolEntry), // reference
+
+    // load value from field
+    ILOAD_FIELD(InlineOperandType.ConstantPoolEntry), // int
+    CLOAD_FIELD(InlineOperandType.ConstantPoolEntry), // char
+    BLOAD_FIELD(InlineOperandType.ConstantPoolEntry), // boolean
+    RLOAD_FIELD(InlineOperandType.ConstantPoolEntry), // reference
 
     // typecheck
     TYPECHECK(InlineOperandType.ConstantPoolEntry),

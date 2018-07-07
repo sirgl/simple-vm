@@ -69,6 +69,7 @@ class ClassSymbolImpl(
 
 }
 
+// This should be refactored!
 fun LangClass.toSymbol(globalScope: GlobalScope): ClassSymbol {
     val file = this.parent
     val packageSymbol = file.packageDeclaration?.toSymbol(globalScope) ?: globalScope.root
