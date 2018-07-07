@@ -81,5 +81,7 @@ class A {
 
     var a: A = A();
 
+    native fun natFn()
+
     var i : i32 = 23;
 }

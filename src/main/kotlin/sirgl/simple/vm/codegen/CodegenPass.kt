@@ -28,7 +28,8 @@ class CodegenPass : SingleVisitorAstPass() {
                 methodWriter.addParameter(parameter)
             }
             if (block == null) {
-                TODO("Handle native methods")
+                createMethod(method, null, true)
+                return
             } else {
                 setupLocalVarSlots(methodWriter, block)
                 generateBlock(methodWriter, block)
@@ -36,12 +37,16 @@ class CodegenPass : SingleVisitorAstPass() {
             methodWriter.emit(NoopInstruction())
             val bytecode = methodWriter.getBytecode()
 
+            createMethod(method, bytecode)
+        }
+
+        private fun LangVisitor.createMethod(method: LangMethod, bytecode: ByteArray?, isNative: Boolean = false) {
             val returnTypeDescr = constantPool.addType(method.returnType)
             val parameterDescriptors = method.parameters.map { getVarDescr(it) }
             val classDescriptor = getDescriptorByClassSymbol(method.enclosingClass.symbol)
             val methodNameDescriptor = constantPool.addString(method.name)
             val methodDescr = constantPool.addMethod(classDescriptor, methodNameDescriptor, returnTypeDescr, parameterDescriptors)
-            classWriter.addMethodInfo(MethodWithBytecode(methodDescr, bytecode))
+            classWriter.addMethodInfo(MethodWithBytecode(methodDescr, bytecode, isNative))
         }
 
         private fun setupLocalVarSlots(methodWriter: MethodWriter, block: LangBlock) {

@@ -2,5 +2,6 @@ package sirgl.simple.vm.codegen.assembler
 
 class MethodWithBytecode(
         val descr: CPDescriptor,
-        val bytecode: ByteArray
+        val bytecode: ByteArray?,
+        val isNative: Boolean = false
 )

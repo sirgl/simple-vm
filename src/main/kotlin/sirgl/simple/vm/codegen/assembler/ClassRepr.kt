@@ -101,32 +101,34 @@ class ClassRepr(
 
     fun StringBuilder.appendMethodBody(method: MethodWithBytecode) {
         val bytecode = method.bytecode
-        val instructionIndex = createInstructionIndex(bytecode)
-        var i = 0
-        val bytecodeLength = bytecode.size
-        var currentInstructionNumber = 0
-        while (i < bytecodeLength) {
-            val b = bytecode[i]
-            val opcode = Opcode.values()[b.toInt()]
-            append(currentInstructionNumber).append("\t").append(opcode)
-            if (opcode.hasInlineOperand) {
-                append(" ")
-                val operand = (bytecode[i + 1].toInt() or (bytecode[i + 2].toInt() shl 8)).toShort()
-                i += 2
-                when (opcode.inlineOerandType) {
-                    InlineOperandType.NoInlineOperand -> throw IllegalStateException()
-                    InlineOperandType.ConstantPoolEntry -> {
-                        append("#$operand ->  ")
-                        append(constantPool.resolve(operand)?.getPresentableContent(constantPool)
-                                ?: "<Unknown constant>")
+        if (bytecode != null) {
+            val instructionIndex = createInstructionIndex(bytecode)
+            var i = 0
+            val bytecodeLength = bytecode.size
+            var currentInstructionNumber = 0
+            while (i < bytecodeLength) {
+                val b = bytecode[i]
+                val opcode = Opcode.values()[b.toInt()]
+                append(currentInstructionNumber).append("\t").append(opcode)
+                if (opcode.hasInlineOperand) {
+                    append(" ")
+                    val operand = (bytecode[i + 1].toInt() or (bytecode[i + 2].toInt() shl 8)).toShort()
+                    i += 2
+                    when (opcode.inlineOerandType) {
+                        InlineOperandType.NoInlineOperand -> throw IllegalStateException()
+                        InlineOperandType.ConstantPoolEntry -> {
+                            append("#$operand ->  ")
+                            append(constantPool.resolve(operand)?.getPresentableContent(constantPool)
+                                    ?: "<Unknown constant>")
+                        }
+                        InlineOperandType.Label -> append(instructionIndex[operand.toInt()])
+                        InlineOperandType.VariableSlot -> append(operand.toInt())
                     }
-                    InlineOperandType.Label -> append(instructionIndex[operand.toInt()])
-                    InlineOperandType.VariableSlot -> append(operand.toInt())
                 }
+                append("\n")
+                i++
+                currentInstructionNumber++
             }
-            append("\n")
-            i++
-            currentInstructionNumber++
         }
     }
 
