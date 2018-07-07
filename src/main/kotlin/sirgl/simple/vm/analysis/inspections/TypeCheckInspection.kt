@@ -101,6 +101,8 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
 
         private fun LangExpr.mustBeAssignableTo(type: LangType) {
             val exprType = this.type
+            val subtypeStatus = exprType.subtypeStatus(type)
+            this.promoteToType = subtypeStatus.promoteTo
             if (!exprType.isAssignableTo(type)) {
                 problemHolder.registerProblem(
                         this,
@@ -153,6 +155,8 @@ class TypeCheckInspection(override val problemHolder: ProblemHolder) :
         }
         for ((index, parameterSignature) in methodSymbol.parameters.withIndex()) {
             val argument = arguments[index]
+            val subtypeStatus = argument.type.subtypeStatus(parameterSignature.type)
+            argument.promoteToType = subtypeStatus.promoteTo
             if (!argument.type.isAssignableTo(parameterSignature.type)) {
                 val description =
                         "Argument type expected to be ${parameterSignature.type.name} but was ${argument.type.name}"

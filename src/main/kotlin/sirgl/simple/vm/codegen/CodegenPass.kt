@@ -159,10 +159,7 @@ class CodegenPass : SingleVisitorAstPass() {
                 is LangCastExpr -> {
                     val targetType = expr.targetType
                     val castingExprType = expr.expr.type
-                    when {
-                        castingExprType === I32Type && targetType === I8Type -> methodWriter.emit(ConvertIntToCharInstruction())
-                        castingExprType === I8Type && targetType === I32Type -> methodWriter.emit(ConvertCharToIntInstruction())
-                    }
+                    generateTypePromotion(castingExprType, targetType, methodWriter)
                 }
                 is LangPrefixExpr -> {
                     generateExpr(methodWriter, expr.expr)
@@ -238,6 +235,17 @@ class CodegenPass : SingleVisitorAstPass() {
                     }
                 }
             }
+            val typePromotion = expr.promoteToType
+            if (typePromotion != null) {
+                generateTypePromotion(expr.type, typePromotion, methodWriter)
+            }
+        }
+
+        private fun generateTypePromotion(castingExprType: LangType, targetType: LangType, methodWriter: MethodWriter) {
+            when {
+                castingExprType === I32Type && targetType === I8Type -> methodWriter.emit(ConvertIntToCharInstruction())
+                castingExprType === I8Type && targetType === I32Type -> methodWriter.emit(ConvertCharToIntInstruction())
+            }
         }
 
         private fun generateAssignExpr(methodWriter: MethodWriter, expr: LangAssignExpr) {
@@ -277,12 +285,16 @@ class CodegenPass : SingleVisitorAstPass() {
         }
 
         private fun storeToSlotByType(methodWriter: MethodWriter, leftRefType: LangType, slot: Short) {
-            methodWriter.emit(when (leftRefType) {
-                is ClassType, is ArrayType -> StoreReferenceInstruction(slot)
-                is I32Type -> StoreIntInstruction(slot)
-                is BoolType -> StoreBoolInstruction(slot)
+            when (leftRefType) {
+                is ClassType, is ArrayType -> methodWriter.emit(StoreReferenceInstruction(slot))
+                is I32Type -> methodWriter.emit(StoreIntInstruction(slot))
+                is BoolType -> methodWriter.emit(StoreBoolInstruction(slot))
+                is I8Type -> {
+                    methodWriter.emit(ConvertCharToIntInstruction())
+                    methodWriter.emit(StoreIntInstruction(slot))
+                }
                 else -> throw UnsupportedOperationException()
-            })
+            }
         }
 
 
@@ -296,12 +308,16 @@ class CodegenPass : SingleVisitorAstPass() {
         }
 
         private fun loadFromSlotByType(methodWriter: MethodWriter, leftRefType: LangType, slot: Short) {
-            methodWriter.emit(when (leftRefType) {
-                is ClassType, is ArrayType -> LoadReferenceInstruction(slot)
-                is I32Type -> LoadIntInstruction(slot)
-                is BoolType -> LoadBoolInstruction(slot)
+            when (leftRefType) {
+                is ClassType, is ArrayType -> methodWriter.emit(LoadReferenceInstruction(slot))
+                is I32Type -> methodWriter.emit(LoadIntInstruction(slot))
+                is BoolType -> methodWriter.emit(LoadBoolInstruction(slot))
+                is I8Type -> {
+                    methodWriter.emit(LoadIntInstruction(slot))
+                    methodWriter.emit(ConvertIntToCharInstruction())
+                }
                 else -> throw UnsupportedOperationException()
-            })
+            }
         }
 
         private fun loadFromFieldByType(methodWriter: MethodWriter, leftRefType: LangType, fieldDescr: CPDescriptor) {

@@ -95,6 +95,25 @@ myIntFunc() -> I
 1	RETURN
 2	NOOP
 
+typePromotion() -> V
+0	ILOAD_CONST #46 ->  97
+1	C2I
+2	ISTORE_SLOT 1
+3	ILOAD_CONST #47 ->  99
+4	C2I
+5	ISTORE_SLOT 2
+6	ILOAD_SLOT 2
+7	I2C
+8	C2I
+9	ISTORE_SLOT 3
+10	NOOP
+
+retConversion() -> I
+0	ILOAD_CONST #47 ->  99
+1	C2I
+2	RETURN
+3	NOOP
+
 myFn(i : I) -> V
 0	NOOP
 

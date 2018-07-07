@@ -67,6 +67,16 @@ class A {
         return 3;
     }
 
+    fun typePromotion()  {
+        var prom: i32 = 'a';
+        var ch: i8 = 'c';
+        var x: i32 = ch;
+    }
+
+    fun retConversion() : i32 {
+        return 'c';
+    }
+
     fun myFn(i: i32) {}
 
     var a: A = A();
