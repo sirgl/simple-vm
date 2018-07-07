@@ -18,7 +18,6 @@ class LangVarDeclStmtImpl(
 ) : LangStmtImpl(startLexeme, endLexeme), LangVarDeclStmt {
     override val type: LangType
         get() = typeElement.type
-    override var slot: Short = -1
     override lateinit var symbol: LocalVarSymbol
 
     override fun accept(visitor: LangVisitor) {

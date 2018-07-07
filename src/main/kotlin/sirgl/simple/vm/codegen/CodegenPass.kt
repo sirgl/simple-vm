@@ -1,18 +1,15 @@
 package sirgl.simple.vm.codegen
 
 import sirgl.simple.vm.ast.*
+import sirgl.simple.vm.ast.bypass.SimpleWalker
 import sirgl.simple.vm.ast.expr.*
 import sirgl.simple.vm.ast.stmt.*
 import sirgl.simple.vm.ast.support.LangVarDecl
 import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.codegen.assembler.*
-import sirgl.simple.vm.codegen.assembler.MethodWriter
 import sirgl.simple.vm.driver.phases.SingleVisitorAstPass
-import sirgl.simple.vm.resolve.symbols.ClassSymbol
-import sirgl.simple.vm.type.ClassType
-import sirgl.simple.vm.type.I32Type
-import sirgl.simple.vm.type.I8Type
-import sirgl.simple.vm.type.MethodReferenceType
+import sirgl.simple.vm.resolve.symbols.*
+import sirgl.simple.vm.type.*
 
 class CodegenPass : SingleVisitorAstPass() {
     override val name: String = "Codegen"
@@ -25,11 +22,15 @@ class CodegenPass : SingleVisitorAstPass() {
         }
 
         override fun visitMethod(method: LangMethod) {
-            val methodWriter = MethodWriter(classWriter)
+            val methodWriter = MethodWriter(classWriter, true)
             val block = method.block
+            for (parameter in method.symbol.parameters) {
+                methodWriter.addParameter(parameter)
+            }
             if (block == null) {
                 TODO("Handle native methods")
             } else {
+                setupLocalVarSlots(methodWriter, block)
                 generateBlock(methodWriter, block)
             }
             methodWriter.emit(NoopInstruction())
@@ -43,6 +44,13 @@ class CodegenPass : SingleVisitorAstPass() {
             classWriter.addMethodInfo(MethodWithBytecode(methodDescr, bytecode))
         }
 
+        private fun setupLocalVarSlots(methodWriter: MethodWriter, block: LangBlock) {
+            SimpleWalker().prepassRecursive(block) {
+                val varDecl = it as? LangVarDeclStmt ?: return@prepassRecursive
+                varDecl.symbol.slot = methodWriter.addLocalVariable(varDecl.symbol)
+            }
+        }
+
         private fun getDescriptorByClassSymbol(classSymbol: ClassSymbol) =
                 constantPool.addClass(classSymbol.packageSymbol.name, classSymbol.simpleName)
 
@@ -51,8 +59,14 @@ class CodegenPass : SingleVisitorAstPass() {
         }
 
         private fun getVarDescr(variable: LangVarDecl): CPDescriptor {
-            val typeDescr = constantPool.addType(variable.type)
-            val nameDescr = constantPool.addString(variable.name)
+            return getVarDescr(variable.name, variable.type)
+        }
+
+        private fun getVarDescr(symbol: VarSymbol) = getVarDescr(symbol.name, symbol.type)
+
+        private fun getVarDescr(name: String, type: LangType): CPDescriptor {
+            val typeDescr = constantPool.addType(type)
+            val nameDescr = constantPool.addString(name)
             return constantPool.addVar(typeDescr, nameDescr)
         }
 
@@ -119,6 +133,13 @@ class CodegenPass : SingleVisitorAstPass() {
                     }
                     methodWriter.emit(ReturnInstruction())
                 }
+                is LangVarDeclStmt -> {
+                    stmt.initializer?.let { generateExpr(methodWriter, it) }
+                    val varSymbol = stmt.symbol
+                    val slot = methodWriter.getVariableSlot(varSymbol)
+                    val type = varSymbol.type
+                    storeToSlotByType(methodWriter, type, slot)
+                }
             }
         }
 
@@ -152,9 +173,7 @@ class CodegenPass : SingleVisitorAstPass() {
                 }
                 is LangNullExpr -> methodWriter.emit(LoadNullInstruction())
                 is LangParenExpr -> generateExpr(methodWriter, expr.expr)
-                is LangAssignExpr -> {
-                    // TODO
-                }
+                is LangAssignExpr -> generateAssignExpr(methodWriter, expr)
                 is LangCharLiteralExpr -> {
                     val cpDescriptor = constantPool.addChar(expr.value)
                     methodWriter.emit(IloadConstInstruction(cpDescriptor))
@@ -199,9 +218,71 @@ class CodegenPass : SingleVisitorAstPass() {
                     methodWriter.emit(CallVirtualInstruction(methodDescr))
                 }
                 is LangReferenceExpr -> {
-                    // TODO
+                    expr.qualifier?.let { generateExpr(methodWriter, it) }
+                    val symbol = expr.resolve()
+                    when (symbol) {
+                        is LocalVarSymbol, is ParameterSymbol -> {
+                            symbol as VarSymbol
+                            val type = symbol.type
+                            val slot = methodWriter.getVariableSlot(symbol)
+                            loadFromSlotByType(methodWriter, type, slot)
+                        }
+                    }
                 }
             }
+        }
+
+        private fun generateAssignExpr(methodWriter: MethodWriter, expr: LangAssignExpr) {
+            generateExpr(methodWriter, expr.rightValue)
+            val leftRef = expr.leftRef
+            when (leftRef) {
+                is LangReferenceExpr -> {
+                    val qualifier = leftRef.qualifier
+                    if (qualifier != null) {
+                        generateExpr(methodWriter, qualifier)
+                    }
+                    val leftRefSymbol = leftRef.resolve()
+                    when (leftRefSymbol) {
+                        is FieldSymbol -> {
+                            if (!leftRef.isQualified) {
+                                emitLoadThis(methodWriter)
+                            }
+                            val fieldType = leftRefSymbol.type
+                            val fieldDescr = getVarDescr(leftRefSymbol)
+
+                        }
+                        is ParameterSymbol, is LocalVarSymbol -> {
+                            leftRefSymbol as VarSymbol
+                            val leftRefType = leftRefSymbol.type
+                            val slot = methodWriter.getVariableSlot(leftRefSymbol)
+                            storeToSlotByType(methodWriter, leftRefType, slot)
+                        }
+                    }
+                }
+                else -> {
+                    throw UnsupportedOperationException("Unsupported operation")
+                }
+            }
+        }
+
+        private fun storeToSlotByType(methodWriter: MethodWriter, leftRefType: LangType, slot: Short) {
+            methodWriter.emit(when (leftRefType) {
+                is ClassType, is ArrayType -> StoreReferenceInstruction(slot)
+                is I32Type -> StoreIntInstruction(slot)
+                else -> throw UnsupportedOperationException()
+            })
+        }
+
+        private fun loadFromSlotByType(methodWriter: MethodWriter, leftRefType: LangType, slot: Short) {
+            methodWriter.emit(when (leftRefType) {
+                is ClassType, is ArrayType -> LoadReferenceInstruction(slot)
+                is I32Type -> LoadIntInstruction(slot)
+                else -> throw UnsupportedOperationException()
+            })
+        }
+
+        private fun emitLoadThis(methodWriter: MethodWriter) {
+            methodWriter.emit(LoadReferenceInstruction(0))
         }
 
         private val constantPool get() = classWriter.constantPool

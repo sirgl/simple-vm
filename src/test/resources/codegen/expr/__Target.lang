@@ -45,6 +45,19 @@ class A {
         myFn(12);
     }
 
+    fun vTest() {
+        var x : i32 = 2;
+        x = 12 + myIntFunc();
+    }
+
+    fun paramTest(x: i32): i32 {
+        return x;
+    }
+
+    fun myIntFunc() : i32 {
+        return 3;
+    }
+
     fun myFn(i: i32) {}
 
     var a: A = A();

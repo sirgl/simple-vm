@@ -8,6 +8,7 @@ import sirgl.simple.vm.ast.visitor.LangVisitor
 import sirgl.simple.vm.lexer.Lexeme
 import sirgl.simple.vm.resolve.LocalScope
 import sirgl.simple.vm.resolve.Scope
+import sirgl.simple.vm.resolve.symbols.MethodSymbol
 import sirgl.simple.vm.type.ClassType
 import sirgl.simple.vm.type.LangType
 
@@ -18,6 +19,7 @@ class LangConstructorImpl(
         endLexeme: Lexeme,
         override val isNative: Boolean
 ) : LangMemberImpl(startLexeme, endLexeme), LangConstructor {
+    override lateinit var symbol: MethodSymbol
     override val scope: Scope = LocalScope(this)
 
     override val returnType: LangType by lazy { ClassType(enclosingClass.simpleName) }

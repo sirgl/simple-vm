@@ -2,9 +2,11 @@ package sirgl.simple.vm.driver.phases.passes
 
 import sirgl.simple.vm.ast.LangClass
 import sirgl.simple.vm.ast.LangField
+import sirgl.simple.vm.ast.LangMethod
 import sirgl.simple.vm.ast.LangParameter
 import sirgl.simple.vm.ast.expr.LangCallExpr
 import sirgl.simple.vm.ast.expr.LangReferenceExpr
+import sirgl.simple.vm.ast.ext.getParentOfClass
 import sirgl.simple.vm.ast.ext.getScope
 import sirgl.simple.vm.ast.impl.LangFieldImpl
 import sirgl.simple.vm.ast.impl.LangParameterImpl
@@ -35,7 +37,6 @@ class SetupPass : SingleVisitorAstPass() {
 
         override fun visitParameter(parameter: LangParameter) {
             super.visitParameter(parameter)
-            (parameter as LangParameterImpl).symbol = parameter.toSymbol()
             parameter.getScope().register(parameter.symbol, parameter)
         }
 

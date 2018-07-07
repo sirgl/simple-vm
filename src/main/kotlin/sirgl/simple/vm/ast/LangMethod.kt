@@ -5,6 +5,5 @@ import sirgl.simple.vm.resolve.symbols.MethodSymbol
 
 interface LangMethod : LangMember, LangFunction {
     val name: String
-    val symbol: MethodSymbol
     val returnTypeElement: LangTypeElement?
 }

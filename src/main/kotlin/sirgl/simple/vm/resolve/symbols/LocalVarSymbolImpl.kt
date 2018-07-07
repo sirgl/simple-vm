@@ -12,6 +12,7 @@ class LocalVarSymbolImpl(
         val element: AstNode,
         varNode: LangVarDeclStmt
 ) : LocalVarSymbol {
+    override var slot: Short = 0
     override val offset: Int = varNode.endOffset
     override val symbolSource: SymbolSource by lazy { element.getSymbolSource() }
 }

@@ -1,6 +1,10 @@
 package sirgl.simple.vm.resolve.symbols
 
 import sirgl.simple.vm.ast.*
+import sirgl.simple.vm.ast.impl.LangConstructorImpl
+import sirgl.simple.vm.ast.impl.LangFieldImpl
+import sirgl.simple.vm.ast.impl.LangMethodImpl
+import sirgl.simple.vm.ast.impl.LangParameterImpl
 import sirgl.simple.vm.driver.GlobalScope
 import sirgl.simple.vm.roots.SymbolSource
 import sirgl.simple.vm.type.ClassType
@@ -75,16 +79,28 @@ fun LangClass.toSymbol(globalScope: GlobalScope): ClassSymbol {
     val membersMultidefs = mutableMapOf<String, MutableSet<Symbol>>()
     for (method in methods) {
         val methodSymbol = method.toSymbol()
+        val methodImpl = method as LangMethodImpl
+        methodImpl.symbol = methodSymbol
+        for ((index, parameter) in methodSymbol.parameters.withIndex()) {
+            val p = methodImpl.parameters[index] as LangParameterImpl
+            p.symbol = parameter
+        }
         val methodName = method.name
         addHandlingProbableDuplication(memberSymbols, methodName, methodSymbol, membersMultidefs)
     }
     for (constructor: LangConstructor in constructors) {
         val methodSymbol = constructor.toSymbol()
+        (constructor as LangConstructorImpl).symbol = methodSymbol
+        for ((index, parameter) in methodSymbol.parameters.withIndex()) {
+            val p = constructor.parameters[index] as LangParameterImpl
+            p.symbol = parameter
+        }
         val methodName = constructorName
         addHandlingProbableDuplication(memberSymbols, methodName, methodSymbol, membersMultidefs)
     }
     for (field in fields) {
         val fieldSymbol = field.toSymbol()
+        (field as LangFieldImpl).symbol = fieldSymbol
         val fieldName = field.name
         addHandlingProbableDuplication(memberSymbols, fieldName, fieldSymbol, membersMultidefs)
     }

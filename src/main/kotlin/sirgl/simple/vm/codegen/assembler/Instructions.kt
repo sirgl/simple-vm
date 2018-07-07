@@ -90,22 +90,42 @@ class LoadNullInstruction : SingleByteInstruction(Opcode.LOAD_NULL)
 class ConvertCharToIntInstruction : SingleByteInstruction(Opcode.C2I)
 class ConvertIntToCharInstruction : SingleByteInstruction(Opcode.I2C)
 
-class StoreIntInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.ISTORE) {
+class StoreIntInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.ISTORE_SLOT) {
     override val inlineOp: Short
         get() = slot
 }
 
-class StoreCharInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.CSTORE) {
+class StoreCharInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.CSTORE_SLOT) {
     override val inlineOp: Short
         get() = slot
 }
 
-class StoreBoolInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.BSTORE) {
+class StoreBoolInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.BSTORE_SLOT) {
     override val inlineOp: Short
         get() = slot
 }
 
-class StoreReferenceInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.RSTORE) {
+class StoreReferenceInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.RSTORE_SLOT) {
+    override val inlineOp: Short
+        get() = slot
+}
+
+class LoadIntInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.ILOAD_SLOT) {
+    override val inlineOp: Short
+        get() = slot
+}
+
+class LoadCharInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.CLOAD_SLOT) {
+    override val inlineOp: Short
+        get() = slot
+}
+
+class LoadBoolInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.BLOAD_SLOT) {
+    override val inlineOp: Short
+        get() = slot
+}
+
+class LoadReferenceInstruction(val slot: Short) : InlinedOperandInstruction(Opcode.RLOAD_SLOT) {
     override val inlineOp: Short
         get() = slot
 }

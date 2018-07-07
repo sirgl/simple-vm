@@ -35,7 +35,9 @@ interface LengthSymbol : VarSymbol
 
 interface ParameterSymbol : VarSymbol, LocalSymbol
 
-interface LocalVarSymbol : VarSymbol, LocalSymbol
+interface LocalVarSymbol : VarSymbol, LocalSymbol {
+    var slot: Short
+}
 
 interface MethodSymbol : Symbol, MemberSymbol {
     val returnType: LangType

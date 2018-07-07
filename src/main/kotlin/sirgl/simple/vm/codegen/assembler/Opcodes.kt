@@ -47,10 +47,16 @@ enum class Opcode(val inlineOerandType: InlineOperandType) {
     C2I(InlineOperandType.NoInlineOperand),
 
     // store
-    ISTORE(InlineOperandType.VariableSlot), // int
-    CSTORE(InlineOperandType.VariableSlot), // char
-    BSTORE(InlineOperandType.VariableSlot), // boolean
-    RSTORE(InlineOperandType.VariableSlot), // reference
+    ISTORE_SLOT(InlineOperandType.VariableSlot), // int
+    CSTORE_SLOT(InlineOperandType.VariableSlot), // char
+    BSTORE_SLOT(InlineOperandType.VariableSlot), // boolean
+    RSTORE_SLOT(InlineOperandType.VariableSlot), // reference
+
+    // load
+    ILOAD_SLOT(InlineOperandType.VariableSlot), // int
+    CLOAD_SLOT(InlineOperandType.VariableSlot), // char
+    BLOAD_SLOT(InlineOperandType.VariableSlot), // boolean
+    RLOAD_SLOT(InlineOperandType.VariableSlot), // reference
 
     // typecheck
     TYPECHECK(InlineOperandType.ConstantPoolEntry),

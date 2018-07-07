@@ -62,6 +62,26 @@ fnTest() -> V
 2	POP
 3	NOOP
 
+vTest() -> V
+0	ILOAD_CONST #34 ->  2
+1	ISTORE_SLOT 0
+2	ILOAD_CONST #6 ->  12
+3	CALL_VIRTUAL #36 ->  ..A.myIntFunc() -> I
+4	ADD
+5	ISTORE_SLOT 0
+6	POP
+7	NOOP
+
+paramTest(x : I) -> I
+0	ILOAD_SLOT 0
+1	RETURN
+2	NOOP
+
+myIntFunc() -> I
+0	ILOAD_CONST #18 ->  3
+1	RETURN
+2	NOOP
+
 myFn(i : I) -> V
 0	NOOP
 
