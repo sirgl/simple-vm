@@ -65,6 +65,7 @@ class ConstantPool {
     }
 
     fun write(stream: DataOutputStream) {
+        stream.writeInt(orderList.size)
         for (entry in orderList) {
             stream.writeLabel(entry.label)
             entry.writeContent(stream)

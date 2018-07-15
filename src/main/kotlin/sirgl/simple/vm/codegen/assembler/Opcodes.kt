@@ -85,6 +85,18 @@ enum class Opcode(val inlineOerandType: InlineOperandType) {
         get() = inlineOerandType != InlineOperandType.NoInlineOperand
 }
 
+fun main(args: Array<String>) {
+//    println(Opcode.values().map {
+//        """static ${it.name}_INFO : OpcodeInfo = OpcodeInfo {
+//        name: "${it.name}",
+//        has_inline_operand: ${it.hasInlineOperand},
+//    };"""
+//    }.joinToString("\n\n"))
+    println(Opcode.values().map { it.name }.map { "Opcode::${it.first().toUpperCase() + it.substring(1).toLowerCase()} => &${it}_INFO," }.joinToString("\n"))
+//    val opcodes = Opcode.values().map { it.name }.joinToString("\n") { it.first().toUpperCase() + it.substring(1).toLowerCase() + "," }
+//    println(opcodes)
+}
+
 enum class InlineOperandType {
     NoInlineOperand,
     ConstantPoolEntry,

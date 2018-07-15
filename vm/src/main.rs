@@ -24,6 +24,7 @@ fn main() {
     let file = File::open("/Users/jetbrains/IdeaProjects/simple-vm/out.cls").unwrap();
     let reader = BufReader::new(file);
     let result = ClassFile::parse(reader);
+
     match result {
         Ok(cls) => {
             println!("ok");

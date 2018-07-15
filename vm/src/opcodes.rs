@@ -1,7 +1,7 @@
 use std::slice::Iter;
 
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum Opcode {
     Add = 0,
     Mul,
@@ -319,7 +319,68 @@ static RETURN_INFO: OpcodeInfo = OpcodeInfo {
     has_inline_operand: false,
 };
 
+static OPCODES: [Opcode; 50] = [
+    Opcode::Add,
+    Opcode::Mul,
+    Opcode::Sub,
+    Opcode::Div,
+    Opcode::Rem,
+    Opcode::Ilt,
+    Opcode::Ile,
+    Opcode::Igt,
+    Opcode::Ige,
+    Opcode::Ieq,
+    Opcode::Noop,
+    Opcode::Neg,
+    Opcode::Inv,
+    Opcode::Goto,
+    Opcode::IfTrue,
+    Opcode::IfFalse,
+    Opcode::IfNull,
+    Opcode::IfNotNull,
+    Opcode::IloadConst,
+    Opcode::CloadConst,
+    Opcode::SloadConst,
+    Opcode::LoadTrue,
+    Opcode::LoadFalse,
+    Opcode::LoadOne,
+    Opcode::LoadZero,
+    Opcode::LoadNull,
+    Opcode::Pop,
+    Opcode::I2c,
+    Opcode::C2i,
+    Opcode::IstoreSlot,
+    Opcode::CstoreSlot,
+    Opcode::BstoreSlot,
+    Opcode::RstoreSlot,
+    Opcode::IloadSlot,
+    Opcode::CloadSlot,
+    Opcode::BloadSlot,
+    Opcode::RloadSlot,
+    Opcode::IstoreField,
+    Opcode::CstoreField,
+    Opcode::BstoreField,
+    Opcode::RstoreField,
+    Opcode::IloadField,
+    Opcode::CloadField,
+    Opcode::BloadField,
+    Opcode::RloadField,
+    Opcode::Typecheck,
+    Opcode::CallVirtual,
+    Opcode::CallConstructor,
+    Opcode::CallStatic,
+    Opcode::Return
+];
+
 impl Opcode {
+    pub fn parse(byte: u8) -> Option<Opcode> {
+        if byte >= OPCODES.len() as u8 {
+            None
+        } else {
+            Some(OPCODES[byte as usize])
+        }
+    }
+
     pub fn as_byte(self) -> u8 {
         self as u8
     }
@@ -389,58 +450,6 @@ impl Opcode {
     }
 
     pub fn iterator() -> Iter<'static, Opcode> {
-        static OPCODES: [Opcode; 50] = [
-            Opcode::Add,
-            Opcode::Mul,
-            Opcode::Sub,
-            Opcode::Div,
-            Opcode::Rem,
-            Opcode::Ilt,
-            Opcode::Ile,
-            Opcode::Igt,
-            Opcode::Ige,
-            Opcode::Ieq,
-            Opcode::Noop,
-            Opcode::Neg,
-            Opcode::Inv,
-            Opcode::Goto,
-            Opcode::IfTrue,
-            Opcode::IfFalse,
-            Opcode::IfNull,
-            Opcode::IfNotNull,
-            Opcode::IloadConst,
-            Opcode::CloadConst,
-            Opcode::SloadConst,
-            Opcode::LoadTrue,
-            Opcode::LoadFalse,
-            Opcode::LoadOne,
-            Opcode::LoadZero,
-            Opcode::LoadNull,
-            Opcode::Pop,
-            Opcode::I2c,
-            Opcode::C2i,
-            Opcode::IstoreSlot,
-            Opcode::CstoreSlot,
-            Opcode::BstoreSlot,
-            Opcode::RstoreSlot,
-            Opcode::IloadSlot,
-            Opcode::CloadSlot,
-            Opcode::BloadSlot,
-            Opcode::RloadSlot,
-            Opcode::IstoreField,
-            Opcode::CstoreField,
-            Opcode::BstoreField,
-            Opcode::RstoreField,
-            Opcode::IloadField,
-            Opcode::CloadField,
-            Opcode::BloadField,
-            Opcode::RloadField,
-            Opcode::Typecheck,
-            Opcode::CallVirtual,
-            Opcode::CallConstructor,
-            Opcode::CallStatic,
-            Opcode::Return
-        ];
         OPCODES.iter()
     }
 }

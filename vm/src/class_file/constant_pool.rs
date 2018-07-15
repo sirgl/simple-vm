@@ -45,14 +45,12 @@ impl CPEntry {
             return Err(ParseError::UnknownLabel { label })
         }
         let x = option.unwrap();
-        eprintln!("option.unwrap() = {:?}", x);
         return match x {
             CpLabel::Str => Ok(CPEntry::Str { str: StringCPEntry::parse(read)? }),
             CpLabel::Int => Ok(CPEntry::Num { num: IntCPEntry::parse(read)? }),
             CpLabel::Method => Ok(CPEntry::Method { method: MethodCPEntry::parse(read)? }),
             CpLabel::Var => Ok(CPEntry::Var { var: VarCPEntry::parse(read)? }),
             CpLabel::ClassRef => Ok(CPEntry::Class { class: ClassCPEntry::parse(read)? }),
-            _ => unimplemented!()
         }
 //        return Err(ParseError::MagicDiffers { value: 12 })
     }
@@ -68,7 +66,6 @@ impl ConstantPool {
         let mut entries = Vec::<CPEntry>::with_capacity(size as usize);
         for i in 0..size {
             let x = CPEntry::parse(read)?;
-            eprintln!("x = {:?}", x);
             entries.push(x);
         }
         Ok(ConstantPool { entries })

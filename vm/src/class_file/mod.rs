@@ -17,15 +17,11 @@ mod parse;
 mod constant_pool;
 
 pub struct ClassFile {
-    pool: ConstantPool
+    pool: ConstantPool,
+    methods: Vec<MethodInfo>
 }
 
-
-pub struct Bytecode {
-    bytecode: Vec<Instruction>
-}
-
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 enum Instruction {
     SingleByte {
         opcode: Opcode
@@ -36,7 +32,50 @@ enum Instruction {
     },
 }
 
+#[derive(Debug)]
+pub struct MethodInfo {
+    bytecode: Option<Vec<Instruction>>,
+    // may be none when method is native
+    method_descriptor: u16,
+}
 
+impl MethodInfo {
+    pub fn parse<'e, R: ReadBytesExt + Sized>(read: & mut R) -> Result<MethodInfo, ParseError> {
+        let method_descriptor = parse_u16!(read);
+        let mut i = 0;
+        let modifier_list_byte = parse_u8!(read); // has bytecode or no
+        if modifier_list_byte == 0 {
+            return Ok(MethodInfo { bytecode: None, method_descriptor })
+        } else if modifier_list_byte != 1 {
+            return Err(ParseError::UnknownModifierList { modifier_list_byte })
+        }
+        let bytecode_size = parse_u32!(read) as usize;
+        let mut bytecode = Vec::<Instruction>::with_capacity(bytecode_size);
+        while i < bytecode_size {
+            let byte = parse_u8!(read);
+            match Opcode::parse(byte) {
+                None => return Err(ParseError::UnknownBytecode {bytecode : byte}),
+                Some(opcode) => {
+                    if opcode.has_inline_operand() {
+                        if i + 2 >= bytecode_size {
+                            return Err(ParseError::MissedInlineOperand)
+                        }
+                        let inline_operand = parse_u16!(read);
+                        bytecode.push(Instruction::WithInlineOperand {
+                            opcode,
+                            inline_operand
+                        });
+                        i += 2;
+                    } else {
+                        bytecode.push(Instruction::SingleByte { opcode });
+                    }
+                },
+            }
+            i += 1;
+        }
+        return Ok(MethodInfo { bytecode: Some(bytecode), method_descriptor })
+    }
+}
 
 
 #[derive(Debug)]
@@ -45,6 +84,9 @@ pub enum ParseError {
     UnknownBytecodeVersion { version: u16 },
     UnknownLabel { label: u8 },
     IoError { error: Box<Error> },
+    UnknownBytecode { bytecode: u8 },
+    MissedInlineOperand,
+    UnknownModifierList { modifier_list_byte: u8 },
 }
 
 impl Error for ParseError {
@@ -54,6 +96,9 @@ impl Error for ParseError {
             ParseError::UnknownBytecodeVersion { version } => "Unknown bytecode version",
             ParseError::UnknownLabel { label } => "Unknown label",
             ParseError::IoError { ref error } => "IO error occurred",
+            ParseError::UnknownBytecode { bytecode } => "Unknown bytecode",
+            ParseError::MissedInlineOperand => "Missed inline operand",
+            ParseError::UnknownModifierList { modifier_list_byte } => "Unknown modifier list",
         }
     }
 }
@@ -71,7 +116,16 @@ impl Display for ParseError {
                 f.write_fmt(format_args!("Unknown label: {}", label))
             }
             ParseError::IoError { ref error } => {
-                f.write_str("IO error occurred")
+                f.write_fmt(format_args!("IO error occurred: {}", error))
+            }
+            ParseError::UnknownBytecode { bytecode } => {
+                f.write_fmt(format_args!("Unknown bytecode: {}", bytecode))
+            }
+            ParseError::MissedInlineOperand => {
+                f.write_str("Missed inline operand")
+            }
+            ParseError::UnknownModifierList { modifier_list_byte } => {
+                f.write_fmt(format_args!("Unknown modifier list byte: {}", modifier_list_byte))
             }
         }
     }
@@ -101,21 +155,14 @@ impl ClassFile {
             fields.push(parse_u16!(read))
         }
         let constant_pool = ConstantPool::parse(&mut read)?;
-        unimplemented!();
 
-//        let mut buffer = [0u8; 65536];
-//        buffer
-//        loop {
-//             probably not read_exact should be used here
-//            match read.read() {
-//                Ok(size) => {
-//
-//                }
-//                Err => return Err(ParseError::IoError)
-//            }
-//        }
-//        Opcode::BloadField.
-//        unimplemented!()
-//        Ok(ClassFile { pool: ConstantPool { entries: Vec::new() } }) // TODO
+
+        let method_count = parse_u32!(read) as usize;
+        let mut methods = Vec::<MethodInfo>::with_capacity(method_count);
+        for i in 0..method_count {
+            let method_info = MethodInfo::parse(&mut read);
+            methods.push(method_info?);
+        }
+        Ok(ClassFile { pool: constant_pool, methods })
     }
 }

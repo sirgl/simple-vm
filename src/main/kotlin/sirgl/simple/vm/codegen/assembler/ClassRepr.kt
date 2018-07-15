@@ -32,7 +32,13 @@ class ClassRepr(
         stream.writeInt(methods.size)
         for (method in methods) {
             stream.write(method.descr)
-            stream.write(method.bytecode)
+            if (method.bytecode != null) {
+                stream.writeByte(1) // modifier list byte
+                stream.writeInt(method.bytecode.size)
+                stream.write(method.bytecode)
+            } else {
+                stream.writeByte(0) // modifier list byte
+            }
         }
     }
 
