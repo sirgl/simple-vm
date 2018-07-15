@@ -10,6 +10,7 @@ use std::fmt;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use class_file::constant_pool::ConstantPool;
+use class_file::constant_pool::CPEntry;
 
 
 #[macro_use]
@@ -17,12 +18,39 @@ mod parse;
 mod constant_pool;
 
 pub struct ClassFile {
-    pool: ConstantPool,
-    methods: Vec<MethodInfo>
+    pub pool: ConstantPool,
+    pub methods: Vec<MethodInfo>,
+    pub field_descriptors: Vec<u16>
 }
 
+impl ClassFile {
+    // TODO check method is not native and
+    pub fn find_main_method(&self) -> Option<&MethodInfo> {
+        self.methods.iter().find(|method_info| {
+            if method_info.bytecode.is_none() {
+                return false
+            }
+            let descriptor = method_info.method_descriptor;
+            match self.pool.resolve(descriptor) {
+                None => false,
+                Some(cp_entry) => match cp_entry {
+                    CPEntry::Method { method } => {
+                        match method.resolve_name(&self.pool) {
+                            None => false,
+                            Some(name) => name == "main",
+                        }
+                    },
+                    _ =>  false
+                },
+            }
+//            x.method_descriptor
+        })
+    }
+}
+
+
 #[derive(Copy, Clone, Debug)]
-enum Instruction {
+pub enum Instruction {
     SingleByte {
         opcode: Opcode
     },
@@ -32,9 +60,18 @@ enum Instruction {
     },
 }
 
+impl Instruction {
+    pub fn opcode(self) -> Opcode {
+        match self {
+            Instruction::SingleByte { opcode } => opcode,
+            Instruction::WithInlineOperand { opcode, inline_operand } => opcode,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct MethodInfo {
-    bytecode: Option<Vec<Instruction>>,
+    pub bytecode: Option<Vec<Instruction>>,
     // may be none when method is native
     method_descriptor: u16,
 }
@@ -163,6 +200,6 @@ impl ClassFile {
             let method_info = MethodInfo::parse(&mut read);
             methods.push(method_info?);
         }
-        Ok(ClassFile { pool: constant_pool, methods })
+        Ok(ClassFile { pool: constant_pool, methods, field_descriptors: fields })
     }
 }

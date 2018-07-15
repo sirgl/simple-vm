@@ -1,6 +1,7 @@
 use class_file::ParseError;
 use byteorder::ReadBytesExt;
 use byteorder::*;
+use std::borrow::Borrow;
 
 #[macro_use]
 use super::parse;
@@ -61,6 +62,15 @@ pub struct ConstantPool {
 }
 
 impl ConstantPool {
+    pub fn resolve(&self, descriptor: u16) -> Option<&CPEntry> {
+        if descriptor as usize >= self.entries.len() {
+            return None
+        }
+        Some(&self.entries[descriptor as usize])
+    }
+}
+
+impl ConstantPool {
     pub fn parse<'e, R: ReadBytesExt + Sized>(read: &mut  R) -> Result<ConstantPool, ParseError> {
         let size = parse_u32!(read);
         let mut entries = Vec::<CPEntry>::with_capacity(size as usize);
@@ -117,6 +127,18 @@ pub struct MethodCPEntry {
     name_descriptor: u16,
     return_type_signature_descriptor: u16,
     parameter_var_descriptors: Vec<u16>
+}
+
+impl MethodCPEntry {
+    pub fn resolve_name<'a>(&self, pool: &'a ConstantPool) -> Option<&'a str> {
+        match pool.resolve(self.name_descriptor) {
+            None => None,
+            Some(cp_descr) => match cp_descr {
+                CPEntry::Str { str } => Some(&str.str),
+                _ => None
+            },
+        }
+    }
 }
 
 impl ParseableEntry for MethodCPEntry {

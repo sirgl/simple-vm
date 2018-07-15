@@ -8,6 +8,8 @@ use class_file::ClassFile;
 mod class_file;
 mod opcodes;
 mod interpreter;
+mod memory;
+mod resolve;
 
 extern crate byteorder;
 
