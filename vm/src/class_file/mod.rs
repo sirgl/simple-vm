@@ -20,7 +20,9 @@ mod constant_pool;
 pub struct ClassFile {
     pub pool: ConstantPool,
     pub methods: Vec<MethodInfo>,
-    pub field_descriptors: Vec<u16>
+    pub field_descriptors: Vec<u16>,
+    pub class_descriptor: u16,
+    pub parent_class_descriptor: u16,
 }
 
 impl ClassFile {
@@ -184,8 +186,8 @@ impl ClassFile {
         if version != BYTECODE_VERSION {
             return Err(ParseError::UnknownBytecodeVersion { version });
         }
-        let class_descr = parse_u16!(read);
-        let parent_class_descr = parse_u16!(read);
+        let class_descriptor = parse_u16!(read);
+        let parent_class_descriptor = parse_u16!(read);
         let fields_count = parse_u32!(read);
         let mut fields = Vec::<u16>::new();
         for i in 0..fields_count {
@@ -200,6 +202,6 @@ impl ClassFile {
             let method_info = MethodInfo::parse(&mut read);
             methods.push(method_info?);
         }
-        Ok(ClassFile { pool: constant_pool, methods, field_descriptors: fields })
+        Ok(ClassFile { pool: constant_pool, methods, field_descriptors: fields, class_descriptor, parent_class_descriptor })
     }
 }

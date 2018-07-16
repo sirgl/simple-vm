@@ -9,14 +9,20 @@ struct Package {
 }
 
 
-struct Resolve {
+struct ClassIndex {
     name_to_package: HashMap<String, Package>
 }
 
-impl Resolve {
-    fn from_files(files: &Vec<ClassFile>) -> Resolve {
-        files.iter().map(|file| file).collect();
-        Resolve { name_to_package: HashMap::new }
+impl ClassIndex {
+//    fn from_files(files: &Vec<ClassFile>) -> Resolve {
+//        files.iter().map(|file| file).collect();
+//        Resolve { name_to_package: HashMap::new }
+//    }
+    fn new(incomplete_index: IncompleteIndex) {
+    // TODO complete index
+//        for incomplete_package in incomplete_index.name_to_package.values(). {
+//
+//        }
     }
 
 }
@@ -49,9 +55,44 @@ impl IncompleteClass {
 }
 
 struct IncompletePackage {
-    name_to_class: HashMap<String, IncompleteClass>
+    pub name_to_class: HashMap<String, IncompleteClass>
 }
 
-struct TemporaryResolve {
-    name_to_package: HashMap<String, Package>
+impl IncompletePackage {
+    fn add_class(&self, class_name: &str, class: IncompleteClass) {
+        self.name_to_class.insert(class_name.to_string(), class);
+    }
+
+    fn new() -> IncompletePackage {
+        IncompletePackage { name_to_class: HashMap::new() }
+    }
+}
+
+struct IncompleteIndex {
+    name_to_package: HashMap<String, IncompletePackage>
+}
+
+impl IncompleteIndex {
+    fn from_files(files: &Vec<ClassFile>) -> IncompleteIndex {
+        let mut name_to_package: HashMap<String, IncompletePackage> = HashMap::new();
+        let incomplete_classes = files.iter()
+            .map(|file| IncompleteClass::new(file));
+        for incomplete_class in incomplete_classes {
+            let class_file = incomplete_class.class_file;
+            let constant_pool = &class_file.pool;
+            let class_cpentry = constant_pool.resolve_to_class(class_file.class_descriptor).unwrap(); // TODO error, actually possible
+
+            let name = class_cpentry.resolve_simple_name(constant_pool).unwrap(); // also here
+            let package = class_cpentry.resolve_package(constant_pool).unwrap();
+            match name_to_package.get(package) {
+                None => {
+                    name_to_package.insert(package.to_string(), IncompletePackage::new() )
+                },
+                Some(packageEntry) => {
+                    packageEntry.add_class(name, incomplete_class)
+                },
+            }
+        }
+        IncompleteIndex { name_to_package }
+    }
 }

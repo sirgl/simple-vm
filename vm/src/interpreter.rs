@@ -3,7 +3,6 @@ use class_file::ClassFile;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt;
-use types::*;
 use class_file::MethodInfo;
 use class_file::Instruction;
 use opcodes::Opcode;

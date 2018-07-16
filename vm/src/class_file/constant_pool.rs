@@ -61,12 +61,39 @@ pub struct ConstantPool {
     pub entries: Vec<CPEntry>
 }
 
+macro_rules! resolve_to {
+        ($i:ident, $e:expr, $d:ident) => {
+            match $e.resolve($d) {
+                None => None,
+                Some(val) => match *val {
+                    CPEntry::$i { entry } => Some(&entry),
+                    _ => None,
+                },
+            }
+        };
+    }
+
 impl ConstantPool {
     pub fn resolve(&self, descriptor: u16) -> Option<&CPEntry> {
         if descriptor as usize >= self.entries.len() {
             return None
         }
         Some(&self.entries[descriptor as usize])
+    }
+
+    pub fn resolve_to_class(&self, descriptor: u16) -> Option<&ClassCPEntry> {
+        resolve_to!(Class, self, descriptor)
+    }
+
+    pub fn resolve_to_string(&self, descriptor: u16) -> Option<&StringCPEntry> {
+        resolve_to!(Str, self, descriptor)
+//        match self.resolve(descriptor) {
+//            None => None,
+//            Some(val) => match *val {
+//                CPEntry::Str { entry } => Some(entry),
+//                _ => None,
+//            },
+//        }
     }
 }
 
@@ -178,6 +205,18 @@ impl ParseableEntry for VarCPEntry {
 pub struct ClassCPEntry {
     simple_name_descriptor: u16,
     package_descriptor: u16
+}
+
+impl ClassCPEntry {
+    pub fn resolve_simple_name(&self, pool: &ConstantPool) -> Option<&str> {
+        pool.resolve_to_string(self.simple_name_descriptor)
+            .map(|entry| entry.str.as_str())
+    }
+
+    pub fn resolve_package(&self, pool: &ConstantPool) -> Option<&str> {
+        pool.resolve_to_string(self.package_descriptor)
+            .map(|entry| entry.str.as_str())
+    }
 }
 
 impl ParseableEntry for ClassCPEntry {
