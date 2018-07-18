@@ -11,6 +11,36 @@ pub enum Value {
     Bool { value: bool },
 }
 
+impl Value {
+    pub fn try_as_i8(&self) -> Option<i8> {
+        match *self {
+            Value::I8 { value } => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn try_as_i32(&self) -> Option<i32> {
+        match *self {
+            Value::I32 { value } => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn try_as_obj(&self) -> Option<Box<Object>> {
+        match *self {
+            Value::Obj { value } => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn try_as_bool(&self) -> Option<bool> {
+        match *self {
+            Value::Bool { value } => Some(value),
+            _ => None,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum VarType {
     I8,

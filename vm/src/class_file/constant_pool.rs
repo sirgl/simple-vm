@@ -85,6 +85,10 @@ impl ConstantPool {
         resolve_to!(Class, self, descriptor)
     }
 
+    pub fn resolve_to_int(&self, descriptor: u16) -> Option<&IntCPEntry> {
+        resolve_to!(Num, self, descriptor)
+    }
+
     pub fn resolve_to_string(&self, descriptor: u16) -> Option<&StringCPEntry> {
         resolve_to!(Str, self, descriptor)
 //        match self.resolve(descriptor) {

@@ -9,22 +9,16 @@ struct Package {
 }
 
 
-struct ClassIndex {
+pub struct ClassIndex {
     name_to_package: HashMap<String, Package>
 }
 
 impl ClassIndex {
-//    fn from_files(files: &Vec<ClassFile>) -> Resolve {
-//        files.iter().map(|file| file).collect();
-//        Resolve { name_to_package: HashMap::new }
-//    }
-    fn new(incomplete_index: IncompleteIndex) {
-    // TODO complete index
-//        for incomplete_package in incomplete_index.name_to_package.values(). {
-//
-//        }
+    pub fn from_files(files: &Vec<ClassFile>) -> ClassIndex {
+        let incomplete_index = IncompleteIndex::from_files(files);
+        unimplemented!();
+        // TODO complete index
     }
-
 }
 
 
@@ -86,11 +80,11 @@ impl IncompleteIndex {
             let package = class_cpentry.resolve_package(constant_pool).unwrap();
             match name_to_package.get(package) {
                 None => {
-                    name_to_package.insert(package.to_string(), IncompletePackage::new() )
-                },
+                    name_to_package.insert(package.to_string(), IncompletePackage::new())
+                }
                 Some(packageEntry) => {
                     packageEntry.add_class(name, incomplete_class)
-                },
+                }
             }
         }
         IncompleteIndex { name_to_package }

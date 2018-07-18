@@ -15,7 +15,7 @@ use class_file::constant_pool::CPEntry;
 
 #[macro_use]
 mod parse;
-mod constant_pool;
+pub mod constant_pool;
 
 pub struct ClassFile {
     pub pool: ConstantPool,
@@ -67,6 +67,13 @@ impl Instruction {
         match self {
             Instruction::SingleByte { opcode } => opcode,
             Instruction::WithInlineOperand { opcode, inline_operand } => opcode,
+        }
+    }
+
+    pub fn try_get_operand(&self) -> Option<u16> {
+        match *self {
+            Instruction::SingleByte { opcode } => None,
+            Instruction::WithInlineOperand { opcode, inline_operand } => Some(inline_operand),
         }
     }
 }
