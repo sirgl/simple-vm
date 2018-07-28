@@ -10,6 +10,7 @@ use memory::Value;
 use memory::Class;
 use resolve::ClassIndex;
 use class_file::constant_pool::ConstantPool;
+use memory::Heap;
 
 pub struct Task {
     files: Vec<ClassFile>,
@@ -34,11 +35,13 @@ pub struct Interpreter<'a> {
     frame_stack: Vec<StackFrame>,
     operand_stack: Vec<Value>,
     class_index: ClassIndex,
+    heap: Heap,
 }
 
-struct CallEnvironment<'a, 'b> {
+struct CallEnvironment<'a, 'b, 'c> {
     class_index: &'a ClassIndex,
     constant_pool: &'b ConstantPool,
+    heap: &'c Heap,
 }
 
 impl Interpreter {
@@ -78,6 +81,7 @@ impl Interpreter {
             frame_stack: Vec::new(),
             operand_stack: Vec::new(),
             class_index: ClassIndex::new(),
+            heap: Heap::new(),
         };
     }
 }
@@ -112,7 +116,7 @@ impl<'a> InterpretedCall<'a> {
 
 impl<'a> Callable for InterpretedCall<'a> {
     // TODO it is more correct to return here Result with error and not to panic everywhere
-    fn call(&mut self, env: CallEnvironment, operand_stack: &mut Vec<Value>) {
+    fn call(&mut self, env: CallEnvironment, operand_stack: &mut Vec<Value>, stack_frame: &StackFrame) {
         loop {
             let instruction = self.fetch_instruction();
             // TODO print stack condition and stack trace
@@ -206,6 +210,7 @@ impl<'a> Callable for InterpretedCall<'a> {
                     let cp_descriptor = instruction.try_get_operand().unwrap();
                     let cp_entry = env.constant_pool.resolve_to_string(cp_descriptor).unwrap().str;
                     // TODO allocate on stack String instance
+                    env.heap.allocate_object()
                     operand_stack.push(Value::Obj { value: })
                 }
                 Opcode::LoadTrue => {
@@ -235,22 +240,70 @@ impl<'a> Callable for InterpretedCall<'a> {
                     let value = operand_stack.pop().unwrap().try_as_i8().unwrap();
                     operand_stack.push(Value::I32 { value: value as i32 })
                 }
-                Opcode::IstoreSlot => {}
-                Opcode::CstoreSlot => {}
-                Opcode::BstoreSlot => {}
-                Opcode::RstoreSlot => {}
-                Opcode::IloadSlot => {}
-                Opcode::CloadSlot => {}
-                Opcode::BloadSlot => {}
-                Opcode::RloadSlot => {}
-                Opcode::IstoreField => {}
+                // Store to slots
+                // TODO too mush duplication
+                Opcode::IstoreSlot => {
+                    let value = operand_stack.pop().unwrap().try_as_i32().unwrap();
+                    let slot_index = instruction.try_get_operand().unwrap();
+                    stack_frame.slots[slot_index as usize] = Value::I32 { value }
+                }
+                Opcode::CstoreSlot => {
+                    let value = operand_stack.pop().unwrap().try_as_i8().unwrap();
+                    let slot_index = instruction.try_get_operand().unwrap();
+                    stack_frame.slots[slot_index as usize] = Value::I8 { value }
+                }
+                Opcode::BstoreSlot => {
+                    let value = operand_stack.pop().unwrap().try_as_bool().unwrap();
+                    let slot_index = instruction.try_get_operand().unwrap();
+                    stack_frame.slots[slot_index as usize] = Value::Bool { value }
+                }
+                Opcode::RstoreSlot => {
+                    let value = operand_stack.pop().unwrap().try_as_obj().unwrap();
+                    let slot_index = instruction.try_get_operand().unwrap();
+                    stack_frame.slots[slot_index as usize] = Value::Obj { value }
+                }
+
+                // load from slot
+                Opcode::IloadSlot => {
+                    let slot_index = instruction.try_get_operand().unwrap();
+                    let value = stack_frame.slots[slot_index as usize].try_as_i32().unwrap();
+                    operand_stack.push(Value::I32 { value })
+                }
+                Opcode::CloadSlot => {
+                    let slot_index = instruction.try_get_operand().unwrap();
+                    let value = stack_frame.slots[slot_index as usize].try_as_i8().unwrap();
+                    operand_stack.push(Value::I8 { value })
+                }
+                Opcode::BloadSlot => {
+                    let slot_index = instruction.try_get_operand().unwrap();
+                    let value = stack_frame.slots[slot_index as usize].try_as_bool().unwrap();
+                    operand_stack.push(Value::Bool { value })
+                }
+                Opcode::RloadSlot => {
+                    let slot_index = instruction.try_get_operand().unwrap();
+                    let value = stack_frame.slots[slot_index as usize].try_as_obj().unwrap();
+                    operand_stack.push(Value::Obj { value })
+                }
+
+                // store to field
+                Opcode::IstoreField => {
+                    let field_descr = instruction.try_get_operand().unwrap();
+                    let this = stack_frame.slots[0].try_as_obj().unwrap();
+                    let field_index = this.class.fields_descr_to_index.get(&field_descr).unwrap();
+                    let value = operand_stack.pop().unwrap().try_as_i32().unwrap();
+                    this.fields[field_index as usize] = Value::I32 { value };
+                }
                 Opcode::CstoreField => {}
                 Opcode::BstoreField => {}
                 Opcode::RstoreField => {}
+
+                // load from field
                 Opcode::IloadField => {}
                 Opcode::CloadField => {}
                 Opcode::BloadField => {}
                 Opcode::RloadField => {}
+
+                //  other
                 Opcode::Typecheck => {}
                 Opcode::CallVirtual => {}
                 Opcode::CallConstructor => {}
@@ -265,7 +318,7 @@ struct NativeCall {}
 
 // Required to implement native calls
 trait Callable {
-    fn call(&mut self, env: CallEnvironment, operand_stack: &mut Vec<Value>);
+    fn call(&mut self, env: CallEnvironment, operand_stack: &mut Vec<Value>, stack_frame: &StackFrame);
 }
 
 struct StackFrame {

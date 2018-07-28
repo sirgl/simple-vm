@@ -20,6 +20,8 @@ enum class Opcode(val inlineOerandType: InlineOperandType) {
 
     // integer unary
     NEG(InlineOperandType.NoInlineOperand),
+
+    // Boolean unary
     INV(InlineOperandType.NoInlineOperand),
 
     // control flow

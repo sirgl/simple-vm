@@ -89,6 +89,10 @@ impl ConstantPool {
         resolve_to!(Num, self, descriptor)
     }
 
+    pub fn resolve_to_var(&self, descriptor: u16) -> Option<&VarCPEntry> {
+        resolve_to!(Var, self, descriptor)
+    }
+
     pub fn resolve_to_string(&self, descriptor: u16) -> Option<&StringCPEntry> {
         resolve_to!(Str, self, descriptor)
 //        match self.resolve(descriptor) {
@@ -119,7 +123,7 @@ trait ParseableEntry : Sized {
 
 #[derive(Debug)]
 pub struct StringCPEntry {
-    str: String
+    pub str: String
 }
 
 impl ParseableEntry for StringCPEntry {
@@ -193,7 +197,7 @@ impl ParseableEntry for MethodCPEntry {
 
 #[derive(Debug)]
 pub struct VarCPEntry {
-    type_signature_descriptor: u16,
+    pub type_signature_descriptor: u16,
     name_descriptor: u16
 }
 

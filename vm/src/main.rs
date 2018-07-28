@@ -10,6 +10,7 @@ mod opcodes;
 mod interpreter;
 mod memory;
 mod resolve;
+mod types;
 
 extern crate byteorder;
 
